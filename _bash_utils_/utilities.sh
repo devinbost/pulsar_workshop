@@ -86,9 +86,11 @@ chkHelmRepoExistence() {
 # Two input prarameters:
 # - 1st parameter: the property file to scan
 # - 2nd parameter: the key to search for
+PULSAR_WORKSHOP_HOMEDIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 getPropVal() {
     local propFile=$1
     local searchKey=$2
+    local globalPropertiesFile
     local value=$(grep "${searchKey}" ${propFile} | grep -Ev "^#|^$" | cut -d'=' -f2)
     echo $value
 }
