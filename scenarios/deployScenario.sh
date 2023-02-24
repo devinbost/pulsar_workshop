@@ -59,9 +59,12 @@ while [[ "$#" -gt 0 ]]; do
    shift
 done
 
-scnHomeDir="${PULSAR_WORKSHOP_HOMEDIR}/scenarios/${scnName}"
-scnLogHomeDir="${PULSAR_WORKSHOP_HOMEDIR}/scenarios/logs"
+scnHomeDir="${PULSAR_WORKSHOP_HOMEDIR}/../scenarios/${scnName}"
+echo "scnHomeDir is: ${scnHomeDir}"
+scnLogHomeDir="${PULSAR_WORKSHOP_HOMEDIR}/../scenarios/logs"
+echo "scnLogHomeDir is: ${scnLogHomeDir}"
 dftScnPropFile="${scnHomeDir}/scenario.properties"
+echo "dftScnPropFile is: ${dftScnPropFile}"
 scnPostDeployScript="${scnHomeDir}/post_deploy.sh"
 
 if ! [[ -n "${scnName}" && -d "${scnHomeDir}"  ]]; then
@@ -139,8 +142,8 @@ if [[ ${depAppOnly} -eq 0 ]]; then
       #
       # Deploy a self-managed K8s cluster
       #
-      dftK8sDeployPropFile="${PULSAR_WORKSHOP_HOMEDIR}/cluster_deploy/k8s/k8s.properties"
-      k8sDeployScript="${PULSAR_WORKSHOP_HOMEDIR}/cluster_deploy/k8s/deploy_k8s_cluster.sh"
+      dftK8sDeployPropFile="${PULSAR_WORKSHOP_HOMEDIR}/../cluster_deploy/k8s/k8s.properties"
+      k8sDeployScript="${PULSAR_WORKSHOP_HOMEDIR}/../cluster_deploy/k8s/deploy_k8s_cluster.sh"
       k8sDeployExecLogFile="${depScnExecLogFileNoExt}_k8s_deploy.log"
 
       if ! [[ -n "${k8sDeployPropFile}" && -f "${k8sDeployPropFile}" ]]; then
@@ -176,8 +179,8 @@ if [[ ${depAppOnly} -eq 0 ]]; then
       #
       # Deploy a Pulsar cluster on the K8s cluster just created
       #
-      dftPulsarDeployPropFile="${PULSAR_WORKSHOP_HOMEDIR}/cluster_deploy/pulsar/pulsar.properties"
-      pulsarDeployScript="${PULSAR_WORKSHOP_HOMEDIR}/cluster_deploy/pulsar/deploy_pulsar_cluster.sh"
+      dftPulsarDeployPropFile="${PULSAR_WORKSHOP_HOMEDIR}/../cluster_deploy/pulsar/pulsar.properties"
+      pulsarDeployScript="${PULSAR_WORKSHOP_HOMEDIR}/../cluster_deploy/pulsar/deploy_pulsar_cluster.sh"
       pulsarDeployExecLogFile="${depScnExecLogFileNoExt}_pulsar_deploy.log"
 
       if ! [[ -n "${pulsarDeployPropFile}" && -f "${pulsarDeployPropFile}" ]]; then
@@ -220,7 +223,7 @@ if [[ ${depAppOnly} -eq 0 ]]; then
       #
       # Forward Pulsar Proxy service ports to localhost
       #
-      k8sProxyPortForwardScript="${PULSAR_WORKSHOP_HOMEDIR}/cluster_deploy/pulsar/forward_pulsar_proxy_port.sh"
+      k8sProxyPortForwardScript="${PULSAR_WORKSHOP_HOMEDIR}/../cluster_deploy/pulsar/forward_pulsar_proxy_port.sh"
       k8sProxyPortForwardLogFile="${depScnExecLogFileNoExt}_port_forward.log"
 
       outputMsg "- Forward Pulsar Proxy service ports to localhost ..." 4 ${depScnExecLogFile} true
@@ -252,8 +255,8 @@ fi
 outputMsg "" 0 ${depScnExecLogFile} true
 outputMsg "- Deploying demo applications ..." 3 ${depScnExecLogFile} true
 
-clntAppCodeHomeDir="${PULSAR_WORKSHOP_HOMEDIR}/application_code"
-clntAppDeployHomeDir="${PULSAR_WORKSHOP_HOMEDIR}/application_deploy"
+clntAppCodeHomeDir="${PULSAR_WORKSHOP_HOMEDIR}/../application_code"
+clntAppDeployHomeDir="${PULSAR_WORKSHOP_HOMEDIR}/../application_deploy"
 clntAppDefPropFile="${clntAppDeployHomeDir}/client_app_def.properties"
 if ! [[ -f "${clntAppDefPropFile}" ]]; then
    outputMsg "[ERROR] Can't find client application definition file or deploy properties file" 3 ${depScnExecLogFile} true
