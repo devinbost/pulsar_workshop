@@ -10,6 +10,13 @@ import org.apache.pulsar.common.schema.KeyValue;
 import org.apache.pulsar.functions.api.Context;
 import org.apache.pulsar.functions.api.Function;
 import org.slf4j.Logger;
+<<<<<<<< HEAD:application_code/functions/java/function-cdc-router/src/main/java/com/example/pulsarworkshop/FunctionCdcRouter.java
+<<<<<<<< HEAD:application_code/functions/java/function-cdc-router/src/main/java/com/example/pulsarworkshop/FunctionCdcRouter.java
+========
+import com.example.pulsarworkshop.function-astradb-v1.DeliveryChange;
+>>>>>>>> 7b273c6 (Moved function code to new directory structure and resolved some errors. Still not completely working yet.):application_code/functions/java/function-astradb-v1/src/main/java/com/example/pulsarworkshop/function_cdc_router/FunctionCdcRouter.java
+========
+>>>>>>>> 6e9c7ce (Fixed more issues but still not working):application_code/functions/java/function_astradb_v1/src/main/java/com/example/pulsarworkshop/FunctionCdcRouter.java
 
 public class FunctionCdcRouter implements Function<GenericObject, DeliveryChange> {
     private String pulsarNamespace;

@@ -1,4 +1,12 @@
+<<<<<<<< HEAD:application_code/functions/java/function-astradb-writer/src/main/java/com/example/pulsarworkshop/FunctionAstradbWriter.java
+<<<<<<<< HEAD:application_code/functions/java/function-astradb-writer/src/main/java/com/example/pulsarworkshop/FunctionAstradbWriter.java
 package com.example.pulsarworkshop;
+========
+package com.example.pulsarworkshop.function-astradb-v1;
+>>>>>>>> 7b273c6 (Moved function code to new directory structure and resolved some errors. Still not completely working yet.):application_code/functions/java/function-astradb-v1/src/main/java/com/example/pulsarworkshop/function_astradb_writer/FunctionAstradbWriter.java
+========
+package com.example.pulsarworkshop;
+>>>>>>>> 6e9c7ce (Fixed more issues but still not working):application_code/functions/java/function_astradb_v1/src/main/java/com/example/pulsarworkshop/FunctionAstradbWriter.java
 
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.BoundStatement;

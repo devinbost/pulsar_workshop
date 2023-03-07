@@ -1,4 +1,12 @@
+<<<<<<< HEAD
+<<<<<<<< HEAD:application_code/functions/java/function-cdc-router/src/main/java/com/example/pulsarworkshop/DeliveryChange.java
 package com.example.pulsarworkshop;
+========
+package com.example.pulsarworkshop.function-astradb-v1;
+>>>>>>>> 7b273c6 (Moved function code to new directory structure and resolved some errors. Still not completely working yet.):application_code/functions/java/function-astradb-v1/src/main/java/com/example/pulsarworkshop/function_astradb_writer/DeliveryChange.java
+=======
+package com.example.pulsarworkshop;
+>>>>>>> db504cd (Updated more things to allow Jar to be discoverable)
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,4 +43,8 @@ public class DeliveryChange {
     private Integer new_category_id;
     private Long new_updated_time;
     private Boolean new_late_delivery_risk;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> db504cd (Updated more things to allow Jar to be discoverable)

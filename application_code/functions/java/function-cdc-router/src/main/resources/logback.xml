@@ -8,4 +8,8 @@
     <root level="debug">
         <appender-ref ref="STDOUT" />
     </root>
+<<<<<<< HEAD
 </configuration>
+=======
+</configuration>
+>>>>>>> db504cd (Updated more things to allow Jar to be discoverable)
