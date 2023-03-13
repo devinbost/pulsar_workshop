@@ -127,22 +127,38 @@ public class DebeziumReplicator extends PulsarWorkshopCmdApp {
 
                 GenericRecord valGenRecord = keyValue.getValue();
                 displayGenericRecordFields("value",valGenRecord);
+                var jsonKeyNode = ((GenericJsonRecord) keyValue.getKey()).getJsonNode();
+                var jsonValueNode = ((GenericJsonRecord) keyValue.getValue()).getJsonNode().get("after");
 
-                var productId = (int)keyGenRecord.getField("id");
-                var name = (String)valGenRecord.getField("name");
-                var description = (String)valGenRecord.getField("description") + "!!!!!!";
-                var weight = (Double)valGenRecord.getField("weight");
+                var productId = jsonKeyNode.get("id").intValue();
+                System.out.println("productId is:" + productId);
+
+                String name = null;
+                if (jsonValueNode.get("name")!= null) {
+                    name = jsonValueNode.get("name").textValue();
+                    System.out.println("name is:" + name);
+                }
+                String description = null;
+                if (jsonValueNode.get("description")!= null) {
+                    description = jsonValueNode.get("description").textValue();
+                    System.out.println("description is:" + description);
+                }
+
+                Double weight = null;
+                if (jsonValueNode.get("weight")!= null) {
+                    weight = jsonValueNode.get("weight").asDouble();
+                    System.out.println("weight is:" + weight);
+                }
+
                 var product = new Product(productId, name, description, weight);
                 System.out.println("Sending product:" + product.toString());
                 producer.send(product);
                 // Acknowledge the message to remove it from the message backlog
                 consumer.acknowledge(msg);
 
-                receivedMsg = true;
             }
 
-        } while (!receivedMsg);
-        // TODO: Need to refactor this to process the specified number of messages instead of just one.
+        } while (true);
 
         //Close the producer
         producer.close();
