@@ -73,10 +73,10 @@ Once such a file is prepared, put it under the scenario home directory and it wi
 ## 2.3. Pulsar Tenants, Namespaces, and Topics
 
 According to the data flow pattern, this scenario requires 2 Pulsar topics. You can use any Pulsar topics for this scenario; but for demonstration purpose, let's assume the following 2 Pulsar topics are needed:
-* `persistent://mytest/default/t1`: This corresponds to `topic 1` in the data flow pattern and is used by the Pulsar producer to publish the IoT sensor reading to. It is also the input topic of the Pulsar function to add message metadata.
-* `persistent://mytest/default/t2`: This corresponds to `topic 2` in the data flow pattern, and it is used by the Pulsar consumer to consumer messages from. It is also the output topic of the Pulsar function that contains the enriched messages. 
+* `persistent://ymtest/default/t1`: This corresponds to `topic 1` in the data flow pattern and is used by the Pulsar producer to publish the IoT sensor reading to. It is also the input topic of the Pulsar function to add message metadata.
+* `persistent://ymtest/default/t2`: This corresponds to `topic 2` in the data flow pattern, and it is used by the Pulsar consumer to consumer messages from. It is also the output topic of the Pulsar function that contains the enriched messages. 
 
-**NOTE**: make sure the corresponding Pulsar tenant `mytest` and the Pulsar namespace `mytest/default` are in place before creating the topics.
+**NOTE**: make sure the corresponding Pulsar tenant `mytest` and the Pulsar namespace `ymtest/default` are in place before creating the topics.
 
 ### 2.3.1. Bash Script
 
