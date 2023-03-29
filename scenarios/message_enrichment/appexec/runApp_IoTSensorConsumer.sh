@@ -6,4 +6,4 @@ SCENARIO_HOMEDIR=$( cd -- "${CUR_SCRIPT_FOLDER}/.." &> /dev/null && pwd )
 java \
   -cp ${SCENARIO_HOMEDIR}/source_code/client_app/target/msgenrich-clientapp-1.0.0.jar \
   com.example.pulsarworkshop.IoTSensorConsumer \
-  -h -a -n 10 -t ymtest/default/t2 -c ${SCENARIO_HOMEDIR}/client.conf -sbn mysub
+  -a -n 10 -t ymtest/default/t2 -c ${SCENARIO_HOMEDIR}/client.conf -sbn mysub
