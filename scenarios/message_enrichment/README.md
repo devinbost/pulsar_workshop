@@ -51,7 +51,7 @@ mvn clean verify
 
 # 2. Run the Scenario
 
-## 2.1. IoT Reading Data Source
+## 2.1. IoT Sensor Reading Data Source
 
 The CSV file that contains the raw IoT sensor reading data is available from [sensor_telemetry.csv](../_raw_data_src/sensor_telemetry.csv). Each line of the CSV file represents a particular IoT device reading of the following types at a particular time.
 * Carbon monoxide
