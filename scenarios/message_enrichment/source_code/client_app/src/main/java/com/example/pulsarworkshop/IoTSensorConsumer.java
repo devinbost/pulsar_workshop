@@ -19,15 +19,15 @@ public class IoTSensorConsumer extends PulsarWorkshopCmdApp {
     private PulsarClient pulsarClient;
     private Consumer<?> pulsarConsumer;
 
-    public IoTSensorConsumer(String[] inputParams) {
-        super(inputParams);
+    public IoTSensorConsumer(String appName, String[] inputParams) {
+        super(appName, inputParams);
         addCommandLineOption(new Option("sbt","subType", true, "Pulsar subscription type."));
         addCommandLineOption(new Option("sbn", "subName", true, "Pulsar subscription name."));
     }
 
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new IoTSensorConsumer(args);
-        int exitCode = workshopApp.run("IoTSensorConsumer");
+        PulsarWorkshopCmdApp workshopApp = new IoTSensorConsumer("IoTSensorConsumer", args);
+        int exitCode = workshopApp.run();
         System.exit(exitCode);
     }
 
@@ -70,7 +70,7 @@ public class IoTSensorConsumer extends PulsarWorkshopCmdApp {
             while (msgRecvd < numMsg) {
                 Message<?> message = pulsarConsumer.receive();
                 if (logger.isDebugEnabled()) {
-                    logger.debug("({}) Message received and acknowledged: " +
+                    logger.debug(">>> ({}) Message received and acknowledged: " +
                                     "msg-key={}; msg-properties={}; msg-payload={}",
                             pulsarConsumer.getConsumerName(),
                             message.getKey(),

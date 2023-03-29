@@ -21,14 +21,14 @@ public class IoTSensorProducer extends PulsarWorkshopCmdApp {
     private PulsarClient pulsarClient;
     private Producer pulsarProducer;
 
-    public IoTSensorProducer(String[] inputParams) {
-        super(inputParams);
+    public IoTSensorProducer(String appName, String[] inputParams) {
+        super(appName, inputParams);
         addCommandLineOption(new Option("csv","csvFile", true, "IoT sensor data CSV file."));
     }
 
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new IoTSensorProducer(args);
-        int exitCode = workshopApp.run("IoTSensorProducer");
+        PulsarWorkshopCmdApp workshopApp = new IoTSensorProducer("IoTSensorProducer", args);
+        int exitCode = workshopApp.run();
         System.exit(exitCode);
     }
 
@@ -69,7 +69,7 @@ public class IoTSensorProducer extends PulsarWorkshopCmdApp {
                                 .value(csvLine.getBytes(StandardCharsets.UTF_8))
                                 .send();
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Published a message: {}", messageId);
+                            logger.debug(">>> Published a message: {}", messageId);
                         }
 
                         msgSent++;

@@ -27,6 +27,8 @@ abstract public class PulsarWorkshopCmdApp {
 
     protected PulsarClientConf pulsarClientConf;
 
+    protected final String appName;
+
     private CommandLine commandLine;
     private final DefaultParser commandParser;
     private final Options cliOptions = new Options();
@@ -36,12 +38,13 @@ abstract public class PulsarWorkshopCmdApp {
     public abstract void termApp();
 
 
-    public PulsarWorkshopCmdApp(String[] inputParams) {
+    public PulsarWorkshopCmdApp(String appName, String[] inputParams) {
+        this.appName = appName;
         this.rawCmdInputParams = inputParams;
         this.commandParser = new DefaultParser();
 
         addCommandLineOption(new Option("h", "help", false, "Displays the usage method."));
-        addCommandLineOption(new Option("n","numMsg", true, "Number of message to process."));
+        addCommandLineOption(new Option("n","numMsg", true, "Number of messages to process."));
         addCommandLineOption(new Option("t", "topic", true, "Pulsar topic name."));
         addCommandLineOption(new Option("c","connFile", true, "\"client.conf\" file path."));
         addCommandLineOption(new Option("a", "astra", false, "Whether to use Astra streaming."));
@@ -51,7 +54,7 @@ abstract public class PulsarWorkshopCmdApp {
     	cliOptions.addOption(option);
     }
 
-    public int run(String appName) {
+    public int run() {
         int exitCode = 0;
         try {
             this.processInputParams();
@@ -82,7 +85,7 @@ abstract public class PulsarWorkshopCmdApp {
         PrintWriter printWriter = new PrintWriter(System.out, true);
 
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(printWriter, 150, "appNme",
+        formatter.printHelp(printWriter, 150, appName,
                 "Command Line Options:",
                 cliOptions, 2, 1, "", true);
 

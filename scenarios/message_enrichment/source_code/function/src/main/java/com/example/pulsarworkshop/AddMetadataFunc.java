@@ -1,5 +1,6 @@
 package com.example.pulsarworkshop;
 
+import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.Schema;
 import org.apache.pulsar.client.api.TypedMessageBuilder;
 import org.apache.pulsar.functions.api.Context;
@@ -13,15 +14,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class AddMetadataFunc implements Function<String, Void> {
-
-    private static String[] NICE_WORDS =
-            {"pleasant", "delightful", "delicious", "enjoyable", "sweet", "good", "pleasing", "satisfying"};
-
-    private static Random rand = new Random();
-    private static String getRandomWord() {
-        int rnd = rand.nextInt(NICE_WORDS.length);
-        return NICE_WORDS[rnd];
-    }
     private static DateFormat timeFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss.SSS");
 
 
@@ -37,25 +29,30 @@ public class AddMetadataFunc implements Function<String, Void> {
                 inputTopics);
         LOG.info(logMessage);
 
-        Record<?> currentRecord = context.getCurrentRecord();
-        Optional<String> keyOpt = currentRecord.getKey();
-        Map<String, String> msgProperties = currentRecord.getProperties();
+        try {
+            Record<?> currentRecord = context.getCurrentRecord();
+            Optional<String> keyOpt = currentRecord.getKey();
+            Map<String, String> msgProperties = currentRecord.getProperties();
 
-        TypedMessageBuilder messageBuilder
-                = context.newOutputMessage(outputTopic, Schema.BYTES);
-        if (keyOpt.isPresent()) {
-            messageBuilder.key(keyOpt.get());
+            TypedMessageBuilder<String> messageBuilder
+                    = context.newOutputMessage(outputTopic, Schema.STRING);
+            if (keyOpt.isPresent()) {
+                messageBuilder.key(keyOpt.get());
+            }
+            for (String propKey : msgProperties.keySet()) {
+                messageBuilder.property(propKey, msgProperties.get(propKey));
+            }
+            // a newly added custom metadata
+            messageBuilder.property("internal_process_time",
+                    timeFormat.format(Calendar.getInstance().getTime()) );
+
+            messageBuilder.value(input);
+
+            messageBuilder.sendAsync();
         }
-        for (String propKey : msgProperties.keySet()) {
-            messageBuilder.property(propKey, msgProperties.get(propKey));
+        catch (PulsarClientException e) {
+            LOG.error(e.toString());
         }
-        // a newly added custom metadata
-        messageBuilder.property("MyCustomProp",
-                getRandomWord() + "-" + timeFormat.format(Calendar.getInstance().getTime()) );
-
-        messageBuilder.value(input.getBytes());
-
-        messageBuilder.sendAsync();
 
         return null;
     }

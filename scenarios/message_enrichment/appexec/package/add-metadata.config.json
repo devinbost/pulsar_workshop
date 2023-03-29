@@ -1,0 +1,11 @@
+{
+  "tenant": "ymtest",
+  "namespace": "default",
+  "name": "add-metadata",
+  "runtime": "JAVA",
+  "inputs": [ "ymtest/default/t1" ],
+  "output": "ymtest/default/t2",
+  "autoAck": true,
+  "className": "com.example.pulsarworkshop.AddMetadataFunc",
+  "jar": ""
+}
