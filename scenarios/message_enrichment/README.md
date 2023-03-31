@@ -280,7 +280,12 @@ runProducer.sh -cc /tmp/client.conf -n 100
 The steps in a non-Astra Streaming cluster is almost the same with the following differences
 
 1. step **1** is not needed
-2. In steps **5**, **6**, **7**, we need to provide `-na` option, as below
+2. In step **3**, please make sure Pulsar cluster name (e.g. *mypulsar*) is included in the deployment properties file, `deploy.properties`
+```
+... ...
+nas.clusterName=mypulsar
+```
+3. In steps **5**, **6**, **7**, we need to provide `-na` option, as below
    * `deploy.sh -na -cc /tmp/client.conf`
    * `runConsumer.sh -na -cc /tmp/client.conf -n 100`
    * `runProducer.sh -na -cc /tmp/client.conf -n 100`
