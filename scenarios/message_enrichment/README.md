@@ -266,11 +266,11 @@ coreTopics=raw,processed
 ```
 deploy.sh -cc /tmp/client.conf
 ```
-6. Run the consumer client application, expecting consuming 100 messages from topic `msgenrich/testns/processed`
+6. Run the consumer client application, assuming to receiving 100 messages from topic `msgenrich/testns/processed`
 ```
-runProducer.sh -cc /tmp/client.conf -n 100 
+runConsumer.sh -cc /tmp/client.conf -n 100 
 ```
-7. Run the producer client application, assuming publishing 100 messages to topic `msgenrich/testns/processed`
+1. Run the producer client application, assuming to read 100 IoT source data and publish them to topic `msgenrich/testns/processed`
 ```
 runProducer.sh -cc /tmp/client.conf -n 100 
 ```
