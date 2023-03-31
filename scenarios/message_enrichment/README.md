@@ -14,6 +14,9 @@
 - [5. Run the Scenario](#5-run-the-scenario)
   - [5.1. Run Pulsar Consumer Client App](#51-run-pulsar-consumer-client-app)
   - [5.2. Run Pulsar Producer Client App](#52-run-pulsar-producer-client-app)
+- [6. Example: Step-by-Step Procedure of Deploying and Running this Scenario](#6-example-step-by-step-procedure-of-deploying-and-running-this-scenario)
+  - [6.1. Astra Streaming Cluster](#61-astra-streaming-cluster)
+  - [6.2. Non-Astra Streaming Cluster](#62-non-astra-streaming-cluster)
 
 
 # 1. Scenario Overview
@@ -226,3 +229,58 @@ Usage: runProducer.sh [-h]
        -n  : (Required) The number of messages to produce.
        -cc : (Required) 'client.conf' file path.
 ```
+
+# 6. Example: Step-by-Step Procedure of Deploying and Running this Scenario
+
+In this example, we assume that we want to run the scenario against the following Pulsar tenant, namespace, and topics
+* **tenant**: `msgenrich`
+* **namespace**: `testns`
+* **topics**:
+   * `msgenrich/testns/raw`
+   * `msgenrich/testns/processed`
+
+## 6.1. Astra Streaming Cluster
+
+The procedure of deploying and running this scenario in an AS cluster is as below:
+
+1. From the AS UI, create the tenant `msgenrich`
+2. Download/copy the `client.conf` for that tenant to a local folder, say `/tmp`
+3. Update the Pulsar tenant, namespace, and topic information in the scenario deployment properties file, `deploy.properties`. Other information stays the same.
+```
+tenantNamespace=msgenrich/testns
+coreTopics=raw,processed
+... ...
+```
+4. Update the Pulsar tenant, namespace, and topic information in the function configuration JSON file, `config/add-metadata.json`. Other information stays the same.
+```
+{
+  "tenant": "msgenrich",
+  "namespace": "testns",
+  ... ...
+  "inputs": [ "msgenrich/testns/raw" ],
+  "output": "msgenrich/testns/processed",
+  ... ...
+}
+```
+5. Run the deployment script file. Use `-b` option if you want to rebuild the programs.
+```
+deploy.sh -cc /tmp/client.conf
+```
+6. Run the consumer client application, expecting consuming 100 messages from topic `msgenrich/testns/processed`
+```
+runProducer.sh -cc /tmp/client.conf -n 100 
+```
+7. Run the producer client application, assuming publishing 100 messages to topic `msgenrich/testns/processed`
+```
+runProducer.sh -cc /tmp/client.conf -n 100 
+```
+ 
+## 6.2. Non-Astra Streaming Cluster
+
+The steps in a non-Astra Streaming cluster is almost the same with the following differences
+
+1. step **1** is not needed
+2. In steps **5**, **6**, **7**, we need to provide `-na` option, as below
+   * `deploy.sh -na -cc /tmp/client.conf`
+   * `runConsumer.sh -na -cc /tmp/client.conf -n 100`
+   * `runProducer.sh -na -cc /tmp/client.conf -n 100`
