@@ -199,7 +199,7 @@ After all Pulsar resources are deployed, we can run the Pulsar client applicatio
 
 ## 5.1. Run Pulsar Consumer Client App
 
-The following script [`runConsumer.sh`](appexec/runAppConsumer.sh) is used to run the Pulsar consumer client app that consumes the enriched messages from `topic 2`.
+The following script [`runConsumer.sh`](bash/runConsumer.sh) is used to run the Pulsar consumer client app that consumes the enriched messages from `topic 2`.
 
 ```
 Usage: runConsumer.sh [-h]
@@ -214,7 +214,7 @@ Usage: runConsumer.sh [-h]
 
 ## 5.2. Run Pulsar Producer Client App
 
-The following script [`runProducer.sh`](appexeec/runProducer.sh) is used to run the Pulsar producer client app that reads the IoT sensor data from a CSV source file and then publishes to `topic 1`.
+The following script [`runProducer.sh`](bash//runProducer.sh) is used to run the Pulsar producer client app that reads the IoT sensor data from a CSV source file and then publishes to `topic 1`.
 
 ```
 Usage: runProducer.sh [-h]
