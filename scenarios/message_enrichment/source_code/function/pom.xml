@@ -11,7 +11,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>msgenrich-func-addmetadata</artifactId>
+    <artifactId>msgenrich-function</artifactId>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
