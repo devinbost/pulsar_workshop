@@ -207,10 +207,12 @@ The following script [`runConsumer.sh`](bash/runConsumer.sh) is used to run the 
 ```
 Usage: runConsumer.sh [-h]
                       [-na]
+                      -t <topic_name>
                       -n <message_number>
                       -cc <client_conf_file>
        -h  : Show usage info
        -na : (Optional) Non-Astra Streaming (Astra streaming is the default).
+       -t  : (Required) The topic name to publish messages to.
        -n  : (Required) The number of messages to consume.
        -cc : (Required) 'client.conf' file path.
 ```
@@ -222,10 +224,12 @@ The following script [`runProducer.sh`](bash//runProducer.sh) is used to run the
 ```
 Usage: runProducer.sh [-h]
                       [-na]
+                      -t <topic_name>
                       -n <message_number>
                       -cc <client_conf_file>
        -h  : Show usage info
        -na : (Optional) Non-Astra Streaming (Astra streaming is the default).
+       -t  : (Required) The topic name to publish messages to.
        -n  : (Required) The number of messages to produce.
        -cc : (Required) 'client.conf' file path.
 ```
@@ -268,11 +272,11 @@ deploy.sh -cc /tmp/client.conf
 ```
 6. Run the consumer client application, assuming to receiving 100 messages from topic `msgenrich/testns/processed`
 ```
-runConsumer.sh -cc /tmp/client.conf -n 100 
+runConsumer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/processed
 ```
-7. Run the producer client application, assuming to read 100 IoT source data and publish them to topic `msgenrich/testns/processed`
+7. Run the producer client application, assuming to read 100 IoT source data and publish them to topic `msgenrich/testns/raw`
 ```
-runProducer.sh -cc /tmp/client.conf -n 100 
+runProducer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/raw
 ```
  
 ## 6.2. Non-Astra Streaming Cluster
@@ -287,5 +291,5 @@ nas.clusterName=mypulsar
 ```
 3. In steps **5**, **6**, **7**, we need to provide `-na` option, as below
    * `deploy.sh -na -cc /tmp/client.conf`
-   * `runConsumer.sh -na -cc /tmp/client.conf -n 100`
-   * `runProducer.sh -na -cc /tmp/client.conf -n 100`
+   * `runConsumer.sh -na -cc /tmp/client.conf -n 100 -t msgenrich/testns/processed`
+   * `runProducer.sh -na -cc /tmp/client.conf -n 100 -t msgenrich/testns/raw`
