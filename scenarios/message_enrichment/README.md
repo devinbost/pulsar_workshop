@@ -270,7 +270,7 @@ deploy.sh -cc /tmp/client.conf
 ```
 runConsumer.sh -cc /tmp/client.conf -n 100 
 ```
-1. Run the producer client application, assuming to read 100 IoT source data and publish them to topic `msgenrich/testns/processed`
+7. Run the producer client application, assuming to read 100 IoT source data and publish them to topic `msgenrich/testns/processed`
 ```
 runProducer.sh -cc /tmp/client.conf -n 100 
 ```
