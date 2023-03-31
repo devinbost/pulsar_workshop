@@ -7,10 +7,10 @@
 - [4. Deploy the Scenario](#4-deploy-the-scenario)
   - [4.1. Deployment Properties File](#41-deployment-properties-file)
   - [4.2. Pulsar Rest API](#42-pulsar-rest-api)
-  - [4.3. Create a Tenant](#43-create-a-tenant)
-  - [4.4. Create a Namespace](#44-create-a-namespace)
-  - [4.5. Create a Topic](#45-create-a-topic)
-  - [4.6. Deploy a Function](#46-deploy-a-function)
+  - [4.3. Create Tenant](#43-create-tenant)
+  - [4.4. Create Namespace](#44-create-namespace)
+  - [4.5. Create Topic](#45-create-topic)
+  - [4.6. Deploy Function](#46-deploy-function)
 - [5. Run the Scenario](#5-run-the-scenario)
   - [5.1. Run Pulsar Consumer Client App](#51-run-pulsar-consumer-client-app)
   - [5.2. Run Pulsar Producer Client App](#52-run-pulsar-producer-client-app)
@@ -123,7 +123,7 @@ Based on the above information, the `deploy.sh` will create and deploy all the r
 
 The `deploy.sh` script creates all Pulsar resources via the Pulsar rest API through the `curl` command. The benefit of doing so is you don't need to download or install any Pulsar admin client tools like *pulsar-admin* or *pulsar-shell*. Using these tools to create the corresponding Pulsar resources is easy and straightforward. Please refer to the [Pulsar Admin CLI doc](https://pulsar.apache.org/docs/2.11.x/reference-pulsar-admin/)
 
-## 4.3. Create a Tenant
+## 4.3. Create Tenant
 
 **NOTE**: The `deploy.sh` script will ONLY execute this step for non-AS based Pulsar deployment and this requires explicitly setting `deploy.sh -na` option because by default `deploy.sh` assumes dealing with an AS Pulsar cluster.
 
@@ -136,7 +136,7 @@ curl -sS -k -X PUT \
   --data '{ \"allowedClusters\": [\"<cluster_name>\"] }'
 ```
 
-## 4.4. Create a Namespace
+## 4.4. Create Namespace
 
 The rest API to create a Pulsar namespace is as below:
 ```
@@ -145,7 +145,7 @@ curl -sS -k -X PUT \
     --header 'Authorization: Bearer <jwt_token>'
 ```
 
-## 4.5. Create a Topic
+## 4.5. Create Topic
 
 **NOTE** The `deploy.sh` script will always create a partitioned topic with 5 partitions, which should be good enough for the common demo scenarios.
 
@@ -158,7 +158,7 @@ curl -sS -k -X PUT \
     --data 5
 ```
 
-## 4.6. Deploy a Function
+## 4.6. Deploy Function
 
 The rest API to deploy a Pulsar function is as below:
 ```
