@@ -4,7 +4,7 @@ CUR_SCRIPT_FOLDER=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null &&
 SCENARIO_HOMEDIR=$( cd -- "${CUR_SCRIPT_FOLDER}/.." &> /dev/null && pwd )
 
 source "${SCENARIO_HOMEDIR}/../bash/utilities.sh"
-DEBUG=true
+# DEBUG=true
 
 echo
 
@@ -61,9 +61,13 @@ if ! [[ -f "${clientAppJar}" ]]; then
   errExit 50 "Can't find the client app jar file. Please run 'deploy.sh -buildApp' to build it!"
 fi
 
+# generate a random alphanumeric string with length 20
+randomStr=$(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)
+echo ${randomStr} 
+
 javaCmd="java -cp ${clientAppJar} \
     com.example.pulsarworkshop.IoTSensorConsumer \
-    -n ${msgNum} -t ${tpName} -c ${clntConfFile} -sbn mysub"
+    -n ${msgNum} -t ${tpName} -c ${clntConfFile} -sbn mysub-${randomStr}"
 if [[ ${astraStreaming} -eq 1 ]]; then
   javaCmd="${javaCmd} -a"
 fi
