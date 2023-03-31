@@ -18,21 +18,21 @@
 
 # 1. Scenario Overview
 
-|                       |                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Name**              | message-enrichment                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Description**       | <ul><li>This scenario shows how to use a Pulsar function to enrich Pulsar messages that are published by a producer to a Pulsar topic.</li> <li>The enriched messages are sent by the function to another topic with a consumer subscribed to it for message consumption.</li> <li>The raw data source is a CSV file that includes actual readings in a particular time range from a given set of IoT sensors.</li></ul> |
-| **Data Flow Pattern** | <IoT_sensor_reading_data> -> [Pulsar Producer] -> (topic 1) -> [Pulsar Function] -> (topic 2) -> [Pulsar Consumer]                                                                                                                                                                                                                                                                                                       |
+| | |
+| - | - |
+| **Name** |message-enrichment |
+| **Description** | <ul><li>This scenario shows how to use a Pulsar function to enrich Pulsar messages that are published by a producer to a Pulsar topic.</li> <li>The enriched messages are sent by the function to another topic with a consumer subscribed to it for message consumption.</li> <li>The raw data source is a CSV file that includes actual readings in a particular time range from a given set of IoT sensors.</li></ul> |
+| **Data Flow Pattern** | <IoT_sensor_reading_data> -> [Pulsar Producer] -> (topic 1) -> [Pulsar Function] -> (topic 2) -> [Pulsar Consumer] |
 
 ## 1.1. Program List
 
 There are 3 programs used in this scenario to demonstrate the end-to-end data flow pattern.
 
-| Name              | Type              | Language | Source Code                                                                                                        | Description                                                                                                                                       |
-| ----------------- | ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| IoTSensorProducer | Pulsar client app | Java     | [IotSensorProducer.java](./source_code/client_app/src/main/java/com/example/pulsarworkshop/IoTSensorProducer.java) | A Pulsar producer client app that reads data from an IoT reading data source file (csv format) and publishes the data into a Pulsar topic         |
-| AddMetadataFunc   | Pulsar function   | Java     | [AddMetadataFunc.java](./source_code/function/src/main/java/com/example/pulsarworkshop/AddMetadataFunc.java)       | A Pulsar function that adds a metadata property to each message of one topic and publishes a new message to another topic for further processing  |
-| IoTSensorConsumer | Pulsar client app | Java     | [IotSensorConsumer.java](./source_code/client_app/src/main/java/com/example/pulsarworkshop/IoTSensorConsumer.java) | A standard Pulsar consumer client app that consumes from a topic that contains the processed messages with the new metadata property information. |
+| Name | Type | Language | Source Code | Description |
+| ---- | ---- | -------- | ----------- | ----------- |
+| IoTSensorProducer | Pulsar client app | Java | [IotSensorProducer.java](./source_code/client_app/src/main/java/com/example/pulsarworkshop/IoTSensorProducer.java) | A Pulsar producer client app that reads data from an IoT reading data source file (csv format) and publishes the data into a Pulsar topic. |
+| AddMetadataFunc | Pulsar function | Java | [AddMetadataFunc.java](./source_code/function/src/main/java/com/example/pulsarworkshop/AddMetadataFunc.java)       | A Pulsar function that adds a metadata property to each message of one topic and publishes a new message to another topic for further processing. |
+| IoTSensorConsumer | Pulsar client app | Java | [IotSensorConsumer.java](./source_code/client_app/src/main/java/com/example/pulsarworkshop/IoTSensorConsumer.java) | A standard Pulsar consumer client app that consumes from a topic that contains the processed messages with the new metadata property information. |
 
 ## 1.2. Prerequisite
 
@@ -70,7 +70,7 @@ For a more detailed description of this data source, please check from [here](ht
 
 Both the Pulsar producer and consumer client apps get the connection info to the target Pulsar cluster from a `client.conf` file as described in this [Apache Pulsar doc](https://pulsar.apache.org/docs/2.10.x/reference-configuration/#client).
 
-Please **NOTE** that for Astra Streaming (AS), this requires creating an AS tenant in advance and download the corresponding `client.conf` from the UI. This is because AS is a managed service and as a client application, it is impossible to get the cluster admin token like in a self-managed Pulsar cluster. The AS token for a client application is always associated with a particular tenant.
+Please **NOTE** that for Astra Streaming (AS), this requires creating an AS tenant in advance and downloading the corresponding `client.conf` from the UI. This is because AS is a managed service and as a client application, it is impossible to get the cluster admin token like in a self-managed Pulsar cluster. The AS token for a client application is always associated with a particular tenant.
 
 # 4. Deploy the Scenario
 
@@ -117,11 +117,11 @@ funcPkgName=msgenrich-function-1.0.0.jar
 nas.clusterName=mypulsar
 ```
 
-Based on the above the information, the `deploy.sh` will create and deploy all the required Pulsar resources for the demo scenario execution.
+Based on the above information, the `deploy.sh` will create and deploy all the required Pulsar resources for the demo scenario execution.
 
 ## 4.2. Pulsar Rest API 
 
-The `deploy.sh` script create all Pulsar resources via the Pulsar rest API through the `curl` command. The benefit of doing so is you don't need to download or install any Pulsar admin client tools like *pulsar-admin* or *pulsar-shell*. Using these tools to create the corresponding Pulsar resources is easy and straightforward. Please refer to the [Pulsar Admin CLI doc](https://pulsar.apache.org/docs/2.11.x/reference-pulsar-admin/)
+The `deploy.sh` script creates all Pulsar resources via the Pulsar rest API through the `curl` command. The benefit of doing so is you don't need to download or install any Pulsar admin client tools like *pulsar-admin* or *pulsar-shell*. Using these tools to create the corresponding Pulsar resources is easy and straightforward. Please refer to the [Pulsar Admin CLI doc](https://pulsar.apache.org/docs/2.11.x/reference-pulsar-admin/)
 
 ## 4.3. Create a Tenant
 
@@ -195,7 +195,7 @@ config
 
 # 5. Run the Scenario
 
-After all Pulsar resource are deployed, we can run the Pulsar client applications included in this scenario.
+After all Pulsar resources are deployed, we can run the Pulsar client applications included in this scenario.
 
 ## 5.1. Run Pulsar Consumer Client App
 
@@ -208,7 +208,7 @@ Usage: runConsumer.sh [-h]
                       -cc <client_conf_file>
        -h  : Show usage info
        -na : (Optional) Non-Astra Streaming (Astra streaming is the default).
-       -n  : (Required) The number of message to consume.
+       -n  : (Required) The number of messages to consume.
        -cc : (Required) 'client.conf' file path.
 ```
 
@@ -223,6 +223,6 @@ Usage: runProducer.sh [-h]
                       -cc <client_conf_file>
        -h  : Show usage info
        -na : (Optional) Non-Astra Streaming (Astra streaming is the default).
-       -n  : (Required) The number of message to produce.
+       -n  : (Required) The number of messages to produce.
        -cc : (Required) 'client.conf' file path.
 ```

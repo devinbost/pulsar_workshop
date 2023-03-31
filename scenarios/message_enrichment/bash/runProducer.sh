@@ -18,7 +18,7 @@ usage() {
    echo "                      -cc <client_conf_file>" 
    echo "       -h  : Show usage info"
    echo "       -na : (Optional) Non-Astra Streaming (Astra streaming is the default)."
-   echo "       -n  : (Required) The number of message to produce."
+   echo "       -n  : (Required) The number of messages to produce."
    echo "       -cc : (Required) 'client.conf' file path."
    echo
 }
