@@ -81,11 +81,9 @@ fi
 tntNamespace=$(getPropVal ${deployPropFile} "tenantNamespace")
 coreTopics=$(getPropVal ${deployPropFile} "coreTopics")
 coreFunctions=$(getPropVal ${deployPropFile} "coreFunctions")
-funcPkgName=$(getPropVal ${deployPropFile} "funcPkgName")
 debugMsg "tntNamespace=${tntNamespace}"
 debugMsg "coreTopics=${coreTopics}"
 debugMsg "coreFunctions=${coreFunctions}"
-debugMsg "funcPkgName=${funcPkgName}"
 
 IFS='/' read -r -a tntNsArr <<< "${tntNamespace}"
 tenant="${tntNsArr[0]}"
@@ -107,7 +105,7 @@ fi
 
 # array of full function names (in format: <tenant>/<namespace>/<function>)
 pulsarFunctions=()
-if ! [[ -z "${coreTopics// }" ]]; then
+if ! [[ -z "${coreFunctions// }" ]]; then
     IFS=',' read -r -a coreFnArr <<< "${coreFunctions}"
     for cfn in "${coreFnArr[@]}"; do
         pulsarFunctions+=("${tenant}/${namespace}/${cfn}")
@@ -226,6 +224,7 @@ if [[ ${#pulsarFunctions[@]} -gt 0 ]]; then
     #
     scnFuncCfgHomeDir="${SCENARIO_HOMEDIR}/config"
     scnFuncPkgHomeDir="${SCENARIO_HOMEDIR}/source_code/function/target"
+    funcPkgName="msgenrich-function-1.0.0.jar"
     if ! [[ -f "${scnFuncPkgHomeDir}/${funcPkgName}" ]]; then
         errExit 70 "The specified Pulsar function jar file (${scnFuncPkgHomeDir}/${funcPkgName}) is invalid!"
     fi

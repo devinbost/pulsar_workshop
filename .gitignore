@@ -6,3 +6,4 @@ scenarios/*/source_code/dependency-reduced-pom.xml
 scenarios/*/source_code/*/target
 scenarios/*/source_code/*/dependency-reduced-pom.xml
 scenarios/*/logs
+scenarios/*/mybkup

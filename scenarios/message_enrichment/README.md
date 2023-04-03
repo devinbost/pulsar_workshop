@@ -112,8 +112,6 @@ coreTopics=t1,t2
 ## 
 # (Optional) Comma separated core function names without space
 coreFunctions=add-metadata
-# (Optional) Function package file name
-funcPkgName=msgenrich-function-1.0.0.jar
 
 ##
 # Cluster name (ONLY relevant for non-Astra Streaming Pulsar cluster)
