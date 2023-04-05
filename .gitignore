@@ -1,9 +1,8 @@
 application_code
+scenarios/.idea
 scenarios/*/.idea
-scenarios/*/source_code/.idea
-scenarios/*/source_code/target
-scenarios/*/source_code/dependency-reduced-pom.xml
-scenarios/*/source_code/*/target
-scenarios/*/source_code/*/dependency-reduced-pom.xml
+scenarios/*/target
+scenarios/*/*/.idea
+scenarios/*/*/target
 scenarios/*/logs
 scenarios/*/mybkup
