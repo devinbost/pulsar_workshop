@@ -1,0 +1,5 @@
+{
+    "type": "AVRO",
+    "properties": {},
+    "schema": "{\"type\": \"record\",\"name\": \"IoTSensorData\",\"namespace\": \"com.example.pulsarworkshop\",\"fields\": [{\"name\": \"co\",\"type\": \"double\"},{\"name\": \"device\",\"type\": [\"null\",\"string\"]},{\"name\": \"humidity\",\"type\": \"double\"},{\"name\": \"light\",\"type\": \"boolean\"},{\"name\": \"lpg\",\"type\": \"double\"},{\"name\": \"motion\",\"type\": \"boolean\"},{\"name\": \"smoke\",\"type\": \"double\"},{\"name\": \"temp\",\"type\": \"double\"},{\"name\": \"ts\",\"type\": [\"null\",\"string\"]}]}"
+}
