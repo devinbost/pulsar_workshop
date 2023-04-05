@@ -1,22 +1,15 @@
 - [1. Scenario Overview](#1-scenario-overview)
   - [1.1. Program List](#11-program-list)
-  - [1.2. Prerequisite](#12-prerequisite)
-  - [1.3. Build the Program](#13-build-the-program)
-- [2. IoT Sensor Reading Data Source](#2-iot-sensor-reading-data-source)
-- [3. Connect to the Pulsar Cluster](#3-connect-to-the-pulsar-cluster)
+    - [1.1.1. Build the Program](#111-build-the-program)
+  - [1.2. Software Requirement](#12-software-requirement)
+  - [1.3. Pulsar Tenant, Namespace, and Topics](#13-pulsar-tenant-namespace-and-topics)
+    - [1.3.1. Customize Pulsar Tenant, Namespace, and Topics](#131-customize-pulsar-tenant-namespace-and-topics)
+- [2. Connect to the Pulsar Cluster](#2-connect-to-the-pulsar-cluster)
+- [3. IoT Sensor Reading Data Source](#3-iot-sensor-reading-data-source)
 - [4. Deploy the Scenario](#4-deploy-the-scenario)
-  - [4.1. Deployment Properties File](#41-deployment-properties-file)
-  - [4.2. Pulsar Rest API](#42-pulsar-rest-api)
-  - [4.3. Create Tenant](#43-create-tenant)
-  - [4.4. Create Namespace](#44-create-namespace)
-  - [4.5. Create Topic](#45-create-topic)
-  - [4.6. Deploy Function](#46-deploy-function)
 - [5. Run the Scenario](#5-run-the-scenario)
   - [5.1. Run Pulsar Consumer Client App](#51-run-pulsar-consumer-client-app)
   - [5.2. Run Pulsar Producer Client App](#52-run-pulsar-producer-client-app)
-- [6. Example: Step-by-Step Procedure of Deploying and Running this Scenario](#6-example-step-by-step-procedure-of-deploying-and-running-this-scenario)
-  - [6.1. Astra Streaming Cluster](#61-astra-streaming-cluster)
-  - [6.2. Non-Astra Streaming Cluster](#62-non-astra-streaming-cluster)
 
 
 # 1. Scenario Overview
@@ -29,34 +22,48 @@
 
 ## 1.1. Program List
 
-There are 3 programs used in this scenario to demonstrate the end-to-end data flow pattern.
+There are 3 programs used in this scenario to demonstrate the end-to-end data flow pattern. All these programs are written in **Java**. 
 
-| Name | Type | Language | Source Code | Description |
-| ---- | ---- | -------- | ----------- | ----------- |
-| IoTSensorProducer | Pulsar client app | Java | [IotSensorProducer.java](./source_code/client_app/src/main/java/com/example/pulsarworkshop/IoTSensorProducer.java) | A Pulsar producer client app that reads data from an IoT reading data source file (csv format) and publishes the data into a Pulsar topic. |
-| AddMetadataFunc | Pulsar function | Java | [AddMetadataFunc.java](./source_code/function/src/main/java/com/example/pulsarworkshop/AddMetadataFunc.java)       | A Pulsar function that adds a metadata property to each message of one topic and publishes a new message to another topic for further processing. |
-| IoTSensorConsumer | Pulsar client app | Java | [IotSensorConsumer.java](./source_code/client_app/src/main/java/com/example/pulsarworkshop/IoTSensorConsumer.java) | A standard Pulsar consumer client app that consumes from a topic that contains the processed messages with the new metadata property information. |
+| Name | Type | Source Code | Description |
+| ---- | ---- | ----------- | ----------- |
+| IoTSensorProducer | Pulsar client app | [IotSensorProducer.java](./client_app/src/main/java/com/example/pulsarworkshop/IoTSensorProducer.java) | A Pulsar producer client app that reads data from an IoT reading data source file (csv format) and publishes the data into a Pulsar topic. |
+| AddMetadataFunc | Pulsar function | [AddMetadataFunc.java](./function/src/main/java/com/example/pulsarworkshop/AddMetadataFunc.java)       | A Pulsar function that adds a metadata property to each message of one topic and publishes a new message to another topic for further processing. |
+| IoTSensorConsumer | Pulsar client app | [IotSensorConsumer.java](./client_app/src/main/java/com/example/pulsarworkshop/IoTSensorConsumer.java) | A standard Pulsar consumer client app that consumes from a topic that contains the processed messages with the new metadata property information. |
 
-## 1.2. Prerequisite
+### 1.1.1. Build the Program
 
-Building and running the scenario require the following software to be installed on your local computer:
+The above programs need to be built in advance before running this scenario. Please refer to the document of [Building the Scenarios](../Build.Scenarios.md) for more details.
+
+## 1.2. Software Requirement
+
+Running the scenario require the following software to be installed on your local computer:
 
 1. `JDK 11`
 2. `curl` utility
-3. [`Apache Maven`](https://maven.apache.org/)
 
+## 1.3. Pulsar Tenant, Namespace, and Topics
 
-## 1.3. Build the Program
+By default, running this scenario requires the following Pulsar tenant, namespace, and topics. 
 
-Run the following command in the `source_code` folder, and it will build all three programs (2 Pulsar client applications and 1 Pulsar function)
-```
-mvn clean verify
-```
+* **tenant**: `msgenrich`
+* **namespace**: `testns`
+* **topics**:
+   * `msgenrich/testns/raw`
+   * `msgenrich/testns/processed`
 
-This step can also be done by running the following deployment script, `deploy.sh` (more on this later) with `-b` option.
+Please **NOTE** that the creation of the above Pulsar "resources" can be **automated** by using the `deploy.sh` scrip. (see [Chapter 4](#4-deploy-the-scenario))
 
+### 1.3.1. Customize Pulsar Tenant, Namespace, and Topics
 
-# 2. IoT Sensor Reading Data Source
+If you want to run this scenario against a different set of Pulsar tenant, namespace, and topics, it can also be achieved by using a more advanced functionality of the `deploy.sh` script, via a `deployment properties` file. The document of [Deploying the Scenario](Deploy.Scenario.md) provides more details of how to do so.
+
+# 2. Connect to the Pulsar Cluster
+
+Both the Pulsar producer and consumer client apps get the connection info to the target Pulsar cluster from a `client.conf` file as described in this [Apache Pulsar doc](https://pulsar.apache.org/docs/2.10.x/reference-configuration/#client).
+
+Please **NOTE** that for Astra Streaming (AS), this requires creating an AS tenant in advance and downloading the corresponding `client.conf` from the UI. This is because AS is a managed service and as a client application, it is impossible to get the cluster admin token like in a self-managed Pulsar cluster. The AS token for a client application is always associated with a particular tenant.
+
+# 3. IoT Sensor Reading Data Source
 
 The CSV file that contains the raw IoT sensor reading data is available from [sensor_telemetry.csv](../_raw_data_src/sensor_telemetry.csv). Each line of the CSV file represents a particular IoT device reading of the following types at a particular time.
 * Carbon monoxide
@@ -69,129 +76,31 @@ The CSV file that contains the raw IoT sensor reading data is available from [se
 
 For a more detailed description of this data source, please check from [here](https://www.kaggle.com/datasets/garystafford/environmental-sensor-data-132k).
 
-# 3. Connect to the Pulsar Cluster
-
-Both the Pulsar producer and consumer client apps get the connection info to the target Pulsar cluster from a `client.conf` file as described in this [Apache Pulsar doc](https://pulsar.apache.org/docs/2.10.x/reference-configuration/#client).
-
-Please **NOTE** that for Astra Streaming (AS), this requires creating an AS tenant in advance and downloading the corresponding `client.conf` from the UI. This is because AS is a managed service and as a client application, it is impossible to get the cluster admin token like in a self-managed Pulsar cluster. The AS token for a client application is always associated with a particular tenant.
-
 # 4. Deploy the Scenario
 
-In order to run the demo scenario, there are certain tasks that need to be executed in advance which include
-* For non-Astra Streaming based Pulsar cluster, create a tenant
-* Create a namespace 
-* Create the required topics
-* Deploy the required functions
+The scenario deployment script, [`deploy.sh`](bash/deploy.sh), is used to execute the following tasks which are required before running the scenario.
+1. Create the required Pulsar tenant (only relevant for non-Astra Streaming based Pulsar cluster)
+2. Create the required Pulsar namespace
+3. Create the required Pulsar topics
+4. Deploy the required Pulsar function(s)
 
-The script, [deploy.sh](bash/deploy.sh), is used to simplify and automate the deployment procedure.
+This script has the following usage format. The only mandatory parameter is `-cc` which is used to specify the required Pulsar cluster client connection file. The `-dp` parameter is related with the scenario deployment customization (see [`Deploying the Scenario`](Deploy.Scenario.md) doc for more details.)
+
 ```
 Usage: deploy.sh [-h]
-                 [-b]
-                 [-na]
                  -cc <client_conf_file>
-                 -dp <deploy_properties_file>
+                 [-na]
+                 [-dp <deploy_properties_file>]
        -h  : Show usage info
-       -b  : (Optional) Build demo applications when specified.
-       -na : (Optional) Non-Astra Streaming (Astra streaming is the default).
        -cc : (Required) 'client.conf' file path.
+       -na : (Optional) Non-Astra Streaming (Astra streaming is the default).
        -dp : (Optional) 'deploy.properties' file path (default to '<SCENARIO_HOMEDIR>/deploy.properties').
 ```
 
-The input parameters of this script are quite straightforward and self-explanatory. The only one that needs a bit of explanation is the `-dp` option as below.
+An example of using this script to deploy the scenario is as below:
 
-## 4.1. Deployment Properties File
-
-In order to make the deployment script generic enough to support arbitrary Pulsar tenant, namespace, topics, or functions, we use a properties file to define these "changing" parts.
 ```
-##
-# (Mandatory) Must in format <tenant>/<namespace>
-tenantNamespace=ymtest/default
-# (Mandatory) Comma separated core topic names without space
-coreTopics=t1,t2
-
-## 
-# (Optional) Comma separated core function names without space
-coreFunctions=add-metadata
-
-##
-# Cluster name (ONLY relevant for non-Astra Streaming Pulsar cluster)
-nas.clusterName=mypulsar
-```
-
-Based on the above information, the `deploy.sh` will create and deploy all the required Pulsar resources for the demo scenario execution.
-
-## 4.2. Pulsar Rest API 
-
-The `deploy.sh` script creates all Pulsar resources via the Pulsar rest API through the `curl` command. The benefit of doing so is you don't need to download or install any Pulsar admin client tools like *pulsar-admin* or *pulsar-shell*. Using these tools to create the corresponding Pulsar resources is easy and straightforward. Please refer to the [Pulsar Admin CLI doc](https://pulsar.apache.org/docs/2.11.x/reference-pulsar-admin/)
-
-## 4.3. Create Tenant
-
-**NOTE**: The `deploy.sh` script will ONLY execute this step for non-AS based Pulsar deployment and this requires explicitly setting `deploy.sh -na` option because by default `deploy.sh` assumes dealing with an AS Pulsar cluster.
-
-The rest API to create a Pulsar tenant is as below:
-```
-curl -sS -k -X PUT \
-  --url 'https://<pulsar_websvc_url>/admin/v2/tenants/<tenant_name> \
-  --header 'Content-Type: application/json' \
-  --header 'Authorization: Bearer <jwt_token>' \
-  --data '{ \"allowedClusters\": [\"<cluster_name>\"] }'
-```
-
-## 4.4. Create Namespace
-
-The rest API to create a Pulsar namespace is as below:
-```
-curl -sS -k -X PUT \
-    --url 'https://<pulsar_websvc_url>/admin/v2/namespaces/<tenant_name>/<namespace_name>' \
-    --header 'Authorization: Bearer <jwt_token>'
-```
-
-## 4.5. Create Topic
-
-**NOTE** The `deploy.sh` script will always create a partitioned topic with 5 partitions, which should be good enough for the common demo scenarios.
-
-The rest API to create a Pulsar namespace is as below:
-```
-curl -sS -k -X PUT \
-    --url 'https://<pulsar_websvc_url>/admin/v2/persistent/${topicName}/partitions' \
-    --header 'Authorization: Bearer <jwt_token>' \
-    --header 'Content-Type: text/plain' \
-    --data 5
-```
-
-## 4.6. Deploy Function
-
-The rest API to deploy a Pulsar function is as below:
-```
-curl -sS -k -X POST \
-    --url 'https://<pulsar_websvc_url>/admin/v3/functions/ymtest/default/<function_name>' \
-    --header 'Authorization: Bearer <jwt_token> \
-    --form 'data=@</path/to/function/jar/file>;type=application/octet-stream' \
-    --form 'functionConfig=@</path/to/to/function/config/json/file>;type=application/json' \
-    --write-out '%{http_code}'
-```
-
-In order to deploy a Pulsar function this way, a function configuration JSON file is needed besides the Pulsar function package file (e.g. a Java jar file). An example of this configuration file is as below:
-```
-{
-  "tenant": "ymtest",
-  "namespace": "default",
-  "name": "add-metadata",
-  "runtime": "JAVA",
-  "inputs": [ "ymtest/default/t1" ],
-  "output": "ymtest/default/t2",
-  "autoAck": true,
-  "className": "com.example.pulsarworkshop.AddMetadataFunc",
-  "jar": ""
-}
-```
-
-Please **NOTE** that the `deploy.sh` file will NOT create this file for you. You need to create it in advance before running the script. The requirements for this file are:
-1. The JSON file must use the function name as the file.
-2. The JSON file must be under `config` sub-folder of the scenario home directory
-```
-config
-└── add-metadata.json
+deploy.sh -cc /tmp/client.conf
 ```
 
 # 5. Run the Scenario
@@ -215,6 +124,12 @@ Usage: runConsumer.sh [-h]
        -cc : (Required) 'client.conf' file path.
 ```
 
+An example of using this script to consuming 100 messages is as below:
+
+```
+runConsumer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/processed
+```
+
 ## 5.2. Run Pulsar Producer Client App
 
 The following script [`runProducer.sh`](bash//runProducer.sh) is used to run the Pulsar producer client app that reads the IoT sensor data from a CSV source file and then publishes to `topic 1`.
@@ -232,62 +147,8 @@ Usage: runProducer.sh [-h]
        -cc : (Required) 'client.conf' file path.
 ```
 
-# 6. Example: Step-by-Step Procedure of Deploying and Running this Scenario
+An example of using this script to publish 100 messages is as below:
 
-In this example, we assume that we want to run the scenario against the following Pulsar tenant, namespace, and topics
-* **tenant**: `msgenrich`
-* **namespace**: `testns`
-* **topics**:
-   * `msgenrich/testns/raw`
-   * `msgenrich/testns/processed`
-
-## 6.1. Astra Streaming Cluster
-
-The procedure of deploying and running this scenario in an AS cluster is as below:
-
-1. From the AS UI, create the tenant `msgenrich`
-2. Download/copy the `client.conf` for that tenant to a local folder, say `/tmp`
-3. Update the Pulsar tenant, namespace, and topic information in the scenario deployment properties file, `deploy.properties`. Other information stays the same.
-```
-tenantNamespace=msgenrich/testns
-coreTopics=raw,processed
-... ...
-```
-4. Update the Pulsar tenant, namespace, and topic information in the function configuration JSON file, `config/add-metadata.json`. Other information stays the same.
-```
-{
-  "tenant": "msgenrich",
-  "namespace": "testns",
-  ... ...
-  "inputs": [ "msgenrich/testns/raw" ],
-  "output": "msgenrich/testns/processed",
-  ... ...
-}
-```
-5. Run the deployment script file. Use `-b` option if you want to rebuild the programs.
-```
-deploy.sh -cc /tmp/client.conf
-```
-6. Run the consumer client application, assuming to receiving 100 messages from topic `msgenrich/testns/processed`
-```
-runConsumer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/processed
-```
-7. Run the producer client application, assuming to read 100 IoT source data and publish them to topic `msgenrich/testns/raw`
 ```
 runProducer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/raw
 ```
- 
-## 6.2. Non-Astra Streaming Cluster
-
-The steps in a non-Astra Streaming cluster is almost the same with the following differences
-
-1. step **1** is not needed
-2. In step **3**, please make sure Pulsar cluster name (e.g. *mypulsar*) is included in the deployment properties file, `deploy.properties`
-```
-... ...
-nas.clusterName=mypulsar
-```
-3. In steps **5**, **6**, **7**, we need to provide `-na` option, as below
-   * `deploy.sh -na -cc /tmp/client.conf`
-   * `runConsumer.sh -na -cc /tmp/client.conf -n 100 -t msgenrich/testns/processed`
-   * `runProducer.sh -na -cc /tmp/client.conf -n 100 -t msgenrich/testns/raw`
