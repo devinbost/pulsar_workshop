@@ -26,9 +26,9 @@ There are 3 programs used in this scenario to demonstrate the end-to-end data fl
 
 | Name | Type | Source Code | Description |
 | ---- | ---- | ----------- | ----------- |
-| IoTSensorProducer | Pulsar client app | [IotSensorProducer.java](./client_app/src/main/java/com/example/pulsarworkshop/IoTSensorProducer.java) | A Pulsar producer client app that reads data from an IoT reading data source file (csv format) and publishes the data into a Pulsar topic. |
-| AddMetadataFunc | Pulsar function | [AddMetadataFunc.java](./function/src/main/java/com/example/pulsarworkshop/AddMetadataFunc.java)       | A Pulsar function that adds a metadata property to each message of one topic and publishes a new message to another topic for further processing. |
-| IoTSensorConsumer | Pulsar client app | [IotSensorConsumer.java](./client_app/src/main/java/com/example/pulsarworkshop/IoTSensorConsumer.java) | A standard Pulsar consumer client app that consumes from a topic that contains the processed messages with the new metadata property information. |
+| IoTSensorProducer | Pulsar client app | [IotSensorProducer.java](./client-app/src/main/java/com/example/pulsarworkshop/IoTSensorProducer.java) | A Pulsar producer client app that reads data from an IoT reading data source file (csv format) and publishes the data into a Pulsar topic. |
+| AddMetadataFunc | Pulsar function | [AddMetadataFunc.java](./function/src/main/java/com/example/pulsarworkshop/AddMetadataFunc.java) | A Pulsar function that adds a metadata property to each message of one topic and publishes a new message to another topic for further processing. |
+| IoTSensorConsumer | Pulsar client app | [IotSensorConsumer.java](./client-app/src/main/java/com/example/pulsarworkshop/IoTSensorConsumer.java) | A standard Pulsar consumer client app that consumes from a topic that contains the processed messages with the new metadata property information. |
 
 ### 1.1.1. Build the Program
 
