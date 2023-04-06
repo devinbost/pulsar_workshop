@@ -32,7 +32,7 @@ There are 3 programs used in this scenario to demonstrate the end-to-end data fl
 
 ### 1.1.1. Build the Program
 
-The above programs need to be built in advance before running this scenario. Please refer to the document of [Building the Scenarios](../Build.Scenarios.md) for more details.
+The above programs need to be built in advance before running this scenario. Please refer to the document of [Building the Scenarios](../../Build.Programs.md) for more details.
 
 ## 1.2. Software Requirement
 
