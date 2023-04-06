@@ -56,14 +56,13 @@ if ! [[ -f "${clntConfFile}" ]]; then
    errExit 40 "The specified 'client.conf' file is invalid!"
 fi
 
-clientAppJar="${SCENARIO_HOMEDIR}/client_app/target/msgenrich-clientapp-1.0.0.jar"
+clientAppJar="${SCENARIO_HOMEDIR}/client-app/target/msgenrich-clientapp-1.0.0.jar"
 if ! [[ -f "${clientAppJar}" ]]; then
-  errExit 50 "Can't find the client app jar file. Please run 'deploy.sh -buildApp' to build it!"
+  errExit 50 "Can't find the client app jar file. Please first build the programs!"
 fi
 
 # generate a random alphanumeric string with length 20
 randomStr=$(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)
-echo ${randomStr} 
 
 javaCmd="java -cp ${clientAppJar} \
     com.example.pulsarworkshop.IoTSensorConsumer \

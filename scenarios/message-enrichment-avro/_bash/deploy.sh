@@ -13,14 +13,12 @@ echo
 usage() {   
    echo
    echo "Usage: deploy.sh [-h]" 
-   echo "                 [-b]" 
-   echo "                 [-na]"
    echo "                 -cc <client_conf_file>" 
+   echo "                 [-na]"
    echo "                 -dp <deploy_properties_file>"
    echo "       -h  : Show usage info"
-   echo "       -b  : (Optional) Build demo applications when specified."
-   echo "       -na : (Optional) Non-Astra Streaming (Astra streaming is the default)."
    echo "       -cc : (Required) 'client.conf' file path."
+   echo "       -na : (Optional) Non-Astra Streaming (Astra streaming is the default)."
    echo "       -dp : (Optional) 'deploy.properties' file path (default to '<SCENARIO_HOMEDIR>/deploy.properties')."
    echo
 }
@@ -30,20 +28,17 @@ if [[ $# -eq 0 || $# -gt 6 ]]; then
    errExit 10 "Incorrect input parametere count!"
 fi
 
-buildApp=0
 astraStreaming=1
 while [[ "$#" -gt 0 ]]; do
    case $1 in
       -h) usage; exit 0 ;;
-      -b) buildApp=1;   ;;
-      -na) astraStreaming=0;   ;;
       -cc) clntConfFile=$2; shift    ;;
+      -na) astraStreaming=0;   ;;
       -dp) deployPropFile=$2; shift  ;;
       *)  errExit 20 "Unknown input parameter passed: $1" ;;
    esac
    shift
 done
-debugMsg "buildApp=${buildApp}"
 debugMsg "astraStreaming=${astraStreaming}"
 debugMsg "clntConfFile=${clntConfFile}"
 debugMsg "deployPropFile=${deployPropFile}"
@@ -123,29 +118,6 @@ fi
 echo > "${deployMainLogFile}"
 
 
-#####
-## 1. Build applications if needed
-######
-if [[ ${buildApp} -eq 1 ]]; then
-    mvnExistence=$(chkSysSvcExistence mvn)
-    debugMsg "mvnExistence=${mvnExistence}"
-    if [[ ${mvnExistence} -eq 0 ]]; then
-        errExit 80 "[ERROR] 'mvn' isn't installed on the local machine, which is required to build the applications!"
-    fi
-
-    deployBuildLogFile="${deployLogHomeDir}/deployBuildApp.log"
-    echo > ${deployBuildLogFile}
-
-    outputMsg "" 0 ${deployMainLogFile} true
-    outputMsg ">>> Building applications ..." 0 ${deployMainLogFile} true
-    outputMsg "* App building log file : ${deployBuildLogFile}" 4 ${deployMainLogFile} true
-
-    curDir=$(pwd)
-    cd "${SCENARIO_HOMEDIR}/source_code"
-    mvn clean verify >> ${deployBuildLogFile}
-    cd ${curDir}
-fi
-
 curlExistence=$(chkSysSvcExistence curl)
 debugMsg "curlExistence=${curlExistence}"
 if [[ ${curlExistence} -eq 0 ]]; then
@@ -154,7 +126,7 @@ fi
 
 
 #####
-## 2. Create the Pulsar tenant (only relevant with non-Astra streaming)
+## 1. Create the Pulsar tenant (only relevant with non-Astra streaming)
 #####
 if [[ ${astraStreaming} -eq 0 ]]; then
     clusterName=$(getPropVal ${deployPropFile} "nas.clusterName")
@@ -176,7 +148,7 @@ fi
 
 
 #####
-## 3. Create the corresponding namespace
+## 2. Create the corresponding namespace
 #####
 outputMsg "" 0 ${deployMainLogFile} true
 outputMsg ">>> Creating the required Pulsar namespace (\"${tenant}/${namespace}\") ..." 0 ${deployMainLogFile} true
@@ -191,7 +163,7 @@ sleep 1
 
 
 #####
-## 4. Create the Pulsar topics
+## 3. Create the Pulsar topics
 #####
 if [[ ${#pulsarTopics[@]} -gt 0 ]]; then
     outputMsg "" 0 ${deployMainLogFile} true
@@ -213,16 +185,15 @@ fi
 
 
 #####
-## 5. Create the Pulsar topics
+## 4. Create the Pulsar schema
 #####
 scnCfgHomeDir="${SCENARIO_HOMEDIR}/_config"
+schemaCfgJson="${scnCfgHomeDir}/topic-schema.json"
 
 if [[ ${#pulsarTopics[@]} -gt 0 ]]; then
-    schemaCfgJson=$(getPropVal ${deployPropFile} "schema")
-
     outputMsg "" 0 ${deployMainLogFile} true
     outputMsg ">>> Creating the required Pulsar topic schema ..." 0 ${deployMainLogFile} true
-    outputMsg "schema config file : ${scnCfgHomeDir}/${schemaCfgJson}" 4 ${deployMainLogFile} true
+    outputMsg "schema config file : ${schemaCfgJson}" 4 ${deployMainLogFile} true
 
     if [[ -f "${scnCfgHomeDir}/${schemaCfgJson}" ]]; then
         outputMsg "" 0 ${deployMainLogFile} true
@@ -246,7 +217,7 @@ fi
 
 
 #####
-## 6. Deploy the Pulsar functions
+## 5. Deploy the Pulsar functions
 #####
 
 if [[ ${#pulsarFunctions[@]} -gt 0 ]]; then

@@ -4,7 +4,7 @@ CUR_SCRIPT_FOLDER=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null &&
 SCENARIO_HOMEDIR=$( cd -- "${CUR_SCRIPT_FOLDER}/.." &> /dev/null && pwd )
 
 source "${SCENARIO_HOMEDIR}/../_bash/utilities.sh"
-# DEBUG=true
+DEBUG=true
 
 echo
 
@@ -56,9 +56,9 @@ if ! [[ -f "${clntConfFile}" ]]; then
    errExit 40 "The specified 'client.conf' file is invalid!"
 fi
 
-clientAppJar="${SCENARIO_HOMEDIR}/client_app/target/msgenrich-clientapp-1.0.0.jar"
+clientAppJar="${SCENARIO_HOMEDIR}/client-app/target/msgenrich-clientapp-1.0.0.jar"
 if ! [[ -f "${clientAppJar}" ]]; then
-  errExit 50 "Can't find the client app jar file. Please run 'deploy.sh -buildApp' to build it!"
+  errExit 50 "Can't find the client app jar file. Please first build the programs!"
 fi
 
 iotDataSrcFile="${SCENARIO_HOMEDIR}/../_raw_data_src/sensor_telemetry.csv"
@@ -72,6 +72,6 @@ javaCmd="java -cp ${clientAppJar} \
 if [[ ${astraStreaming} -eq 1 ]]; then
   javaCmd="${javaCmd} -a"
 fi
-debugMsg="javaCmd=${javaCmd}"
+debugMsg "javaCmd=${javaCmd}"
 
 eval ${javaCmd}
