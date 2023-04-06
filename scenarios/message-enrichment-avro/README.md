@@ -2,7 +2,7 @@
 
 Function wise this scenario, `message-enrichment-avro` is exactly the same as the [`message-enrichment`](../message-enrichment/) scenario in which the following end-to-end data processing flow is demonstrated:
 ```
-<IoT_sensor_reading_data> -> [Pulsar Producer] -> (topic 1) -> [Pulsar Function] -> (topic 2) -> [Pulsar Consumer]
+<IoT_sensor_reading_data> -> [Pulsar Producer] -> (raw topic) -> [Pulsar Function] -> (processed topic) -> [Pulsar Consumer]
 ```
 
 The **ONLY** difference between this scenario and the `message-enrichment` scenario is:
@@ -156,7 +156,7 @@ After all Pulsar resources are deployed, we can run the Pulsar client applicatio
 
 ## 5.1. Run Pulsar Consumer Client App
 
-The following script [`runConsumer.sh`](bash/runConsumer.sh) is used to run the Pulsar consumer client app that consumes the enriched messages from `topic 2`.
+The following script [`runConsumer.sh`](bash/runConsumer.sh) is used to run the Pulsar consumer client app that consumes the enriched messages from the "processed" topic, `msgenrich/testns/processed_a`.
 
 ```
 Usage: runConsumer.sh [-h]
@@ -174,12 +174,12 @@ Usage: runConsumer.sh [-h]
 An example of using this script to consuming 100 messages is as below:
 
 ```
-runConsumer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/processed
+runConsumer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/processed_a
 ```
 
 ## 5.2. Run Pulsar Producer Client App
 
-The following script [`runProducer.sh`](bash//runProducer.sh) is used to run the Pulsar producer client app that reads the IoT sensor data from a CSV source file and then publishes to `topic 1`.
+The following script [`runProducer.sh`](bash//runProducer.sh) is used to run the Pulsar producer client app that reads the IoT sensor data from a CSV source file and then publishes to "raw" topic, `msgenrich/testns/raw_a`.
 
 ```
 Usage: runProducer.sh [-h]
@@ -197,5 +197,5 @@ Usage: runProducer.sh [-h]
 An example of using this script to publish 100 messages is as below:
 
 ```
-runProducer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/raw
+runProducer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/raw_a
 ```
