@@ -156,7 +156,7 @@ After all Pulsar resources are deployed, we can run the Pulsar client applicatio
 
 ## 5.1. Run Pulsar Consumer Client App
 
-The following script [`runConsumer.sh`](bash/runConsumer.sh) is used to run the Pulsar consumer client app that consumes the enriched messages from the "processed" topic, `processed_a`.
+The following script [`runConsumer.sh`](bash/runConsumer.sh) is used to run the Pulsar consumer client app that consumes the enriched messages from the "processed" topic, `msgenrich/testns/processed_a`.
 
 ```
 Usage: runConsumer.sh [-h]
@@ -179,7 +179,7 @@ runConsumer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/processed_a
 
 ## 5.2. Run Pulsar Producer Client App
 
-The following script [`runProducer.sh`](bash//runProducer.sh) is used to run the Pulsar producer client app that reads the IoT sensor data from a CSV source file and then publishes to "raw" topic, `raw_a`.
+The following script [`runProducer.sh`](bash//runProducer.sh) is used to run the Pulsar producer client app that reads the IoT sensor data from a CSV source file and then publishes to "raw" topic, `msgenrich/testns/raw_a`.
 
 ```
 Usage: runProducer.sh [-h]
