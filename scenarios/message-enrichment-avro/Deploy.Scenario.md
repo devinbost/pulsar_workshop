@@ -1,3 +1,4 @@
+
 - [1. Overview](#1-overview)
   - [1.1. Deployment Properties File](#11-deployment-properties-file)
 - [2. Deploy the Scenario](#2-deploy-the-scenario)
@@ -5,8 +6,10 @@
   - [2.2. Create the Tenant](#22-create-the-tenant)
   - [2.3. Create the Namespace](#23-create-the-namespace)
   - [2.4. Create the Topic](#24-create-the-topic)
-  - [2.5. Deploy the Function](#25-deploy-the-function)
-    - [2.5.1. Function Configuration JSON File](#251-function-configuration-json-file)
+  - [2.5. Update the Topic Schema](#25-update-the-topic-schema)
+    - [2.5.1. Schema Config JSON String](#251-schema-config-json-string)
+  - [2.6. Deploy the Function](#26-deploy-the-function)
+    - [2.6.1. Function Configuration JSON File](#261-function-configuration-json-file)
 
 
 # 1. Overview
@@ -15,8 +18,8 @@ As mentioned in the main doc, by default this scenario is executed against the f
 * **tenant**: `msgenrich`
 * **namespace**: `testns`
 * **topics**:
-   * `msgenrich/testns/raw`
-   * `msgenrich/testns/processed`
+   * `msgenrich/testns/raw_a`
+   * `msgenrich/testns/processed_a`
 
 If you want to run the scenario against a different set of Pulsar tenant, namespace, and topics, you can also achieve so by specifying them in a deployment properties file.
 
@@ -29,11 +32,11 @@ The deployment properties file has the following format
 # (Mandatory) Must in format <tenant>/<namespace>
 tenantNamespace=msgenrich/testns
 # (Mandatory) Comma separated core topic names without space
-coreTopics=raw,processed
+coreTopics=raw_a,processed_a
 
 ## 
 # (Optional) Comma separated core function names without space
-coreFunctions=add-metadata
+coreFunctions=add-metadata-avro
 
 ##
 # Cluster name (ONLY relevant for non-Astra Streaming Pulsar cluster)
@@ -79,7 +82,7 @@ curl -sS -k -X PUT \
 The rest API to create a Pulsar namespace is as below:
 ```
 curl -sS -k -X PUT \
-    --url 'https://<pulsar_websvc_url>/admin/v2/namespaces/<tenant_name>/<namespace_name>' \
+    --url 'https://<pulsar_websvc_url>/admin/v2/namespaces/<tenant>/<namespace>' \
     --header 'Authorization: Bearer <jwt_token>'
 ```
 
@@ -90,13 +93,28 @@ curl -sS -k -X PUT \
 The rest API to create a Pulsar namespace is as below:
 ```
 curl -sS -k -X PUT \
-    --url 'https://<pulsar_websvc_url>/admin/v2/persistent/${topicName}/partitions' \
+    --url 'https://<pulsar_websvc_url>/admin/v2/persistent/<tenant>/<namespace>/<topic>/partitions' \
     --header 'Authorization: Bearer <jwt_token>' \
     --header 'Content-Type: text/plain' \
     --data 5
 ```
 
-## 2.5. Deploy the Function
+## 2.5. Update the Topic Schema
+
+The rest API to create a Pulsar namespace is as below:
+```
+curl -sS -k -X POST \
+    --url 'https://<pulsar_websvc_url>/admin/v2/schemas/<tenant>/<namespace>/<topic>/schema' \
+    --header 'Authorization: Bearer <jwt_token>' \
+    --header 'Content-Type: application/json' \
+    --data '<schema_config_json_string>'
+```
+
+### 2.5.1. Schema Config JSON String
+
+In the above command, the `--data` payload requires a JSON string that represents the schema. This scenario provides this string via the following file: [_config/topic-schema.json](_config/topic-schema.json). 
+
+## 2.6. Deploy the Function
 
 The rest API to deploy a Pulsar function is as below:
 ```
@@ -108,14 +126,14 @@ curl -sS -k -X POST \
     --write-out '%{http_code}'
 ```
 
-### 2.5.1. Function Configuration JSON File
+### 2.6.1. Function Configuration JSON File
 
-In order to deploy a Pulsar function this way, a function configuration JSON file is needed besides the Pulsar function package file (e.g. a Java jar file). This scenario provides this file at: [_config/add-metadata.json](_config/add-metadata.json).
+In order to deploy a Pulsar function this way, a function configuration JSON file is needed besides the Pulsar function package file (e.g. a Java jar file). This scenario provides this file at: [_config/add-metadata-avro.json](_config/add-metadata-avro.json).
 
 Please **NOTE** that the `deploy.sh` file will NOT create this file for you. You need to create it in advance before running the script. The requirements for this file are:
 1. The JSON file must use the function name as the file.
 2. The JSON file must be under `_config` sub-folder of the scenario home directory
 ```
 config
-└── add-metadata.json
+└── add-metadata-avro.json
 ```
