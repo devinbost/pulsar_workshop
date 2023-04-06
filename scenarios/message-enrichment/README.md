@@ -18,7 +18,7 @@
 | - | - |
 | **Name** |message-enrichment |
 | **Description** | <ul><li>This scenario shows how to use a Pulsar function to enrich Pulsar messages that are published by a producer to a Pulsar topic.</li> <li>The enriched messages are sent by the function to another topic with a consumer subscribed to it for message consumption.</li> <li>The raw data source is a CSV file that includes actual readings in a particular time range from a given set of IoT sensors.</li></ul> |
-| **Data Flow Pattern** | <IoT_sensor_reading_data> -> [Pulsar Producer] -> (topic 1) -> [Pulsar Function] -> (topic 2) -> [Pulsar Consumer] |
+| **Data Flow Pattern** | <IoT_sensor_reading_data> -> [Pulsar Producer] -> (raw topic) -> [Pulsar Function] -> (processed topic) -> [Pulsar Consumer] |
 
 ## 1.1. Program List
 
@@ -109,7 +109,7 @@ After all Pulsar resources are deployed, we can run the Pulsar client applicatio
 
 ## 5.1. Run Pulsar Consumer Client App
 
-The following script [`runConsumer.sh`](bash/runConsumer.sh) is used to run the Pulsar consumer client app that consumes the enriched messages from `topic 2`.
+The following script [`runConsumer.sh`](bash/runConsumer.sh) is used to run the Pulsar consumer client app that consumes the enriched messages from the "processed" topic, `msgenrich/testns/processed`.
 
 ```
 Usage: runConsumer.sh [-h]
@@ -132,7 +132,7 @@ runConsumer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/processed
 
 ## 5.2. Run Pulsar Producer Client App
 
-The following script [`runProducer.sh`](bash//runProducer.sh) is used to run the Pulsar producer client app that reads the IoT sensor data from a CSV source file and then publishes to `topic 1`.
+The following script [`runProducer.sh`](bash//runProducer.sh) is used to run the Pulsar producer client app that reads the IoT sensor data from a CSV source file and then publishes to the "raw" topic, `msgenrich/testns/raw`.
 
 ```
 Usage: runProducer.sh [-h]
