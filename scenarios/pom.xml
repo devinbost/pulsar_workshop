@@ -31,5 +31,6 @@
         <module>base-code</module>
         <module>message-enrichment</module>
         <module>message-enrichment-avro</module>
+        <module>schema-compatibility</module>
     </modules>
 </project>
