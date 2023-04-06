@@ -4,6 +4,7 @@ CUR_SCRIPT_FOLDER=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null &&
 SCENARIO_HOMEDIR=$( cd -- "${CUR_SCRIPT_FOLDER}/.." &> /dev/null && pwd )
 
 source "${SCENARIO_HOMEDIR}/../_bash/utilities.sh"
+# DEBUG=true
 
 echo
 
@@ -136,13 +137,13 @@ if [[ ${astraStreaming} -eq 0 ]]; then
 
     outputMsg "" 0 ${deployMainLogFile} true
     outputMsg ">>> Creating the required Pulsar tenant (\"${tenant}\") ..." 0 ${deployMainLogFile} true
-    responseStr=$(createTenant \
+    httpResponseCode=$(createTenant \
         "${webServiceUrl}" \
         "${clusterName}" \
         "${tenant}" \
         "${jwtTokenAuthEnabled}" \
         "${jwtTokenValue}")
-    processHttpResponse \""${responseStr}"\" 6 ${deployMainLogFile}
+    processHttpResponse "${httpResponseCode}" 6 ${deployMainLogFile}
     sleep 1
 fi
 
@@ -152,13 +153,13 @@ fi
 #####
 outputMsg "" 0 ${deployMainLogFile} true
 outputMsg ">>> Creating the required Pulsar namespace (\"${tenant}/${namespace}\") ..." 0 ${deployMainLogFile} true
-responseStr=$(createNameSpace \
+httpResponseCode=$(createNameSpace \
     "${webServiceUrl}" \
     "${tenant}" \
     "${namespace}" \
     "${jwtTokenAuthEnabled}" \
     "${jwtTokenValue}")
-processHttpResponse \""${responseStr}"\" 6 ${deployMainLogFile}
+processHttpResponse "${httpResponseCode}" 6 ${deployMainLogFile}
 sleep 1
 
 
@@ -172,12 +173,12 @@ if [[ ${#pulsarTopics[@]} -gt 0 ]]; then
     for topic in "${pulsarTopics[@]}"; do
         topicIdx=$((topicIdx+1))
         outputMsg "* Topic ${topicIdx} : ${topic}" 4 ${deployMainLogFile} true
-        responseStr=$(createTopic \
+        httpResponseCode=$(createTopic \
             "${webServiceUrl}" \
             "${topic}" \
             "${jwtTokenAuthEnabled}" \
             "${jwtTokenValue}")
-        processHttpResponse \""${responseStr}"\" 6 ${deployMainLogFile}
+        processHttpResponse "${httpResponseCode}" 6 ${deployMainLogFile}
 
         outputMsg "" 0 ${deployMainLogFile} true
     done
@@ -188,25 +189,25 @@ fi
 ## 4. Create the Pulsar schema
 #####
 scnCfgHomeDir="${SCENARIO_HOMEDIR}/_config"
-schemaCfgJson="${scnCfgHomeDir}/topic-schema.json"
+schemaCfgJsonFile="${scnCfgHomeDir}/topic-schema.json"
 
 if [[ ${#pulsarTopics[@]} -gt 0 ]]; then
     outputMsg "" 0 ${deployMainLogFile} true
     outputMsg ">>> Creating the required Pulsar topic schema ..." 0 ${deployMainLogFile} true
-    outputMsg "schema config file : ${schemaCfgJson}" 4 ${deployMainLogFile} true
+    outputMsg "schema config file : ${schemaCfgJsonFile}" 4 ${deployMainLogFile} true
 
-    if [[ -f "${scnCfgHomeDir}/${schemaCfgJson}" ]]; then
-        outputMsg "" 0 ${deployMainLogFile} true
-
+    if [[ -f "${schemaCfgJsonFile}" ]]; then
+        schemaCfgJsonStr=$(cat ${schemaCfgJsonFile})
         for topic in "${pulsarTopics[@]}"; do
             topicIdx=$((topicIdx+1))
             outputMsg "* Create schema for topic : ${topic}" 4 ${deployMainLogFile} true
-            responseStr=$(createSchema \
+            httpResponseCode=$(createTopicSchema \
                 "${webServiceUrl}" \
                 "${topic}" \
+                "${schemaCfgJsonStr}" \
                 "${jwtTokenAuthEnabled}" \
                 "${jwtTokenValue}")
-            processHttpResponse \""${responseStr}"\" 6 ${deployMainLogFile}
+            processHttpResponse "${httpResponseCode}" 6 ${deployMainLogFile}
 
             outputMsg "" 0 ${deployMainLogFile} true
         done
@@ -219,7 +220,6 @@ fi
 #####
 ## 5. Deploy the Pulsar functions
 #####
-
 if [[ ${#pulsarFunctions[@]} -gt 0 ]]; then
     #
     # NOTE: For multiple functions, this assumes they're all created within
@@ -234,9 +234,7 @@ if [[ ${#pulsarFunctions[@]} -gt 0 ]]; then
     outputMsg "" 0 ${deployMainLogFile} true
     outputMsg ">>> Deploying the required Pulsar functions ..." 0 ${deployMainLogFile} true
     functionIdx=0
-    for funcFullName in "${pulsarFunctions[@]}"; do
-        outputMsg "" 0 ${deployMainLogFile} true
-        
+    for funcFullName in "${pulsarFunctions[@]}"; do        
         functionIdx=$((functionIdx+1))
         outputMsg "* Function ${functionIdx} : ${funcFullName}" 4 ${deployMainLogFile} true
 
@@ -248,14 +246,14 @@ if [[ ${#pulsarFunctions[@]} -gt 0 ]]; then
         #       '<function_core_name>.json' MUST exit under the folder of 
         #       "<SCENARIO_HOMEDIR>/config"
         if [[ -f "${funcCfgJsonFile}" ]]; then
-            responseStr=$(createFunction \
+            httpResponseCode=$(createFunction \
                 "${webServiceUrl}" \
                 "${funcFullName}" \
                 "${jwtTokenAuthEnabled}" \
                 "${jwtTokenValue}" \
                 "${scnFuncPkgHomeDir}/${funcPkgName}" \
                 "${funcCfgJsonFile}")
-            processHttpResponse \""${responseStr}"\" 6 ${deployMainLogFile}
+            processHttpResponse "${httpResponseCode}" 6 ${deployMainLogFile}
         else
             outputMsg "[WARN] Skip function creation due to invalid config json file!" 6 ${deployMainLogFile} true 
         fi

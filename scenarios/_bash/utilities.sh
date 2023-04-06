@@ -113,23 +113,24 @@ checkTntExistence () {
     local tokenValue=${4}
 
     local curlCmd="curl -sS -k -X GET
-    --url '${webSvcUrl}/admin/v2/tenants'"
+    --write-out '%{http_code}'
+    --output /tmp/curlCmdOutput.txt
+    --url '${webSvcUrl}/admin/v2/tenants'
+    --header 'Content-Type: text/plain'"
                         
     if [[ ${jwtAuthEnalbed} -eq 1 ]]; then
         curlCmd="${curlCmd}
-    --header 'Authorization: Bearer ${tokenValue}' "
+    --header 'Authorization: Bearer ${tokenValue}'"
     fi
 
     curlCmd="${curlCmd}
-    --header 'Content-Type: text/plain'
-    --data 5 
-    --output '/tmp/curlCmdGetTntList.txt'"
+    --data 5"
 
     # stderr is needed here because stdout is capatured as the function output
     debugMsg "curlCmd=${curlCmd}" >&2
-    local responseStr=$(eval ${curlCmd})
+    local httpResponseCode=$(eval ${curlCmd})
 
-    local tntListStr=$(cat /tmp/curlCmdGetTntList.txt)
+    local tntListStr=$(cat /tmp/curlCmdOutput.txt)
     debugMsg "resourceListStr=${tntListStr}"
 
     if [[ "${tntListStr}" =~ "${tenantName}" ]]; then
@@ -158,20 +159,24 @@ createTenant() {
     local tokenValue=${5}
 
     local curlCmd="curl -sS -k -X PUT
+    --write-out '%{http_code}'
+    --output /tmp/curlCmdOutput.txt
     --url '${webSvcUrl}/admin/v2/tenants/${tenantName}'
-    --header 'Content-Type: application/json'
-    --data '{ \"allowedClusters\": [\"${clusterName}\"] }'"
+    --header 'Content-Type: application/json'"
                         
     if [[ ${jwtAuthEnalbed} -eq 1 ]]; then
         curlCmd="${curlCmd}
     --header 'Authorization: Bearer ${tokenValue}'"
     fi
 
+    curlCmd="${curlCmd}
+    --data '{ \"allowedClusters\": [\"${clusterName}\"] }'"
+
     # stderr is needed here because stdout is capatured as the function output
     debugMsg "curlCmd=${curlCmd}" >&2
-    local responseStr=$(eval ${curlCmd})
+    local httpResponseCode=$(eval ${curlCmd})
 
-    echo ${responseStr}
+    echo ${httpResponseCode}
 }
 
 ##
@@ -190,6 +195,8 @@ createNameSpace() {
     local tokenValue=${5}
 
     local curlCmd="curl -sS -k -X PUT
+    --write-out '%{http_code}'
+    --output /tmp/curlCmdOutput.txt
     --url '${webSvcUrl}/admin/v2/namespaces/${tenantName}/${namespaceName}'"
                         
     if [[ ${jwtAuthEnalbed} -eq 1 ]]; then
@@ -199,9 +206,9 @@ createNameSpace() {
 
     # stderr is needed here because stdout is capatured as the function output
     debugMsg "curlCmd=${curlCmd}" >&2
-    local responseStr=$(eval ${curlCmd})
+    local httpResponseCode=$(eval ${curlCmd})
 
-    echo ${responseStr}
+    echo ${httpResponseCode}
 }
 
 
@@ -219,23 +226,63 @@ createTopic() {
     local tokenValue=${4}
 
     local curlCmd="curl -sS -k -X PUT
-    --url '${webSvcUrl}/admin/v2/persistent/${topicName}/partitions'"
+    --write-out '%{http_code}'
+    --output /tmp/curlCmdOutput.txt
+    --url '${webSvcUrl}/admin/v2/persistent/${topicName}/partitions'
+    --header 'Content-Type: text/plain'"
                         
     if [[ ${jwtAuthEnalbed} -eq 1 ]]; then
         curlCmd="${curlCmd}
-    --header 'Authorization: Bearer ${tokenValue}' "
+    --header 'Authorization: Bearer ${tokenValue}'"
     fi
 
     curlCmd="${curlCmd}
-    --header 'Content-Type: text/plain'
     --data 5"
 
     # stderr is needed here because stdout is capatured as the function output
     debugMsg "curlCmd=${curlCmd}" >&2
-    local responseStr=$(eval ${curlCmd})
+    local httpResponseCode=$(eval ${curlCmd})
 
-    echo ${responseStr}
+    echo ${httpResponseCode}
 }
+
+
+##
+# Create a Topic schema using 'curl' command
+# 5 input parameters
+#   - 1st parameter: Pulsar web service URL
+#   - 2nd parameter: Pulsar topic name (without the leading 'persistent://' or 'non-persistent://')
+#   - 3rd parameter: Pulsar topic schema config JSON string
+#   - 4th parameter: Whether JWT token authentication is enabled
+#   - 4th parameter: JWT token value
+createTopicSchema() {
+    local webSvcUrl=${1}
+    local topicName=${2}
+    local schemaCfgJson=${3}
+    local jwtAuthEnalbed=${4}
+    local tokenValue=${5}
+
+    local curlCmd="curl -sS -k -X POST
+    --write-out '%{http_code}'
+    --output /tmp/curlCmdOutput.txt
+    --url '${webSvcUrl}/admin/v2/schemas/${topicName}/schema'
+    --header 'Content-Type: application/json'"
+                        
+    if [[ ${jwtAuthEnalbed} -eq 1 ]]; then
+        curlCmd="${curlCmd}
+    --header 'Authorization: Bearer ${tokenValue}'"
+    fi
+
+    curlCmd="${curlCmd}
+    --data '${schemaCfgJson}'"
+
+    # stderr is needed here because stdout is capatured as the function output
+    debugMsg "curlCmd=${curlCmd}" >&2
+    local httpResponseCode=$(eval ${curlCmd})
+
+    echo ${httpResponseCode}
+}
+
 
 ##
 # Create a partitioned topic (with 5 partitions) using 'curl' command
@@ -255,6 +302,8 @@ createFunction() {
     local funcCfgJsonFile=${6}
 
     local curlCmd="curl -sS -k -X POST
+    --write-out '%{http_code}'
+    --output /tmp/curlCmdOutput.txt
     --url '${webSvcUrl}/admin/v3/functions/${funcFullName}'"
                         
     if [[ ${jwtAuthEnalbed} -eq 1 ]]; then
@@ -268,28 +317,27 @@ createFunction() {
 
     # stderr is needed here because stdout is capatured as the function output
     debugMsg "curlCmd=${curlCmd}" >&2
-    local responseStr=$(eval ${curlCmd})
+    local httpResponseCode=$(eval ${curlCmd})
 
-    echo ${responseStr}
+    echo ${httpResponseCode}
 }
 
 ##
 # Proces HTTP response string from the curl command
-# 3 input parameters
-#   - 1st parameter: The HTTP response string
+# 4 input parameters
+#   - 1st parameter: The HTTP response code
 #   - 2nd parameter: The number of the leading space number before each output message
 #   - 3rd parameter: The log file to append the output messages to
 processHttpResponse() {
-    local responseStr=${1}
+    local code=${1}
     local leadingSpaceNum=${2}
     local logFile=${3}
 
-    responseStr=$(sed -e 's/^"//' -e 's/"$//' <<< ${responseStr})
-
-    if [[ -z "${responseStr// }" ]]; then
+    if [[ ${code} -ge 200 && ${code} -lt 300 ]]; then
         outputMsg "[Success]" ${leadingSpaceNum} ${logFile} true
     else
-        outputMsg "[Failed] - ${responseStr}]" ${leadingSpaceNum} ${logFile} true
+        local curlCmdOutputStr=$(cat /tmp/curlCmdOutput.txt)
+        outputMsg "[Failed] - ${curlCmdOutputStr}]" ${leadingSpaceNum} ${logFile} true
     fi
 }
 

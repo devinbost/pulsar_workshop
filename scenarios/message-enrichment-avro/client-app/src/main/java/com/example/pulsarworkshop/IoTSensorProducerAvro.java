@@ -85,7 +85,7 @@ public class IoTSensorProducerAvro extends PulsarWorkshopCmdApp {
             }
 
         } catch (PulsarClientException pce) {
-        	pce.printStackTrace();
+            pce.printStackTrace();
             throw new WorkshopRuntimException("Unexpected error when producing Pulsar messages: " + pce.getMessage());
         } catch (IOException ioException) {
             throw new WorkshopRuntimException("Failed to read from the workload data source file: " + ioException.getMessage());
