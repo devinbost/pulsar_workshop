@@ -165,7 +165,6 @@ sleep 1
 #####
 ## 3. Create the Pulsar topics
 #####
-
 if [[ ${#pulsarTopics[@]} -gt 0 ]]; then
     outputMsg "" 0 ${deployMainLogFile} true
     outputMsg ">>> Creating the required Pulsar topics ..." 0 ${deployMainLogFile} true

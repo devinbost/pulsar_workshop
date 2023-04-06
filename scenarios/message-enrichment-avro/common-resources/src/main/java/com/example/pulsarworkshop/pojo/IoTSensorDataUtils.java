@@ -1,12 +1,10 @@
 package com.example.pulsarworkshop.pojo;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.regex.Pattern;
 
 public class IoTSensorDataUtils {
     public static IoTSensorData csvToPojo(String csvLine) {
-        String csvLineNoQuote = StringUtils.replaceAll(csvLine, "\"", "");
+        String csvLineNoQuote = csvLine.replaceAll("\"", "");
         Pattern pattern = Pattern.compile(",");
         String[] fields = pattern.split(csvLineNoQuote);
 

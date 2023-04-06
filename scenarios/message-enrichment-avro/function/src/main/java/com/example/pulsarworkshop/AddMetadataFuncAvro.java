@@ -17,49 +17,42 @@ import java.util.stream.Collectors;
 
 public class AddMetadataFuncAvro implements Function<IoTSensorData, Void> {
     private static DateFormat timeFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss.SSS");
+    private static TypedMessageBuilder<IoTSensorData> outputMessageBuilder;
+    private static Logger LOG;
+
+    @Override
+    public void initialize(Context context) throws PulsarClientException {
+        LOG = context.getLogger();
+
+        String outputTopic = context.getOutputTopic();
+        outputMessageBuilder = context.newOutputMessage(outputTopic, Schema.AVRO(IoTSensorData.class));
+    }
 
 
     @Override
-    public Void process(IoTSensorData input, Context context) throws Exception {
+    public Void process(IoTSensorData input, Context context) {
+        Record<IoTSensorData> currentRecord = (Record<IoTSensorData>) context.getCurrentRecord();
+        Optional<String> keyOpt = currentRecord.getKey();
+        Map<String, String> msgProperties = currentRecord.getProperties();
 
-        Logger LOG = context.getLogger();
-        String outputTopic = context.getOutputTopic();
-
-        String inputTopics = context.getInputTopics().stream().collect(Collectors.joining(", "));
-        String logMessage = String.format(
-                "A message with a value of \"%s\" has arrived on one of the following topics: %s\n",
-                input,
-                inputTopics);
-        LOG.info(logMessage);
-
-        try {
-            Record<IoTSensorData> currentRecord = (Record<IoTSensorData>) context.getCurrentRecord();
-
-            Optional<String> keyOpt = currentRecord.getKey();
-            Map<String, String> msgProperties = currentRecord.getProperties();
-
-            TypedMessageBuilder<IoTSensorData> messageBuilder
-                    = context.newOutputMessage(outputTopic, Schema.AVRO(IoTSensorData.class));
-            if (keyOpt.isPresent()) {
-                messageBuilder.key(keyOpt.get());
-            }
-
-            for (String propKey : msgProperties.keySet()) {
-                messageBuilder.property(propKey, msgProperties.get(propKey));
-            }
-
-            // a newly added custom metadata
-            messageBuilder.property("internal_process_time",
-                    timeFormat.format(Calendar.getInstance().getTime()) );
-
-            messageBuilder.value(input);
-
-            MessageId messageId = messageBuilder.send();
+        if (keyOpt.isPresent()) {
+            outputMessageBuilder.key(keyOpt.get());
         }
-        catch (PulsarClientException e) {
-            LOG.error(e.toString());
+        for (String propKey : msgProperties.keySet()) {
+            outputMessageBuilder.property(propKey, msgProperties.get(propKey));
         }
+        // a newly added custom metadata
+        outputMessageBuilder.property("internal_process_time",
+                timeFormat.format(Calendar.getInstance().getTime()) );
+
+        outputMessageBuilder.value(input);
+
+        outputMessageBuilder.sendAsync();
 
         return null;
+    }
+
+    @Override
+    public void close() {
     }
 }

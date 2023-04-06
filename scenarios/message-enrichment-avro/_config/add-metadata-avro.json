@@ -1,0 +1,11 @@
+{
+  "tenant": "msgenrich",
+  "namespace": "testns",
+  "name": "add-metadata-avro",
+  "runtime": "JAVA",
+  "inputs": [ "msgenrich/testns/raw_a" ],
+  "output": "msgenrich/testns/processed_a",
+  "autoAck": true,
+  "className": "com.example.pulsarworkshop.AddMetadataFuncAvro",
+  "jar": ""
+}

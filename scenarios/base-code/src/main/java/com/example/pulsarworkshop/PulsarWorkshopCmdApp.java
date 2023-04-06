@@ -174,8 +174,7 @@ abstract public class PulsarWorkshopCmdApp {
         File file = null;
 
         Option option = cliOptions.getOption(optionName);
-        if (commandLine.getOptionValue(option) != null) {
-
+        if (commandLine.hasOption(optionName)) {
         	String path = commandLine.getOptionValue(option.getOpt());    	
 	        try {
 	            file = new File(path);

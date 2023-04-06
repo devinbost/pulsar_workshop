@@ -32,38 +32,8 @@
         <slf4j.version>2.0.6</slf4j.version>
     </properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-remote-resources-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <resourceBundles>
-                        <resourceBundle>com.example.pulsarworkshop:base-code:${project.version}</resourceBundle>
-                    </resourceBundles>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
     <modules>
         <module>client-app</module>
         <module>function</module>
     </modules>
-
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>base-code</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
 </project>

@@ -23,7 +23,8 @@
                 <version>3.0.0</version>
                 <configuration>
                     <resourceBundles>
-                        \                        <resourceBundle>com.example.pulsarworkshop:msgenrich-avro-common:${project.version}</resourceBundle>
+                        <resourceBundle>com.example.pulsarworkshop:base-code:${project.version}</resourceBundle>
+                        <resourceBundle>com.example.pulsarworkshop:msgenrich-avro-common:${project.version}</resourceBundle>
                     </resourceBundles>
                 </configuration>
                 <executions>
@@ -64,6 +65,12 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>base-code</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>msgenrich-avro-common</artifactId>
