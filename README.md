@@ -13,4 +13,4 @@ The table below lists all scenarios that are available in this repository.
 | ------------- | ----------- |
 | [message-enrichment](scenarios/message-enrichment) | Demonstrate how an IoT sensor reading raw data can be published and enriched in Pulsar before consumed by a consumer. |
 | [message-enrichment-avro](scenarios/message-enrichment-avro) | Similar to the `message-enrichment` scenario. The only difference is this scenario demonstrates the message processing with AVRO/JSON schema instead of as pure text. |
-| [schema-compatibility](scenarios/schema-compatibility) | Demonstrate how Pulsar message schema compatibility is handled. |
+| [schema-compatibility (TBD)](scenarios/schema-compatibility) | Demonstrate how Pulsar message schema compatibility is handled. |

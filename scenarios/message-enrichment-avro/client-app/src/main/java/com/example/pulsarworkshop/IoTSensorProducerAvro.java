@@ -52,7 +52,7 @@ public class IoTSensorProducerAvro extends PulsarWorkshopCmdApp {
             assert (iotSensorDataCsvFile != null);
 
             CsvFileLineScanner csvFileLineScanner = new CsvFileLineScanner(iotSensorDataCsvFile);
-            TypedMessageBuilder messageBuilder = pulsarProducer.newMessage();
+            TypedMessageBuilder<IoTSensorData> messageBuilder = pulsarProducer.newMessage();
 
             boolean isTitleLine = true;
             String titleLine = "";
