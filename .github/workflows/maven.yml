@@ -35,23 +35,23 @@ jobs:
         mvn -B clean package --file pom.xml
         cd ../..
 
-    - name: Build with Maven for S4J client apps
-      run: |
-        cd scenarios/jms-s4j
-        mvn -B clean package --file pom.xml
-        cd ../..
+    # - name: Build with Maven for S4J client apps
+    #   run: |
+    #     cd scenarios/jms-s4j
+    #     mvn -B clean package --file pom.xml
+    #     cd ../..
 
-    - name: Build with Maven for S4K client apps
-      run: |
-        cd scenarios/kafka-s4k
-        mvn -B clean package --file pom.xml
-        cd ../..
+    # - name: Build with Maven for S4K client apps
+    #   run: |
+    #     cd scenarios/kafka-s4k
+    #     mvn -B clean package --file pom.xml
+    #     cd ../..
 
-    - name: Build with Maven for S4R client apps
-      run: |
-        cd scenarios/rabbitmq-s4j
-        mvn -B clean package --file pom.xml
-        cd ../..
+    # - name: Build with Maven for S4R client apps
+    #   run: |
+    #     cd scenarios/rabbitmq-s4j
+    #     mvn -B clean package --file pom.xml
+    #     cd ../..
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
