@@ -8,7 +8,7 @@ import org.apache.pulsar.shade.org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IoTSensorConsumer extends PulsarWorkshopCmdApp {
+public class IoTSensorConsumer extends NativePulsarCmdApp {
 
     private final static Logger logger = LoggerFactory.getLogger(IoTSensorConsumer.class);
 

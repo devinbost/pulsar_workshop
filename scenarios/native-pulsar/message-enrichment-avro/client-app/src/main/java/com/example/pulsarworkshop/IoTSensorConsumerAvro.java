@@ -6,10 +6,11 @@ import com.example.pulsarworkshop.exception.WorkshopRuntimException;
 import org.apache.commons.cli.Option;
 import org.apache.pulsar.client.api.*;
 import org.apache.pulsar.shade.org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.math.raw.Nat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IoTSensorConsumerAvro extends PulsarWorkshopCmdApp {
+public class IoTSensorConsumerAvro extends NativePulsarCmdApp {
 
     private final static Logger logger = LoggerFactory.getLogger(IoTSensorConsumerAvro.class);
 
