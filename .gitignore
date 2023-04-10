@@ -1,8 +1,12 @@
 application_code
 scenarios/.idea
 scenarios/*/.idea
+scenarios/*/*.idea
+scenarios/*/*/*/.idea
 scenarios/*/target
-scenarios/*/*/.idea
 scenarios/*/*/target
-scenarios/*/logs
-scenarios/*/mybkup
+scenarios/*/*/*/target
+scenarios/*/*/*/dependency-reduced-pom.xml
+scenarios/*/*/*/*/dependency-reduced-pom.xml
+scenarios/*/*/logs
+scenarios/*/*/mybkup
