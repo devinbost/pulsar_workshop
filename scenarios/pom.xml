@@ -4,14 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.example.pulsarworkshop</groupId>
-        <artifactId>scenarios</artifactId>
-        <version>1.0.0</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-
-    <artifactId>native-pulsar</artifactId>
+    <groupId>com.example.pulsarworkshop</groupId>
+    <artifactId>scenarios</artifactId>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -24,12 +19,19 @@
     </licenses>
 
     <properties>
-        <pulsar.version>2.10.3</pulsar.version>
+        <java.version>11</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <slf4j.version>2.0.6</slf4j.version>
     </properties>
 
     <modules>
-        <module>message-enrichment</module>
-        <module>message-enrichment-avro</module>
-        <module>schema-compatibility</module>
+        <module>base-code</module>
+        <module>native-pulsar</module>
+        <module>jms-s4j</module>
+        <!-- <module>kafka-s4k</module>
+        <module>rabbitmq-s4r</module>
+        <module>spring-pulsar</module> -->
     </modules>
 </project>

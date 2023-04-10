@@ -29,9 +29,9 @@ abstract public class PulsarWorkshopCmdApp {
 
     protected final String appName;
 
-    private CommandLine commandLine;
-    private final DefaultParser commandParser;
-    private final Options cliOptions = new Options();
+    protected CommandLine commandLine;
+    protected final DefaultParser commandParser;
+    protected final Options cliOptions = new Options();
     
     public abstract void processExtendedInputParams() throws InvalidParamException;
     public abstract void runApp();

@@ -30,26 +30,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
         
-    - name: Build with Maven for Native Pulsar Client Apps and Functions
+    - name: Build with Maven
       run: |
-        cd scenarios/native-pulsar
+        cd scenarios
         mvn -B clean package --file pom.xml
-        cd ../..
-
-    # - name: Build with Maven for S4J client apps
-    #   run: |
-    #     cd scenarios/jms-s4j
-    #     mvn -B clean package --file pom.xml
-    #     cd ../..
-
-    # - name: Build with Maven for S4K client apps
-    #   run: |
-    #     cd scenarios/kafka-s4k
-    #     mvn -B clean package --file pom.xml
-    #     cd ../..
-
-    # - name: Build with Maven for S4R client apps
-    #   run: |
-    #     cd scenarios/rabbitmq-s4j
-    #     mvn -B clean package --file pom.xml
-    #     cd ../..

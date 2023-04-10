@@ -6,16 +6,16 @@
 
     <parent>
         <groupId>com.example.pulsarworkshop</groupId>
-        <artifactId>native-pulsar</artifactId>
+        <artifactId>scenarios</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>message-enrichment-avro</artifactId>
+    <artifactId>jms-s4j</artifactId>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
-
+    
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
@@ -23,9 +23,10 @@
         </license>
     </licenses>
 
+    <properties>
+        <s4j.version>3.2.1</s4j.version>
+    </properties>
+
     <modules>
-        <module>common-resources</module>
-        <module>client-app</module>
-        <module>function</module>
     </modules>
 </project>
