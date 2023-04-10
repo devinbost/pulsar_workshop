@@ -30,8 +30,8 @@
         <module>base-code</module>
         <module>native-pulsar</module>
         <module>jms-s4j</module>
-        <!-- <module>kafka-s4k</module>
+        <module>kafka-s4k</module>
         <module>rabbitmq-s4r</module>
-        <module>spring-pulsar</module> -->
+        <module>spring-pulsar</module>
     </modules>
 </project>
