@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class IoTSensorProducer extends PulsarWorkshopCmdApp {
+public class IoTSensorProducer extends NativePulsarCmdApp {
 
     private final static Logger logger = LoggerFactory.getLogger(IoTSensorProducer.class);
 

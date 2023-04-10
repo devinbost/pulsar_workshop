@@ -7,13 +7,23 @@ The scenario programs included in this GitHub repository may be written in diffe
 
 All Java based programs in this GitHub repository are organized in a single [`Apache Maven`](https://maven.apache.org/) project in a structure like below:
 ```
-main
+scenarios
   |--- base-code
-  |--- <scenario_1_main_module>
-  |      |--- <scenario_1_sub_module_1>
-  |      |--- <scenario_1_sub_module_2>
+  |--- native-pulsar
+  |      |--- <scenario_1_main_module>
+  |             |--- <scenario_1_sub_module_1>
+  |             |--- <scenario_1_sub_module_2>
+  |             |--- ... ...
+  |      |--- <scenario_2_main_module>
+  |             |--- ... ...
+  |--- jms-s4j
   |      |--- ... ...
-  |--- <scenario_2_main_module>
+  |--- kafka-s4k
+  |      |--- ... ...
+  |--- rabbitmq-s4r
+  |      |--- ... ...
+  |--- spring-pulsar
+  |      |--- ... ...
   |--- ... ...
 ``` 
 

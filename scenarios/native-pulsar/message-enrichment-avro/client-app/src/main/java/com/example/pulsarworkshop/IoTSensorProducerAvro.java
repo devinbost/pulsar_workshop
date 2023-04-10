@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 
-public class IoTSensorProducerAvro extends PulsarWorkshopCmdApp {
+public class IoTSensorProducerAvro extends NativePulsarCmdApp {
 
     private final static Logger logger = LoggerFactory.getLogger(IoTSensorProducerAvro.class);
 

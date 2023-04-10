@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>com.example.pulsarworkshop</groupId>
-        <artifactId>main</artifactId>
+        <artifactId>native-pulsar</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -22,15 +22,6 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
-
-    <properties>
-        <java.version>11</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <pulsar.version>2.10.3</pulsar.version>
-        <slf4j.version>2.0.6</slf4j.version>
-    </properties>
 
     <modules>
         <module>client-app</module>
