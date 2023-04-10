@@ -28,8 +28,14 @@ scenarios
 ``` 
 
 In the above structure,
-* The `main` module is the "root" parent module for all other modules
-* The `base-code` module contains some common codes that are used by scenario specific modules. 
+* The `scenarios` module is the "root" parent module for all other modules
+* The `base-code` module contains some common codes that are used by scenario specific modules.
+* The scenario specific modules are further organized by the APIs that scenario programs are using
+   * Native Pulsar API
+   * Starlight for JMS API
+   * Starlight for Kafka API
+   * Starlight for RabbitMQ API
+   * Spring Boot Pulsar API
 * Each scenario specific module may or may not have its own submodules.
 
 In order to build all scenarios, go to `scenarios` folder and run the following command:
