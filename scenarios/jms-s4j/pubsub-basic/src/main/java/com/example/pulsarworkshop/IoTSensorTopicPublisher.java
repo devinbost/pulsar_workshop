@@ -4,32 +4,29 @@ import com.datastax.oss.pulsar.jms.PulsarConnectionFactory;
 import com.example.pulsarworkshop.exception.InvalidParamException;
 import com.example.pulsarworkshop.exception.WorkshopRuntimException;
 import com.example.pulsarworkshop.util.CsvFileLineScanner;
-import org.apache.commons.cli.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jms.Destination;
-import javax.jms.JMSContext;
-import javax.jms.JMSProducer;
+import javax.jms.*;
 import java.io.File;
 import java.io.IOException;
 
-public class IoTSensorS4jSender extends S4JCmdApp {
-    private final static Logger logger = LoggerFactory.getLogger(IoTSensorS4jSender.class);
+public class IoTSensorTopicPublisher extends S4JCmdApp {
+    private final static Logger logger = LoggerFactory.getLogger(IoTSensorTopicPublisher.class);
 
     private static PulsarConnectionFactory connectionFactory;
     private static JMSContext jmsContext;
     private static JMSProducer jmsProducer;
-    private static Destination queueDestination;
+    private static Topic topicDestination;
 
     private File iotSensorDataCsvFile;
-    public IoTSensorS4jSender(String appName, String[] inputParams) {
+    public IoTSensorTopicPublisher(String appName, String[] inputParams) {
         super(appName, inputParams);
         addRequiredCommandLineOption("csv","csvFile", true, "IoT sensor data CSV file.");
     }
 
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new IoTSensorS4jSender("IoTSensorS4jSender", args);
+        PulsarWorkshopCmdApp workshopApp = new IoTSensorTopicPublisher("IoTSensorTopicPublisher", args);
         int exitCode = workshopApp.run();
         System.exit(exitCode);
     }
@@ -56,8 +53,8 @@ public class IoTSensorS4jSender extends S4JCmdApp {
                     jmsProducer = jmsContext.createProducer();
                 }
 
-                if (queueDestination == null) {
-                    queueDestination = createQueueDestination(jmsContext, pulsarTopicName);
+                if (topicDestination == null) {
+                    topicDestination = createTopicDestination(jmsContext, pulsarTopicName);
                 }
             }
 
@@ -76,10 +73,10 @@ public class IoTSensorS4jSender extends S4JCmdApp {
                 // Skip the first line which is a title line
                 if (!isTitleLine) {
                     if (msgSent < numMsg) {
-                        jmsProducer.send(queueDestination, csvLine);
+                        jmsProducer.send(topicDestination, csvLine);
                         if (logger.isDebugEnabled()) {
-                            logger.debug(">>> IoT sensor data published - line# {}, {}",
-                                    msgSent, csvLine);
+                            logger.debug(">>> IoT sensor data published to topic {} (line# {}, {})",
+                                    msgSent, csvLine, topicDestination.getTopicName());
                         }
 
                         msgSent++;
@@ -92,8 +89,12 @@ public class IoTSensorS4jSender extends S4JCmdApp {
                 }
             }
 
-        } catch (IOException ioException) {
-            throw new WorkshopRuntimException("Failed to read from the workload data source file: " + ioException.getMessage());
+        }
+        catch (IOException ioException) {
+            throw new WorkshopRuntimException("Failed to read from the workload data source file! " + ioException.getMessage());
+        }
+        catch (JMSException jmsException) {
+            throw new WorkshopRuntimException("Unexpected error when publishing JMS messages to a topic! " + jmsException.getMessage());
         }
     }
 

@@ -13,6 +13,7 @@ abstract public class NativePulsarCmdApp extends PulsarWorkshopCmdApp {
 
     public NativePulsarCmdApp(String appName, String[] inputParams) {
         super(appName, inputParams);
+        addOptionalCommandLineOption("a", "astra", false, "Whether to use Astra streaming.");
     }
 
     @Override
