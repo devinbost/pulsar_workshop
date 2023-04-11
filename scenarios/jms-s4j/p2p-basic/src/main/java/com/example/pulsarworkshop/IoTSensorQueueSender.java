@@ -76,7 +76,7 @@ public class IoTSensorQueueSender extends S4JCmdApp {
                         jmsProducer.send(queueDestination, csvLine);
                         if (logger.isDebugEnabled()) {
                             logger.debug(">>> IoT sensor data sent to queue {} (line# {}, {})",
-                                    msgSent, csvLine, queueDestination.getQueueName());
+                                    queueDestination.getQueueName(), msgSent, csvLine);
                         }
 
                         msgSent++;

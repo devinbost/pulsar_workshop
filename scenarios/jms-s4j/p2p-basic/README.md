@@ -2,33 +2,32 @@
   - [1.1. Program List](#11-program-list)
     - [1.1.1. Build the Program](#111-build-the-program)
   - [1.2. Software Requirement](#12-software-requirement)
-  - [1.3. Pulsar Tenant, Namespace, and Topics](#13-pulsar-tenant-namespace-and-topics)
-    - [1.3.1. Customize Pulsar Tenant, Namespace, and Topics](#131-customize-pulsar-tenant-namespace-and-topics)
+  - [1.3. JMS Queue](#13-jms-queue)
+    - [1.3.1. Customize the JMS Queue](#131-customize-the-jms-queue)
 - [2. Connect to the Pulsar Cluster](#2-connect-to-the-pulsar-cluster)
 - [3. IoT Sensor Reading Data Source](#3-iot-sensor-reading-data-source)
 - [4. Deploy the Scenario](#4-deploy-the-scenario)
 - [5. Run the Scenario](#5-run-the-scenario)
-  - [5.1. Run Pulsar Consumer Client App](#51-run-pulsar-consumer-client-app)
-  - [5.2. Run Pulsar Producer Client App](#52-run-pulsar-producer-client-app)
+  - [5.1. Run the JMS Queue Sender Client App](#51-run-the-jms-queue-sender-client-app)
+  - [5.2. Run the JMS Queue Receiver Client App](#52-run-the-jms-queue-receiver-client-app)
 
 
 # 1. Scenario Overview
 
 | | |
 | - | - |
-| **Name** |message-enrichment |
-| **Description** | <ul><li>This scenario shows how to use a Pulsar function to enrich Pulsar messages that are published by a producer to a Pulsar topic.</li> <li>The enriched messages are sent by the function to another topic with a consumer subscribed to it for message consumption.</li> <li>The raw data source is a CSV file that includes actual readings in a particular time range from a given set of IoT sensors.</li></ul> |
-| **Data Flow Pattern** | <IoT_sensor_reading_data> -> [Pulsar Producer] -> (raw topic) -> [Pulsar Function] -> (processed topic) -> [Pulsar Consumer] |
+| **Name** | p2p-basic |
+| **Description** | This scenario shows how to use the Starlight for JMS (S4J) API with Pulsar to do native message sending and receiving with a JMS queue. |
+| **Data Flow Pattern** | <IoT_sensor_reading_data> -> [JMS Queue Sender] -> (JMS queue) -> [JMS Queue Receiver] |
 
 ## 1.1. Program List
 
-There are 3 programs used in this scenario to demonstrate the end-to-end data flow pattern. All these programs are written in **Java**. 
+There are 2 programs used in this scenario to demonstrate the end-to-end data flow pattern. All these programs are written in **Java**. 
 
-| Name | Type | Source Code | Description |
-| ---- | ---- | ----------- | ----------- |
-| IoTSensorProducer | Pulsar client app | [IotSensorProducer.java](./client-app/src/main/java/com/example/pulsarworkshop/IoTSensorProducer.java) | A Pulsar producer client app that reads data from an IoT reading data source file (csv format) and publishes the data into a Pulsar topic. |
-| AddMetadataFunc | Pulsar function | [AddMetadataFunc.java](./function/src/main/java/com/example/pulsarworkshop/AddMetadataFunc.java) | A Pulsar function that adds a metadata property to each message of one topic and publishes a new message to another topic for further processing. |
-| IoTSensorConsumer | Pulsar client app | [IotSensorConsumer.java](./client-app/src/main/java/com/example/pulsarworkshop/IoTSensorConsumer.java) | A standard Pulsar consumer client app that consumes from a topic that contains the processed messages with the new metadata property information. |
+| Name | Source Code | Description |
+| ---- | ----------- | ----------- |
+| IoTSensorQueueSender | [IoTSensorQueueSender.java](./src/main/java/com/example/pulsarworkshop/IoTSensorQueueSender.java) | A JMS sender client app that reads data from an IoT reading data source file (CSV format) and sends the data to a JMS queue which is backed by a Pulsar topic behind the scene. |
+| IoTSensorQueueReceiver | [IoTSensorQueueReceiver.java](./src/main/java/com/example/pulsarworkshop/IoTSensorQueueReceiver.java) | A JMS receiver client app that receives messages from a JMS queue which is backed by a Pulsar topic behind the scene. |
 
 ### 1.1.1. Build the Program
 
@@ -41,19 +40,18 @@ Running the scenario require the following software to be installed on your loca
 1. `JDK 11`
 2. `curl` utility
 
-## 1.3. Pulsar Tenant, Namespace, and Topics
+## 1.3. JMS Queue
 
-By default, running this scenario requires the following Pulsar tenant, namespace, and topics. 
+In Pulsar, a JMS queue is backed by a Pulsar topic. Therefore, running this scenario requires the following default Pulsar tenant, namespace, and topic. 
 
 * **tenant**: `msgenrich`
 * **namespace**: `testns`
 * **topics**:
-   * `msgenrich/testns/raw`
-   * `msgenrich/testns/processed`
+   * `msgenrich/testns/p2p_s4j`
 
 Please **NOTE** that the creation of the above Pulsar "resources" can be **automated** by using the `deploy.sh` scrip. (see [Chapter 4](#4-deploy-the-scenario))
 
-### 1.3.1. Customize Pulsar Tenant, Namespace, and Topics
+### 1.3.1. Customize the JMS Queue
 
 If you want to run this scenario against a different set of Pulsar tenant, namespace, and topics, it can also be achieved by using a more advanced functionality of the `deploy.sh` script, via a `deployment properties` file. The document of [Deploying the Scenario](Deploy.Scenario.md) provides more details of how to do so.
 
@@ -81,8 +79,7 @@ For a more detailed description of this data source, please check from [here](ht
 The scenario deployment script, [`deploy.sh`](_bash/deploy.sh), is used to execute the following tasks which are required before running the scenario.
 1. Create the required Pulsar tenant (only relevant for non-Astra Streaming based Pulsar cluster)
 2. Create the required Pulsar namespace
-3. Create the required Pulsar topics
-4. Deploy the required Pulsar function(s)
+3. Create the required Pulsar topic
 
 This script has the following usage format. The only mandatory parameter is `-cc` which is used to specify the required Pulsar cluster client connection file. The `-dp` parameter is related with the scenario deployment customization (see [`Deploying the Scenario`](Deploy.Scenario.md) doc for more details.)
 
@@ -107,9 +104,9 @@ deploy.sh -cc /tmp/client.conf
 
 After all Pulsar resources are deployed, we can run the Pulsar client applications included in this scenario.
 
-## 5.1. Run Pulsar Consumer Client App
+## 5.1. Run the JMS Queue Sender Client App
 
-The following script [`runConsumer.sh`](_bash/runConsumer.sh) is used to run the Pulsar consumer client app that consumes the enriched messages from the "processed" topic, `msgenrich/testns/processed`.
+The following script [`runConsumer.sh`](_bash/runConsumer.sh) is used to run the JMS receiver client app that receives the messages from the JMS queue, `msgenrich/testns/s4j_p2p`.
 
 ```
 Usage: runConsumer.sh [-h]
@@ -127,12 +124,12 @@ Usage: runConsumer.sh [-h]
 An example of using this script to consuming 100 messages is as below:
 
 ```
-runConsumer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/processed
+runConsumer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/s4j_p2p
 ```
 
-## 5.2. Run Pulsar Producer Client App
+## 5.2. Run the JMS Queue Receiver Client App
 
-The following script [`runProducer.sh`](_bash/runProducer.sh) is used to run the Pulsar producer client app that reads the IoT sensor data from a CSV source file and then publishes to the "raw" topic, `msgenrich/testns/raw`.
+The following script [`runProducer.sh`](_bash/runProducer.sh) is used to run the JMS sender client app that reads the IoT sensor data from a CSV source file and then sends them to the JMS queue, `msgenrich/testns/s4j_p2p`.
 
 ```
 Usage: runProducer.sh [-h]
@@ -150,5 +147,5 @@ Usage: runProducer.sh [-h]
 An example of using this script to publish 100 messages is as below:
 
 ```
-runProducer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/raw
+runProducer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/s4j_p2p
 ```

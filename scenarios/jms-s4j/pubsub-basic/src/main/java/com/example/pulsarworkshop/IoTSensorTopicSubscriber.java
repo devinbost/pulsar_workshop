@@ -99,7 +99,7 @@ public class IoTSensorTopicSubscriber extends S4JCmdApp {
             while (msgRecvd < numMsg) {
                 Message message = jmsConsumer.receive();
                 if (logger.isDebugEnabled()) {
-                    logger.debug(">>> Message received from queue {} (msg-payload={})",
+                    logger.debug(">>> Message received from topic {} (msg-payload={})",
                             topicDestination.getTopicName(), message.getBody(String.class));
                 }
 
