@@ -3,7 +3,7 @@
 CUR_SCRIPT_FOLDER=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCENARIO_HOMEDIR=$( cd -- "${CUR_SCRIPT_FOLDER}/.." &> /dev/null && pwd )
 
-source "${SCENARIO_HOMEDIR}/../_bash/utilities.sh"
+source "${SCENARIO_HOMEDIR}/../../_bash/utilities.sh"
 # DEBUG=true
 
 echo

@@ -76,7 +76,7 @@ public class IoTSensorTopicPublisher extends S4JCmdApp {
                         jmsProducer.send(topicDestination, csvLine);
                         if (logger.isDebugEnabled()) {
                             logger.debug(">>> IoT sensor data published to topic {} (line# {}, {})",
-                                    msgSent, csvLine, topicDestination.getTopicName());
+                                    topicDestination.getTopicName(), msgSent, csvLine);
                         }
 
                         msgSent++;

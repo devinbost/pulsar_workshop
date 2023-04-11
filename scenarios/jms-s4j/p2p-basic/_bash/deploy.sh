@@ -76,10 +76,8 @@ fi
 # in format <tenant>/<namespace>
 tntNamespace=$(getPropVal ${deployPropFile} "tenantNamespace")
 coreTopics=$(getPropVal ${deployPropFile} "coreTopics")
-coreFunctions=$(getPropVal ${deployPropFile} "coreFunctions")
 debugMsg "tntNamespace=${tntNamespace}"
 debugMsg "coreTopics=${coreTopics}"
-debugMsg "coreFunctions=${coreFunctions}"
 
 IFS='/' read -r -a tntNsArr <<< "${tntNamespace}"
 tenant="${tntNsArr[0]}"
@@ -96,15 +94,6 @@ else
     IFS=',' read -r -a coreTpArr <<< "${coreTopics}"
     for ctp in "${coreTpArr[@]}"; do
         pulsarTopics+=("${tenant}/${namespace}/${ctp}")
-    done
-fi
-
-# array of full function names (in format: <tenant>/<namespace>/<function>)
-pulsarFunctions=()
-if ! [[ -z "${coreFunctions// }" ]]; then
-    IFS=',' read -r -a coreFnArr <<< "${coreFunctions}"
-    for cfn in "${coreFnArr[@]}"; do
-        pulsarFunctions+=("${tenant}/${namespace}/${cfn}")
     done
 fi
 
@@ -184,52 +173,5 @@ if [[ ${#pulsarTopics[@]} -gt 0 ]]; then
     done
 fi
 
-
-#####
-## 4. Deploy the Pulsar functions
-#####
-
-if [[ ${#pulsarFunctions[@]} -gt 0 ]]; then
-    #
-    # NOTE: For multiple functions, this assumes they're all created within
-    #       one single jar file.
-    #
-    scnFuncCfgHomeDir="${SCENARIO_HOMEDIR}/_config"
-    scnFuncPkgHomeDir="${SCENARIO_HOMEDIR}/function/target"
-    funcPkgName="msgenrich-function-1.0.0.jar"
-    if ! [[ -f "${scnFuncPkgHomeDir}/${funcPkgName}" ]]; then
-        errExit 70 "The specified Pulsar function jar file (${scnFuncPkgHomeDir}/${funcPkgName}) is invalid!"
-    fi
-
-    outputMsg "" 0 ${deployMainLogFile} true
-    outputMsg ">>> Deploying the required Pulsar functions ..." 0 ${deployMainLogFile} true
-    functionIdx=0
-    for funcFullName in "${pulsarFunctions[@]}"; do
-        functionIdx=$((functionIdx+1))
-        outputMsg "* Function ${functionIdx} : ${funcFullName}" 4 ${deployMainLogFile} true
-
-        funcCoreName="${funcFullName##*/}"
-        funcCfgJsonFile="${scnFuncCfgHomeDir}/${funcCoreName}.json"
-        debugMsg "funcCfgJsonFile=${funcCfgJsonFile}"
-
-        # NOTE: For each function name, a corresponding function config json file
-        #       '<function_core_name>.json' MUST exit under the folder of 
-        #       "<SCENARIO_HOMEDIR>/config"
-        if [[ -f "${funcCfgJsonFile}" ]]; then
-            httpResponseCode=$(createFunction \
-                "${webServiceUrl}" \
-                "${funcFullName}" \
-                "${jwtTokenAuthEnabled}" \
-                "${jwtTokenValue}" \
-                "${scnFuncPkgHomeDir}/${funcPkgName}" \
-                "${funcCfgJsonFile}")
-            processHttpResponse "${httpResponseCode}" 6 ${deployMainLogFile}
-        else
-            outputMsg "[WARN] Skip due to invalid function config json file." 6 ${deployMainLogFile} true 
-        fi
-
-        outputMsg "" 0 ${deployMainLogFile} true
-    done
-fi
 
 echo

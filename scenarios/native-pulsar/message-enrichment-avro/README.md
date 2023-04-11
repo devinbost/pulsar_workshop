@@ -21,7 +21,7 @@ There are 3 programs used in this scenario to demonstrate the end-to-end data fl
 
 ### 1.1.1. Build the Program
 
-The above programs need to be built in advance before running this scenario. Please refer to the document of [Building the Scenarios](../../Build.Programs.md) for more details.
+The above programs need to be built in advance before running this scenario. Please refer to the document of [Building the Scenarios](../../../Build.Programs.md) for more details.
 
 ## 1.2. Software Requirement
 
@@ -54,7 +54,7 @@ Please **NOTE** that for Astra Streaming (AS), this requires creating an AS tena
 
 # 3. IoT Sensor Reading Data Source
 
-The CSV file that contains the raw IoT sensor reading data is available from [sensor_telemetry.csv](../_raw_data_src/sensor_telemetry.csv). Each line of the CSV file represents a particular IoT device reading of the following types at a particular time.
+The CSV file that contains the raw IoT sensor reading data is available from [sensor_telemetry.csv](../../_raw_data_src/sensor_telemetry.csv). Each line of the CSV file represents a particular IoT device reading of the following types at a particular time.
 * Carbon monoxide
 * Humidity (%)
 * Light detection
@@ -124,7 +124,7 @@ In this scenario, both topic `raw_a` and `processed_a` will use the same Apache 
 
 # 4. Deploy the Scenario
 
-The scenario deployment script, [`deploy.sh`](bash/deploy.sh), is used to execute the following tasks which are required before running the scenario.
+The scenario deployment script, [`deploy.sh`](_bash/deploy.sh), is used to execute the following tasks which are required before running the scenario.
 1. Create the required Pulsar tenant (only relevant for non-Astra Streaming based Pulsar cluster)
 2. Create the required Pulsar namespace
 3. Create the required Pulsar topics
@@ -156,7 +156,7 @@ After all Pulsar resources are deployed, we can run the Pulsar client applicatio
 
 ## 5.1. Run Pulsar Consumer Client App
 
-The following script [`runConsumer.sh`](bash/runConsumer.sh) is used to run the Pulsar consumer client app that consumes the enriched messages from the "processed" topic, `msgenrich/testns/processed_a`.
+The following script [`runConsumer.sh`](_bash/runConsumer.sh) is used to run the Pulsar consumer client app that consumes the enriched messages from the "processed" topic, `msgenrich/testns/processed_a`.
 
 ```
 Usage: runConsumer.sh [-h]
@@ -179,7 +179,7 @@ runConsumer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/processed_a
 
 ## 5.2. Run Pulsar Producer Client App
 
-The following script [`runProducer.sh`](bash//runProducer.sh) is used to run the Pulsar producer client app that reads the IoT sensor data from a CSV source file and then publishes to "raw" topic, `msgenrich/testns/raw_a`.
+The following script [`runProducer.sh`](_bash/runProducer.sh) is used to run the Pulsar producer client app that reads the IoT sensor data from a CSV source file and then publishes to "raw" topic, `msgenrich/testns/raw_a`.
 
 ```
 Usage: runProducer.sh [-h]

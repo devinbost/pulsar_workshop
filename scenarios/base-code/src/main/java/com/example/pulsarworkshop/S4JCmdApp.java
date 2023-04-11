@@ -43,7 +43,7 @@ abstract public class S4JCmdApp extends PulsarWorkshopCmdApp {
     public PulsarConnectionFactory createPulsarJmsConnectionFactory(Map<String, Object> cfgMap)  {
         Map<String, Object> jmsConnMap = new HashMap<>(cfgMap);
 
-        jmsConnMap.put("webServiceUrl", pulsarClientConf.getValue("brokerServiceUrl"));
+        jmsConnMap.put("webServiceUrl", pulsarClientConf.getValue("webServiceUrl"));
         jmsConnMap.put("brokerServiceUrl", pulsarClientConf.getValue("brokerServiceUrl"));
         jmsConnMap.put("authPlugin", pulsarClientConf.getValue("authPlugin"));
         jmsConnMap.put("authParams", pulsarClientConf.getValue("authParams"));
