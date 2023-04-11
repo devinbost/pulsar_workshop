@@ -8,20 +8,20 @@ import org.slf4j.LoggerFactory;
 
 import javax.jms.*;
 
-public class IoTSensorS4jReceiver extends S4JCmdApp {
-    private final static Logger logger = LoggerFactory.getLogger(IoTSensorS4jReceiver.class);
+public class IoTSensorQueueReceiver extends S4JCmdApp {
+    private final static Logger logger = LoggerFactory.getLogger(IoTSensorQueueReceiver.class);
 
     private static PulsarConnectionFactory connectionFactory;
     private static JMSContext jmsContext;
     private static JMSConsumer jmsConsumer;
-    private static Destination queueDestination;
+    private static Queue queueDestination;
 
-    public IoTSensorS4jReceiver(String appName, String[] inputParams) {
+    public IoTSensorQueueReceiver(String appName, String[] inputParams) {
         super(appName, inputParams);
     }
 
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new IoTSensorS4jReceiver("IoTSensorS4jReceiver", args);
+        PulsarWorkshopCmdApp workshopApp = new IoTSensorQueueReceiver("IoTSensorQueueReceiver", args);
         int exitCode = workshopApp.run();
         System.exit(exitCode);
     }
@@ -57,15 +57,15 @@ public class IoTSensorS4jReceiver extends S4JCmdApp {
             while (msgRecvd < numMsg) {
                 Message message = jmsConsumer.receive();
                 if (logger.isDebugEnabled()) {
-                    logger.debug(">>> Message received and acknowledged: msg-payload={}",
-                            message.getBody(String.class));
+                    logger.debug(">>> Message received from queue {} (msg-payload={})",
+                            queueDestination.getQueueName(), message.getBody(String.class));
                 }
 
                 msgRecvd++;
             }
         }
         catch (JMSException jmsException) {
-            throw new WorkshopRuntimException("Unexpected error when consuming a JMS message: " + jmsException.getMessage());
+            throw new WorkshopRuntimException("Unexpected error when receiving JMS messages from a queue! " + jmsException.getMessage());
         }
     }
 

@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.jms.Destination;
 import javax.jms.JMSContext;
+import javax.jms.Queue;
+import javax.jms.Topic;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,7 +67,7 @@ abstract public class S4JCmdApp extends PulsarWorkshopCmdApp {
         return factory.createContext(sessionMode);
     }
 
-    public Destination createQueueDestination(JMSContext jmsContext, String destName) {
+    public Queue createQueueDestination(JMSContext jmsContext, String destName) {
         assert (jmsContext != null);
         assert (StringUtils.isNotBlank(destName));
 
@@ -76,7 +78,7 @@ abstract public class S4JCmdApp extends PulsarWorkshopCmdApp {
         return jmsContext.createQueue(destName);
     }
 
-    public Destination createTopicDestination(JMSContext jmsContext, String destName) {
+    public Topic createTopicDestination(JMSContext jmsContext, String destName) {
         assert (jmsContext != null);
         assert (StringUtils.isNotBlank(destName));
 

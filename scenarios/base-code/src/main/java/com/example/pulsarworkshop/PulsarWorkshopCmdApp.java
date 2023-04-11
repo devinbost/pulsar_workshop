@@ -46,7 +46,6 @@ abstract public class PulsarWorkshopCmdApp {
         addRequiredCommandLineOption("n","numMsg", true, "Number of messages to process.");
         addRequiredCommandLineOption("t", "topic", true, "Pulsar topic name.");
         addRequiredCommandLineOption("c","connFile", true, "\"client.conf\" file path.");
-        addOptionalCommandLineOption("a", "astra", false, "Whether to use Astra streaming.");
     }
 
     protected void addRequiredCommandLineOption(String option, String longOption, boolean hasArg, String description) {
@@ -150,33 +149,42 @@ abstract public class PulsarWorkshopCmdApp {
     }
 
     public int processIntegerInputParam(String optionName) {
+        return processIntegerInputParam(optionName, 0);
+    }
+    public int processIntegerInputParam(String optionName, int dftValue) {
         Option option = cliOptions.getOption(optionName);
 
         // Default value if not present on command line
-        int intVal = -1;
+        int intVal = dftValue;
 
         if (option.isRequired()) {
             String value = commandLine.getOptionValue(option.getOpt());
             if (StringUtils.isBlank(value)) {
                 throw new InvalidParamException("Empty value for argument '" + optionName + "'");
             }
-            else {
-                intVal = NumberUtils.toInt(value);
-            }
+            intVal = NumberUtils.toInt(value);
         }
 
         return intVal;
     }
-    
-    public String processStringInputParam(String optionName) {
-    	Option option = cliOptions.getOption(optionName);
-        String value = commandLine.getOptionValue(option);
 
-        if (option.isRequired() && StringUtils.isBlank(value)) {
-            throw new InvalidParamException("Empty value for argument '" + optionName +"'");
+    public String processStringInputParam(String optionName) {
+        return processStringInputParam(optionName, null);
+    }
+    public String processStringInputParam(String optionName, String dftValue) {
+    	Option option = cliOptions.getOption(optionName);
+
+        String strVal = dftValue;
+
+        if (option.isRequired()) {
+            String value = commandLine.getOptionValue(option);
+            if (StringUtils.isBlank(value)) {
+                throw new InvalidParamException("Empty value for argument '" + optionName + "'");
+            }
+            strVal = value;
         }
 
-        return value;
+        return strVal;
     }
     
     public File processFileInputParam(String optionName) {
