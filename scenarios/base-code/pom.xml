@@ -58,7 +58,7 @@
 
         <dependency>
             <groupId>com.datastax.oss</groupId>
-            <artifactId>pulsar-jms</artifactId>
+            <artifactId>pulsar-jms-all</artifactId>
             <version>${s4j.version}</version>
             <scope>compile</scope>
         </dependency>

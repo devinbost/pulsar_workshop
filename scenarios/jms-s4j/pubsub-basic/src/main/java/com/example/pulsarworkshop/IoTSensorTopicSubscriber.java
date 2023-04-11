@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jms.*;
+import java.util.Arrays;
 
 public class IoTSensorTopicSubscriber extends S4JCmdApp {
     private final static Logger logger = LoggerFactory.getLogger(IoTSensorTopicSubscriber.class);
@@ -47,6 +48,13 @@ public class IoTSensorTopicSubscriber extends S4JCmdApp {
 
         // (Optional) Subscription type identifier
         subType = processStringInputParam("st", subType);
+        if (StringUtils.isNotBlank(subType)) {
+            if (!Arrays.stream(VALID_SUB_TYPES).anyMatch(subType::equalsIgnoreCase)) {
+                throw new InvalidParamException(
+                        "Invalid subscription type parameter (\"-st\"). Must be one of the following values: " +
+                        String.join(",", VALID_SUB_TYPES));
+            }
+        }
     }
 
     @Override
@@ -57,6 +65,7 @@ public class IoTSensorTopicSubscriber extends S4JCmdApp {
 
                 if (jmsContext == null) {
                     jmsContext = createJmsContext(connectionFactory);
+                    jmsContext.setClientID("IoTSensorTopicSubscriber-" + RandomStringUtils.randomNumeric(10));
                 }
 
                 if (topicDestination == null) {
