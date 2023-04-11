@@ -11,7 +11,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>native-pulsar</artifactId>
+    <artifactId>rabbitmq-s4r</artifactId>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -27,8 +27,5 @@
     </properties>
 
     <modules>
-        <module>message-enrichment</module>
-        <module>message-enrichment-avro</module>
-        <module>schema-compatibility</module>
     </modules>
 </project>

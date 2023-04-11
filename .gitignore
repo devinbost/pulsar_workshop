@@ -3,6 +3,9 @@ scenarios/.idea
 scenarios/*/.idea
 scenarios/*/*.idea
 scenarios/*/*/*/.idea
+scenarios/*/*.iml
+scenarios/*/*/*.iml
+scenarios/*/*/*/*.iml
 scenarios/*/target
 scenarios/*/*/target
 scenarios/*/*/*/target

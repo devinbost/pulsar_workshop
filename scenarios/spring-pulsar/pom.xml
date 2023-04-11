@@ -11,7 +11,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>native-pulsar</artifactId>
+    <artifactId>spring-pulsar</artifactId>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -24,11 +24,9 @@
     </licenses>
 
     <properties>
+        <springboot.pulsar.version>1.2.0</springboot.pulsar.version>
     </properties>
 
     <modules>
-        <module>message-enrichment</module>
-        <module>message-enrichment-avro</module>
-        <module>schema-compatibility</module>
     </modules>
 </project>

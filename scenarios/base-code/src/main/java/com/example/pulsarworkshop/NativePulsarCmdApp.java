@@ -1,20 +1,13 @@
 package com.example.pulsarworkshop;
 
-import com.example.pulsarworkshop.exception.HelpExitException;
 import com.example.pulsarworkshop.exception.InvalidParamException;
-import com.example.pulsarworkshop.exception.WorkshopRuntimException;
-import com.example.pulsarworkshop.util.PulsarClientConf;
-import org.apache.commons.cli.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.pulsar.client.api.ClientBuilder;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import javax.jms.JMSContext;
 
 abstract public class NativePulsarCmdApp extends PulsarWorkshopCmdApp {
 
@@ -22,28 +15,20 @@ abstract public class NativePulsarCmdApp extends PulsarWorkshopCmdApp {
         super(appName, inputParams);
     }
 
-    public PulsarClientConf getPulsarClientConf() {
-        PulsarClientConf pulsarClientConf = null;
-        if (clientConnFile != null) {
-            pulsarClientConf = new PulsarClientConf(clientConnFile);
-        }
-        if (pulsarClientConf == null) {
-            throw new WorkshopRuntimException(
-                    "Can't properly read the Pulsar connection information from the \"client.conf\" file!");
-        }
-        return pulsarClientConf;
+    @Override
+    public void processExtendedInputParams() throws InvalidParamException {
+        // (Optional) Whether to use Astra Streaming
+        useAstraStreaming = processBooleanInputParam("a");
     }
-    
+
     public PulsarClient createNativePulsarClient() throws PulsarClientException {
         ClientBuilder clientBuilder = PulsarClient.builder();
 
-        PulsarClientConf clientConf = getPulsarClientConf();
-
-        String pulsarSvcUrl = clientConf.getValue("brokerServiceUrl");
+        String pulsarSvcUrl = pulsarClientConf.getValue("brokerServiceUrl");
         clientBuilder.serviceUrl(pulsarSvcUrl);
 
-        String authPluginClassName = clientConf.getValue("authPlugin");
-        String authParams = clientConf.getValue("authParams");
+        String authPluginClassName = pulsarClientConf.getValue("authPlugin");
+        String authParams = pulsarClientConf.getValue("authParams");
         if ( !StringUtils.isAnyBlank(authPluginClassName, authParams) ) {
             clientBuilder.authentication(authPluginClassName, authParams);
         }
@@ -52,17 +37,17 @@ abstract public class NativePulsarCmdApp extends PulsarWorkshopCmdApp {
         // But for Luna streaming, they're required if TLS is expected.
         if ( !useAstraStreaming && StringUtils.contains(pulsarSvcUrl, "pulsar+ssl") ) {
             boolean tlsHostnameVerificationEnable = BooleanUtils.toBoolean(
-                    clientConf.getValue("tlsEnableHostnameVerification"));
+                    pulsarClientConf.getValue("tlsEnableHostnameVerification"));
             clientBuilder.enableTlsHostnameVerification(tlsHostnameVerificationEnable);
 
             String tlsTrustCertsFilePath =
-                    clientConf.getValue("tlsTrustCertsFilePath");
+                    pulsarClientConf.getValue("tlsTrustCertsFilePath");
             if (!StringUtils.isBlank(tlsTrustCertsFilePath)) {
                 clientBuilder.tlsTrustCertsFilePath(tlsTrustCertsFilePath);
             }
 
             boolean tlsAllowInsecureConnection = BooleanUtils.toBoolean(
-                    clientConf.getValue("tlsAllowInsecureConnection"));
+                    pulsarClientConf.getValue("tlsAllowInsecureConnection"));
             clientBuilder.allowTlsInsecureConnection(tlsAllowInsecureConnection);
         }
 

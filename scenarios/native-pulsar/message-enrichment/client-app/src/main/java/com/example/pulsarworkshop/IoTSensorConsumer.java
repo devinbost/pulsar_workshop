@@ -15,13 +15,13 @@ public class IoTSensorConsumer extends NativePulsarCmdApp {
     private String subscriptionName;
     private SubscriptionType subscriptionType = SubscriptionType.Exclusive;
 
-    private PulsarClient pulsarClient;
-    private Consumer<?> pulsarConsumer;
+    private static PulsarClient pulsarClient;
+    private static Consumer<byte[]> pulsarConsumer;
 
     public IoTSensorConsumer(String appName, String[] inputParams) {
         super(appName, inputParams);
-        addCommandLineOption(new Option("sbt","subType", true, "Pulsar subscription type."));
-        addCommandLineOption(new Option("sbn", "subName", true, "Pulsar subscription name."));
+        addOptionalCommandLineOption("sbt","subType", true, "Pulsar subscription type.");
+        addRequiredCommandLineOption("sbn", "subName", true, "Pulsar subscription name.");
     }
 
     public static void main(String[] args) {
@@ -32,6 +32,8 @@ public class IoTSensorConsumer extends NativePulsarCmdApp {
 
     @Override
     public void processExtendedInputParams() throws InvalidParamException {
+        super.processExtendedInputParams();
+
         // (Required) Pulsar subscription name
         subscriptionName = processStringInputParam("sbn");
         if ( StringUtils.isBlank(subscriptionName) ) {
@@ -53,13 +55,17 @@ public class IoTSensorConsumer extends NativePulsarCmdApp {
     @Override
     public void runApp() {
         try {
-            pulsarClient = createNativePulsarClient();
+            if (pulsarClient == null) {
+                pulsarClient = createNativePulsarClient();
 
-            ConsumerBuilder<?> consumerBuilder = pulsarClient.newConsumer();
-            consumerBuilder.topic(pulsarTopicName);
-            consumerBuilder.subscriptionName(subscriptionName);
-            consumerBuilder.subscriptionType(subscriptionType);
-            pulsarConsumer = consumerBuilder.subscribe();
+                if (pulsarConsumer == null) {
+                    ConsumerBuilder<byte[]> consumerBuilder = pulsarClient.newConsumer();
+                    consumerBuilder.topic(pulsarTopicName);
+                    consumerBuilder.subscriptionName(subscriptionName);
+                    consumerBuilder.subscriptionType(subscriptionType);
+                    pulsarConsumer = consumerBuilder.subscribe();
+                }
+            }
 
             int msgRecvd = 0;
             if (numMsg == -1) {
@@ -67,7 +73,7 @@ public class IoTSensorConsumer extends NativePulsarCmdApp {
             }
 
             while (msgRecvd < numMsg) {
-                Message<?> message = pulsarConsumer.receive();
+                Message<byte[]> message = pulsarConsumer.receive();
                 if (logger.isDebugEnabled()) {
                     logger.debug(">>> ({}) Message received and acknowledged: " +
                                     "msg-key={}; msg-properties={}; msg-payload={}",

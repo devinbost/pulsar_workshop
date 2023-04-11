@@ -16,13 +16,13 @@ public class IoTSensorProducer extends NativePulsarCmdApp {
 
     private final static Logger logger = LoggerFactory.getLogger(IoTSensorProducer.class);
 
-    private File iotSensorDataCsvFile;
-    private PulsarClient pulsarClient;
-    private Producer pulsarProducer;
+    private static File iotSensorDataCsvFile;
+    private static PulsarClient pulsarClient;
+    private static Producer<byte[]> pulsarProducer;
 
     public IoTSensorProducer(String appName, String[] inputParams) {
         super(appName, inputParams);
-        addCommandLineOption(new Option("csv","csvFile", true, "IoT sensor data CSV file."));
+        addRequiredCommandLineOption("csv","csvFile", true, "IoT sensor data CSV file.");
     }
 
     public static void main(String[] args) {
@@ -33,6 +33,8 @@ public class IoTSensorProducer extends NativePulsarCmdApp {
 
     @Override
     public void processExtendedInputParams() throws InvalidParamException {
+        super.processExtendedInputParams();
+
         // (Required) CLI option for IoT sensor source file
         iotSensorDataCsvFile = processFileInputParam("csv");
         if ( iotSensorDataCsvFile == null) {
@@ -43,14 +45,18 @@ public class IoTSensorProducer extends NativePulsarCmdApp {
     @Override
     public void runApp() throws WorkshopRuntimException {
         try {
-            pulsarClient = createNativePulsarClient();
-            ProducerBuilder<?> producerBuilder = pulsarClient.newProducer();
-            pulsarProducer = producerBuilder.topic(pulsarTopicName).create();
+            if (pulsarClient == null ) {
+                pulsarClient = createNativePulsarClient();
+                if (pulsarProducer == null) {
+                    ProducerBuilder<byte[]> producerBuilder = pulsarClient.newProducer();
+                    pulsarProducer = producerBuilder.topic(pulsarTopicName).create();
+                }
+            }
 
             assert (iotSensorDataCsvFile != null);
 
             CsvFileLineScanner csvFileLineScanner = new CsvFileLineScanner(iotSensorDataCsvFile);
-            TypedMessageBuilder messageBuilder = pulsarProducer.newMessage();
+            TypedMessageBuilder<byte[]> messageBuilder = pulsarProducer.newMessage();
 
             boolean isTitleLine = true;
             String titleLine = "";

@@ -24,14 +24,18 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>2.0.6</slf4j.version>
+        <pulsar.version>2.10.3</pulsar.version>
+        <s4j.version>3.2.1</s4j.version>
+        <kafka.version>3.4.0</kafka.version>
+        <amqp.version>5.17.0</amqp.version>
     </properties>
 
     <modules>
         <module>base-code</module>
         <module>native-pulsar</module>
         <module>jms-s4j</module>
-        <!-- <module>kafka-s4k</module>
+        <module>kafka-s4k</module>
         <module>rabbitmq-s4r</module>
-        <module>spring-pulsar</module> -->
+        <module>spring-pulsar</module>
     </modules>
 </project>
