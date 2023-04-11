@@ -136,13 +136,16 @@ abstract public class PulsarWorkshopCmdApp {
 
         // Default value if not present on command line
         boolean boolVal = false;
+        String value = commandLine.getOptionValue(option.getOpt());
 
         if (option.isRequired()) {
-            String value = commandLine.getOptionValue(option.getOpt());
-            if (StringUtils.isBlank(value))
-                throw new InvalidParamException("Empty value for argument '" + optionName +"'");
-            else
-                boolVal=BooleanUtils.toBoolean(value);
+            if (StringUtils.isBlank(value)) {
+                throw new InvalidParamException("Empty value for argument '" + optionName + "'");
+            }
+        }
+
+        if (StringUtils.isNotBlank(value)) {
+            boolVal=BooleanUtils.toBoolean(value);
         }
 
         return boolVal;
@@ -156,12 +159,15 @@ abstract public class PulsarWorkshopCmdApp {
 
         // Default value if not present on command line
         int intVal = dftValue;
+        String value = commandLine.getOptionValue(option.getOpt());
 
         if (option.isRequired()) {
-            String value = commandLine.getOptionValue(option.getOpt());
             if (StringUtils.isBlank(value)) {
                 throw new InvalidParamException("Empty value for argument '" + optionName + "'");
             }
+        }
+
+        if (StringUtils.isNotBlank(value)) {
             intVal = NumberUtils.toInt(value);
         }
 
@@ -175,12 +181,15 @@ abstract public class PulsarWorkshopCmdApp {
     	Option option = cliOptions.getOption(optionName);
 
         String strVal = dftValue;
+        String value = commandLine.getOptionValue(option);
 
         if (option.isRequired()) {
-            String value = commandLine.getOptionValue(option);
             if (StringUtils.isBlank(value)) {
                 throw new InvalidParamException("Empty value for argument '" + optionName + "'");
             }
+        }
+
+        if (StringUtils.isNotBlank(value)) {
             strVal = value;
         }
 
