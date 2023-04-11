@@ -5,7 +5,6 @@ import org.apache.commons.cli.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.pulsar.client.api.*;
 
 import com.example.pulsarworkshop.exception.HelpExitException;
 import com.example.pulsarworkshop.exception.InvalidParamException;
@@ -43,15 +42,23 @@ abstract public class PulsarWorkshopCmdApp {
         this.rawCmdInputParams = inputParams;
         this.commandParser = new DefaultParser();
 
-        addCommandLineOption(new Option("h", "help", false, "Displays the usage method."));
-        addCommandLineOption(new Option("n","numMsg", true, "Number of messages to process."));
-        addCommandLineOption(new Option("t", "topic", true, "Pulsar topic name."));
-        addCommandLineOption(new Option("c","connFile", true, "\"client.conf\" file path."));
-        addCommandLineOption(new Option("a", "astra", false, "Whether to use Astra streaming."));
+        addOptionalCommandLineOption("h", "help", false, "Displays the usage method.");
+        addRequiredCommandLineOption("n","numMsg", true, "Number of messages to process.");
+        addRequiredCommandLineOption("t", "topic", true, "Pulsar topic name.");
+        addRequiredCommandLineOption("c","connFile", true, "\"client.conf\" file path.");
+        addOptionalCommandLineOption("a", "astra", false, "Whether to use Astra streaming.");
     }
 
-    protected void addCommandLineOption(Option option) {
-    	cliOptions.addOption(option);
+    protected void addRequiredCommandLineOption(String option, String longOption, boolean hasArg, String description) {
+        Option opt = new Option(option, longOption, hasArg, description);
+        opt.setRequired(true);
+    	cliOptions.addOption(opt);
+    }
+
+    protected void addOptionalCommandLineOption(String option, String longOption, boolean hasArg, String description) {
+        Option opt = new Option(option, longOption, hasArg, description);
+        opt.setRequired(false);
+        cliOptions.addOption(opt);
     }
 
     public int run() {
@@ -122,9 +129,6 @@ abstract public class PulsarWorkshopCmdApp {
             pulsarClientConf = new PulsarClientConf(clientConnFile);
         }
 
-        // (Optional) Whether to use Astra Streaming
-        useAstraStreaming = processBooleanInputParam("a");
-
         processExtendedInputParams();
     }
 
@@ -132,34 +136,39 @@ abstract public class PulsarWorkshopCmdApp {
         Option option = cliOptions.getOption(optionName);
 
         // Default value if not present on command line
-        boolean boolVal;
-        String value = commandLine.getOptionValue(option.getOpt());
+        boolean boolVal = false;
 
-        if (option.isRequired() && commandLine.getOptionValue(option) == null) {
-            throw new InvalidParamException("Empty value for argument '" + optionName +"'");
+        if (option.isRequired()) {
+            String value = commandLine.getOptionValue(option.getOpt());
+            if (StringUtils.isBlank(value))
+                throw new InvalidParamException("Empty value for argument '" + optionName +"'");
+            else
+                boolVal=BooleanUtils.toBoolean(value);
         }
-        boolVal = BooleanUtils.toBoolean(value);
 
         return boolVal;
     }
 
     public int processIntegerInputParam(String optionName) {
         Option option = cliOptions.getOption(optionName);
-        
-        // Default value if not present on command line
-        int intVal = 0;
-    	String value = commandLine.getOptionValue(option.getOpt());        	
 
-        if (option.isRequired() && commandLine.getOptionValue(option) == null) {
-            throw new InvalidParamException("Empty value for argument '" + optionName +"'");
+        // Default value if not present on command line
+        int intVal = -1;
+
+        if (option.isRequired()) {
+            String value = commandLine.getOptionValue(option.getOpt());
+            if (StringUtils.isBlank(value)) {
+                throw new InvalidParamException("Empty value for argument '" + optionName + "'");
+            }
+            else {
+                intVal = NumberUtils.toInt(value);
+            }
         }
-    	intVal = NumberUtils.toInt(value);
-        
+
         return intVal;
     }
     
     public String processStringInputParam(String optionName) {
-
     	Option option = cliOptions.getOption(optionName);
         String value = commandLine.getOptionValue(option);
 
@@ -171,18 +180,19 @@ abstract public class PulsarWorkshopCmdApp {
     }
     
     public File processFileInputParam(String optionName) {
+        Option option = cliOptions.getOption(optionName);
+
         File file = null;
 
-        Option option = cliOptions.getOption(optionName);
-        if (commandLine.hasOption(optionName)) {
-        	String path = commandLine.getOptionValue(option.getOpt());    	
-	        try {
-	            file = new File(path);
-	            file.getCanonicalPath();
-	        } catch (IOException ex) {
-	        	throw new InvalidParamException("Invalid file path for param '" + optionName + "': " + path);
-	        }
-    	}
+        if (option.isRequired()) {
+            String path = commandLine.getOptionValue(option.getOpt());
+            try {
+                file = new File(path);
+                file.getCanonicalPath();
+            } catch (IOException ex) {
+                throw new InvalidParamException("Invalid file path for param '" + optionName + "': " + path);
+            }
+        }
 
         return file;
     }
@@ -197,40 +207,5 @@ abstract public class PulsarWorkshopCmdApp {
                     "Can't properly read the Pulsar connection information from the \"client.conf\" file!");
         }
         return pulsarClientConf;
-    }
-    
-    protected PulsarClient createNativePulsarClient() throws PulsarClientException {
-        ClientBuilder clientBuilder = PulsarClient.builder();
-
-        PulsarClientConf clientConf = getPulsarClientConf();
-
-        String pulsarSvcUrl = clientConf.getValue("brokerServiceUrl");
-        clientBuilder.serviceUrl(pulsarSvcUrl);
-
-        String authPluginClassName = clientConf.getValue("authPlugin");
-        String authParams = clientConf.getValue("authParams");
-        if ( !StringUtils.isAnyBlank(authPluginClassName, authParams) ) {
-            clientBuilder.authentication(authPluginClassName, authParams);
-        }
-
-        // For Astra streaming, there is no need for this section.
-        // But for Luna streaming, they're required if TLS is expected.
-        if ( !useAstraStreaming && StringUtils.contains(pulsarSvcUrl, "pulsar+ssl") ) {
-            boolean tlsHostnameVerificationEnable = BooleanUtils.toBoolean(
-                    clientConf.getValue("tlsEnableHostnameVerification"));
-            clientBuilder.enableTlsHostnameVerification(tlsHostnameVerificationEnable);
-
-            String tlsTrustCertsFilePath =
-                    clientConf.getValue("tlsTrustCertsFilePath");
-            if (!StringUtils.isBlank(tlsTrustCertsFilePath)) {
-                clientBuilder.tlsTrustCertsFilePath(tlsTrustCertsFilePath);
-            }
-
-            boolean tlsAllowInsecureConnection = BooleanUtils.toBoolean(
-                    clientConf.getValue("tlsAllowInsecureConnection"));
-            clientBuilder.allowTlsInsecureConnection(tlsAllowInsecureConnection);
-        }
-
-        return clientBuilder.build();
     }
 }

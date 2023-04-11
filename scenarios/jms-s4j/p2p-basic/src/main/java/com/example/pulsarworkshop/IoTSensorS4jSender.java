@@ -1,34 +1,35 @@
 package com.example.pulsarworkshop;
 
-import com.example.pulsarworkshop.pojo.IoTSensorData;
-import com.example.pulsarworkshop.pojo.IoTSensorDataUtils;
+import com.datastax.oss.pulsar.jms.PulsarConnectionFactory;
 import com.example.pulsarworkshop.exception.InvalidParamException;
 import com.example.pulsarworkshop.exception.WorkshopRuntimException;
 import com.example.pulsarworkshop.util.CsvFileLineScanner;
 import org.apache.commons.cli.Option;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.pulsar.client.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jms.Destination;
+import javax.jms.JMSContext;
+import javax.jms.JMSProducer;
 import java.io.File;
 import java.io.IOException;
 
-public class IoTSensorProducerAvro extends NativePulsarCmdApp {
+public class IoTSensorS4jSender extends S4JCmdApp {
+    private final static Logger logger = LoggerFactory.getLogger(IoTSensorS4jSender.class);
 
-    private final static Logger logger = LoggerFactory.getLogger(IoTSensorProducerAvro.class);
+    private static PulsarConnectionFactory connectionFactory;
+    private static JMSContext jmsContext;
+    private static JMSProducer jmsProducer;
+    private static Destination queueDestination;
 
-    private static File iotSensorDataCsvFile;
-    private static PulsarClient pulsarClient;
-    private static Producer<IoTSensorData> pulsarProducer;
-
-    public IoTSensorProducerAvro(String appName, String[] inputParams) {
+    private File iotSensorDataCsvFile;
+    public IoTSensorS4jSender(String appName, String[] inputParams) {
         super(appName, inputParams);
         addRequiredCommandLineOption("csv","csvFile", true, "IoT sensor data CSV file.");
     }
 
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new IoTSensorProducerAvro("IoTSensorProducerAvro", args);
+        PulsarWorkshopCmdApp workshopApp = new IoTSensorS4jSender("IoTSensorS4jSender", args);
         int exitCode = workshopApp.run();
         System.exit(exitCode);
     }
@@ -47,18 +48,21 @@ public class IoTSensorProducerAvro extends NativePulsarCmdApp {
     @Override
     public void runApp() throws WorkshopRuntimException {
         try {
-            if (pulsarClient == null ) {
-                pulsarClient = createNativePulsarClient();
-                if (pulsarProducer == null) {
-                    ProducerBuilder<IoTSensorData> producerBuilder = pulsarClient.newProducer(Schema.AVRO(IoTSensorData.class));
-                    pulsarProducer = producerBuilder.topic(pulsarTopicName).create();
+            if (connectionFactory == null) {
+                connectionFactory = createPulsarJmsConnectionFactory();
+
+                if (jmsContext == null) {
+                    jmsContext = createJmsContext(connectionFactory);
+                    jmsProducer = jmsContext.createProducer();
+                }
+
+                if (queueDestination == null) {
+                    queueDestination = createQueueDestination(jmsContext, pulsarTopicName);
                 }
             }
 
             assert (iotSensorDataCsvFile != null);
-
             CsvFileLineScanner csvFileLineScanner = new CsvFileLineScanner(iotSensorDataCsvFile);
-            TypedMessageBuilder<IoTSensorData> messageBuilder = pulsarProducer.newMessage();
 
             boolean isTitleLine = true;
             String titleLine = "";
@@ -70,14 +74,12 @@ public class IoTSensorProducerAvro extends NativePulsarCmdApp {
             while (csvFileLineScanner.hasNextLine()) {
                 String csvLine = csvFileLineScanner.getNextLine();
                 // Skip the first line which is a title line
-                if (!isTitleLine && StringUtils.isNotBlank(csvLine)) {
+                if (!isTitleLine) {
                     if (msgSent < numMsg) {
-                        IoTSensorData data = IoTSensorDataUtils.csvToPojo(csvLine);
-                        MessageId messageId = messageBuilder
-                                .value(data)
-                                .send();
+                        jmsProducer.send(queueDestination, csvLine);
                         if (logger.isDebugEnabled()) {
-                            logger.debug(">>> Published a message: {}", messageId);
+                            logger.debug(">>> IoT sensor data published - line# {}, {}",
+                                    msgSent, csvLine);
                         }
 
                         msgSent++;
@@ -90,9 +92,6 @@ public class IoTSensorProducerAvro extends NativePulsarCmdApp {
                 }
             }
 
-        } catch (PulsarClientException pce) {
-            pce.printStackTrace();
-            throw new WorkshopRuntimException("Unexpected error when producing Pulsar messages: " + pce.getMessage());
         } catch (IOException ioException) {
             throw new WorkshopRuntimException("Failed to read from the workload data source file: " + ioException.getMessage());
         }
@@ -100,17 +99,12 @@ public class IoTSensorProducerAvro extends NativePulsarCmdApp {
 
     @Override
     public void termApp() {
-        try {
-            if (pulsarProducer != null) {
-                pulsarProducer.close();
-            }
-
-            if (pulsarClient != null) {
-                pulsarClient.close();
-            }
+        if (jmsContext != null) {
+            jmsContext.close();
         }
-        catch (PulsarClientException pce) {
-            throw new WorkshopRuntimException("Failed to terminate Pulsar producer or client!");
+
+        if (connectionFactory != null) {
+            connectionFactory.close();
         }
     }
 }
