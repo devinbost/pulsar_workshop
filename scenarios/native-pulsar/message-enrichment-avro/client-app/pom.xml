@@ -24,7 +24,7 @@
                 <configuration>
                     <resourceBundles>
                         <resourceBundle>com.example.pulsarworkshop:base-code:${project.version}</resourceBundle>
-                        <resourceBundle>com.example.pulsarworkshop:msgenrich-avro-common:${project.version}</resourceBundle>
+                        <resourceBundle>com.example.pulsarworkshop:np-msgenrich-avro-common:${project.version}</resourceBundle>
                     </resourceBundles>
                 </configuration>
                 <executions>

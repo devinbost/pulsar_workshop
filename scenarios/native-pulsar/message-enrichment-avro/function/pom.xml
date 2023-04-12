@@ -24,7 +24,7 @@
                 <version>3.0.0</version>
                 <configuration>
                     <resourceBundles>
-                        <resourceBundle>com.example.pulsarworkshop:msgenrich-avro-common:${project.version}</resourceBundle>
+                        <resourceBundle>com.example.pulsarworkshop:np-msgenrich-avro-common:${project.version}</resourceBundle>
                     </resourceBundles>
                 </configuration>
                 <executions>
