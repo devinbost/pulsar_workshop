@@ -73,7 +73,7 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>msgenrich-avro-common</artifactId>
+            <artifactId>np-msgenrich-avro-common</artifactId>
             <version>${project.version}</version>
         </dependency>
 
