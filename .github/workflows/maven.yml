@@ -30,26 +30,8 @@ jobs:
         distribution: 'temurin'
         cache: maven
         
-    - name: Build with Maven for jms-s4j
+    - name: Build with Maven
       run: |
-        cd scenarios/jms-s4j
+        cd scenarios
         mvn -B clean package --file pom.xml
-        cd ../..
-
-    - name: Build with Maven for kafka-s4k
-      run: |
-        cd scenarios/kafka-s4k
-        mvn -B clean package --file pom.xml
-        cd ../..
-
-    - name: Build with Maven for rabbitmq-s4r
-      run: |
-        cd scenarios/rabbitmq-s4r
-        mvn -B clean package --file pom.xml
-        cd ../..
-
-    - name: Build with Maven for native-pulsar
-      run: |
-        cd scenarios/native-pulsar
-        mvn -B clean package --file pom.xml
-        cd ../..
+        cd .. 
