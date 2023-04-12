@@ -10,7 +10,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>schema-compat-clientapp</artifactId>
+    <artifactId>np-schema-compat-clientapp</artifactId>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

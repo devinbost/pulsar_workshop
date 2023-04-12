@@ -70,7 +70,7 @@ if ! [[ "${topicSubType}" == "nsd" || "${topicSubType}" == "s" ||
    errExit 50 "Invalid JMS topic subscription type. Must be one of the following values: []'nsd','s','d','sd']"
 fi
 
-clientAppJar="${SCENARIO_HOMEDIR}/target/pubsub-basic-1.0.0.jar"
+clientAppJar="${SCENARIO_HOMEDIR}/target/s4j-pubsub-basic-1.0.0.jar"
 if ! [[ -f "${clientAppJar}" ]]; then
   errExit 60 "Can't find the client app jar file. Please first build the programs!"
 fi

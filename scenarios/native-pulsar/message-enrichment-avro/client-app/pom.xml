@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.example.pulsarworkshop</groupId>
-        <artifactId>message-enrichment-avro</artifactId>
+        <artifactId>np-msgenrich-avro</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>msgenrich-avro-clientapp</artifactId>
+    <artifactId>np-msgenrich-avro-clientapp</artifactId>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

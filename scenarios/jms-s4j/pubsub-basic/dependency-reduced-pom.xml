@@ -6,6 +6,6 @@
     <version>1.0.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>pubsub-basic</artifactId>
+  <artifactId>s4j-pubsub-basic</artifactId>
   <name>${project.artifactId}</name>
 </project>

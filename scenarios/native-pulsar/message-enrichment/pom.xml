@@ -11,7 +11,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>message-enrichment</artifactId>
+    <artifactId>np-msgenrich</artifactId>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
