@@ -27,5 +27,6 @@
     </properties>
 
     <modules>
+        <module>pubsub-basic</module>
     </modules>
 </project>

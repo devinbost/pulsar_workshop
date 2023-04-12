@@ -34,3 +34,4 @@ jobs:
       run: |
         cd scenarios
         mvn -B clean package --file pom.xml
+        cd .. 

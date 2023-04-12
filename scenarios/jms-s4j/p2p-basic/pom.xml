@@ -10,7 +10,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>p2p-basic</artifactId>
+    <artifactId>s4j-p2p-basic</artifactId>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

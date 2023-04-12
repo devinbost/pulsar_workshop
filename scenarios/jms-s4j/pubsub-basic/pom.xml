@@ -10,7 +10,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>pubsub-basic</artifactId>
+    <artifactId>s4j-pubsub-basic</artifactId>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

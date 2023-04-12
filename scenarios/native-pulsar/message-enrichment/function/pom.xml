@@ -6,12 +6,12 @@
 
     <parent>
         <groupId>com.example.pulsarworkshop</groupId>
-        <artifactId>message-enrichment</artifactId>
+        <artifactId>np-msgenrich</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>msgenrich-function</artifactId>
+    <artifactId>np-msgenrich-function</artifactId>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

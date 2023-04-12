@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.example.pulsarworkshop</groupId>
-        <artifactId>message-enrichment-avro</artifactId>
+        <artifactId>np-msgenrich-avro</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>msgenrich-avro-clientapp</artifactId>
+    <artifactId>np-msgenrich-avro-clientapp</artifactId>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -24,7 +24,7 @@
                 <configuration>
                     <resourceBundles>
                         <resourceBundle>com.example.pulsarworkshop:base-code:${project.version}</resourceBundle>
-                        <resourceBundle>com.example.pulsarworkshop:msgenrich-avro-common:${project.version}</resourceBundle>
+                        <resourceBundle>com.example.pulsarworkshop:np-msgenrich-avro-common:${project.version}</resourceBundle>
                     </resourceBundles>
                 </configuration>
                 <executions>
@@ -73,7 +73,7 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>msgenrich-avro-common</artifactId>
+            <artifactId>np-msgenrich-avro-common</artifactId>
             <version>${project.version}</version>
         </dependency>
 
