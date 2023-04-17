@@ -25,7 +25,7 @@ There are 2 programs used in this scenario to demonstrate the end-to-end data fl
 
 | Name | Source Code | Description |
 | ---- | ----------- | ----------- |
-| S4RQueueProducer | [S4RQueueProducer.java](./src/main/java/com/example/pulsarworkshop/S4RProducer.java) | A RabbitMQ producer client app that sends messages to a RabbitMQ queue which is backed by a Pulsar topic behind the scene. |
+| S4RQueueProducer | [S4RQueueProducer.java](./src/main/java/com/example/pulsarworkshop/S4RQueueProducer.java) | A RabbitMQ producer client app that sends messages to a RabbitMQ queue which is backed by a Pulsar topic behind the scene. |
 | S4RQueueConsumer | [S4RQueueConsumer.java](./src/main/java/com/example/pulsarworkshop/S4RQueueConsumer.java) | A RabbitMQ consumer client app that receives messages from a RabbitMQ queue which is backed by a Pulsar topic and subscription behind the scene. |
 
 ### 1.1.1. Build the Program
