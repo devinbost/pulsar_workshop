@@ -1,6 +1,6 @@
 package com.example.pulsarworkshop;
 
-import com.example.pulsarworkshop.util.PulsarClientConf;
+import com.example.pulsarworkshop.util.ClientConnConf;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,11 +20,11 @@ abstract public class PulsarWorkshopCmdApp {
 
     // -1 means to process all available messages (indefinitely)
     protected Integer numMsg;
-    protected String pulsarTopicName;
+    protected String topicName;
     protected File clientConnFile;
     protected boolean useAstraStreaming;
 
-    protected PulsarClientConf pulsarClientConf;
+    protected ClientConnConf clientConnConf;
 
     protected final String appName;
 
@@ -35,7 +35,6 @@ abstract public class PulsarWorkshopCmdApp {
     public abstract void processExtendedInputParams() throws InvalidParamException;
     public abstract void runApp();
     public abstract void termApp();
-
 
     public PulsarWorkshopCmdApp(String appName, String[] inputParams) {
         this.appName = appName;
@@ -59,6 +58,11 @@ abstract public class PulsarWorkshopCmdApp {
         opt.setRequired(false);
         cliOptions.addOption(opt);
     }
+
+    protected static String getLogFileName(String apiType, String appName) {
+        return apiType + "-" + appName;
+    }
+
 
     public int run() {
         int exitCode = 0;
@@ -120,22 +124,25 @@ abstract public class PulsarWorkshopCmdApp {
     	}    	
 
         // (Required) CLI option for Pulsar topic
-        pulsarTopicName = processStringInputParam("t");
+        topicName = processStringInputParam("t");
 
         // (Optional) CLI option for client.conf file
         clientConnFile = processFileInputParam("c");
         if (clientConnFile != null) {
-            pulsarClientConf = new PulsarClientConf(clientConnFile);
+            clientConnConf = new ClientConnConf(clientConnFile);
         }
 
         processExtendedInputParams();
     }
 
     public boolean processBooleanInputParam(String optionName) {
+        return processBooleanInputParam(optionName, false);
+    }
+    public boolean processBooleanInputParam(String optionName, boolean dftValue) {
         Option option = cliOptions.getOption(optionName);
 
         // Default value if not present on command line
-        boolean boolVal = false;
+        boolean boolVal = dftValue;
         String value = commandLine.getOptionValue(option.getOpt());
 
         if (option.isRequired()) {
@@ -212,17 +219,5 @@ abstract public class PulsarWorkshopCmdApp {
         }
 
         return file;
-    }
-
-    protected PulsarClientConf getPulsarClientConf() {
-        PulsarClientConf pulsarClientConf = null;
-        if (clientConnFile != null) {
-            pulsarClientConf = new PulsarClientConf(clientConnFile);
-        }
-        if (pulsarClientConf == null) {
-            throw new WorkshopRuntimException(
-                    "Can't properly read the Pulsar connection information from the \"client.conf\" file!");
-        }
-        return pulsarClientConf;
     }
 }

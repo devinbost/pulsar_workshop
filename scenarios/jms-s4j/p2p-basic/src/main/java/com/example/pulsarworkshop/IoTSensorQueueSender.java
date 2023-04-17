@@ -12,6 +12,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class IoTSensorQueueSender extends S4JCmdApp {
+    // Must be set before initializing the "logger" object.
+    private final static String APP_NAME = "IoTSensorQueueSender";
+    static { System.setProperty("log_file_base_name", getLogFileName(API_TYPE, APP_NAME)); }
     private final static Logger logger = LoggerFactory.getLogger(IoTSensorQueueSender.class);
 
     private static PulsarConnectionFactory connectionFactory;
@@ -23,10 +26,12 @@ public class IoTSensorQueueSender extends S4JCmdApp {
     public IoTSensorQueueSender(String appName, String[] inputParams) {
         super(appName, inputParams);
         addRequiredCommandLineOption("csv","csvFile", true, "IoT sensor data CSV file.");
+
+        logger.info("Starting application: \"" + appName + "\" ...");
     }
 
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new IoTSensorQueueSender("IoTSensorQueueSender", args);
+        PulsarWorkshopCmdApp workshopApp = new IoTSensorQueueSender(APP_NAME, args);
         int exitCode = workshopApp.run();
         System.exit(exitCode);
     }
@@ -54,7 +59,7 @@ public class IoTSensorQueueSender extends S4JCmdApp {
                 }
 
                 if (queueDestination == null) {
-                    queueDestination = createQueueDestination(jmsContext, pulsarTopicName);
+                    queueDestination = createQueueDestination(jmsContext, topicName);
                 }
             }
 
@@ -74,11 +79,10 @@ public class IoTSensorQueueSender extends S4JCmdApp {
                 if (!isTitleLine) {
                     if (msgSent < numMsg) {
                         jmsProducer.send(queueDestination, csvLine);
-                        if (logger.isDebugEnabled()) {
-                            logger.debug(">>> IoT sensor data sent to queue {} (line# {}, {})",
-                                    queueDestination.getQueueName(), msgSent, csvLine);
-                        }
-
+                        logger.info("IoT sensor data sent to queue {} [{}] {}",
+                                queueDestination.getQueueName(),
+                                msgSent,
+                                csvLine);
                         msgSent++;
                     } else {
                         break;
@@ -99,12 +103,17 @@ public class IoTSensorQueueSender extends S4JCmdApp {
 
     @Override
     public void termApp() {
-        if (jmsContext != null) {
-            jmsContext.close();
-        }
+        try {
+            if (jmsContext != null) {
+                jmsContext.close();
+            }
 
-        if (connectionFactory != null) {
-            connectionFactory.close();
+            if (connectionFactory != null) {
+                connectionFactory.close();
+            }
+        }
+        finally {
+            logger.info("Terminating application: \"" + appName + "\" ...");
         }
     }
 }

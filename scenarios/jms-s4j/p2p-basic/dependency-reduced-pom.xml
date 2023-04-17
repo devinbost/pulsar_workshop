@@ -8,4 +8,24 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>s4j-p2p-basic</artifactId>
   <name>${project.artifactId}</name>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>process</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <resourceBundles>
+            <resourceBundle>com.example.pulsarworkshop:s4j-common:${project.version}</resourceBundle>
+          </resourceBundles>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

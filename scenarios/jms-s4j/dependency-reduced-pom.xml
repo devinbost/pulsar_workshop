@@ -18,22 +18,6 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-remote-resources-plugin</artifactId>
-        <version>3.0.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>process</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <resourceBundles>
-            <resourceBundle>com.example.pulsarworkshop:base-code:${project.version}</resourceBundle>
-          </resourceBundles>
-        </configuration>
-      </plugin>
-      <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <version>3.4.1</version>
         <executions>
@@ -60,6 +44,7 @@
     </plugins>
   </build>
   <modules>
+    <module>common-resources</module>
     <module>p2p-basic</module>
     <module>pubsub-basic</module>
   </modules>

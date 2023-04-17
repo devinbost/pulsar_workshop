@@ -3,15 +3,16 @@ package com.example.pulsarworkshop;
 import com.example.pulsarworkshop.pojo.IoTSensorData;
 import com.example.pulsarworkshop.exception.InvalidParamException;
 import com.example.pulsarworkshop.exception.WorkshopRuntimException;
-import org.apache.commons.cli.Option;
 import org.apache.pulsar.client.api.*;
 import org.apache.pulsar.shade.org.apache.commons.lang3.StringUtils;
-import org.bouncycastle.math.raw.Nat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class IoTSensorConsumerAvro extends NativePulsarCmdApp {
 
+    // Must be set before initializing the "logger" object.
+    private final static String APP_NAME = "IoTSensorConsumerAvro";
+    static { System.setProperty("log_file_base_name", getLogFileName(API_TYPE, APP_NAME)); }
     private final static Logger logger = LoggerFactory.getLogger(IoTSensorConsumerAvro.class);
 
     private String subscriptionName;
@@ -25,10 +26,12 @@ public class IoTSensorConsumerAvro extends NativePulsarCmdApp {
         super(appName, inputParams);
         addOptionalCommandLineOption("sbt","subType", true, "Pulsar subscription type.");
         addRequiredCommandLineOption("sbn", "subName", true, "Pulsar subscription name.");
+
+        logger.info("Starting application: \"" + appName + "\" ...");
     }
 
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new IoTSensorConsumerAvro("IoTSensorConsumerAvro", args);
+        PulsarWorkshopCmdApp workshopApp = new IoTSensorConsumerAvro(APP_NAME, args);
         int exitCode = workshopApp.run();
         System.exit(exitCode);
     }
@@ -63,7 +66,7 @@ public class IoTSensorConsumerAvro extends NativePulsarCmdApp {
 
                 if (pulsarConsumer == null) {
                     ConsumerBuilder<IoTSensorData> consumerBuilder = pulsarClient.newConsumer(Schema.AVRO(IoTSensorData.class));
-                    consumerBuilder.topic(pulsarTopicName);
+                    consumerBuilder.topic(topicName);
                     consumerBuilder.subscriptionName(subscriptionName);
                     consumerBuilder.subscriptionType(subscriptionType);
                     pulsarConsumer = consumerBuilder.subscribe();
@@ -78,17 +81,13 @@ public class IoTSensorConsumerAvro extends NativePulsarCmdApp {
             while (msgRecvd < numMsg) {
                 Message<IoTSensorData> message = pulsarConsumer.receive();
                 IoTSensorData sensorData = message.getValue();
-
-                if (logger.isDebugEnabled()) {
-                    logger.debug(">>> ({}) Message received and acknowledged: " +
-                                    "msg-key={}; msg-properties={}; msg-payload={}",
-                            pulsarConsumer.getConsumerName(),
-                            message.getKey(),
-                            message.getProperties(),
-                            sensorData);
-                }
+                logger.info("({}) Message received and acknowledged: " +
+                                "key={}; properties={}; value={}",
+                        pulsarConsumer.getConsumerName(),
+                        message.getKey(),
+                        message.getProperties(),
+                        sensorData);
                 pulsarConsumer.acknowledge(message);
-
                 msgRecvd++;
             }
 
