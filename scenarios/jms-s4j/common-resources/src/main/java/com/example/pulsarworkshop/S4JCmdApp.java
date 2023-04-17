@@ -2,10 +2,7 @@ package com.example.pulsarworkshop;
 
 import com.datastax.oss.pulsar.jms.PulsarConnectionFactory;
 import com.example.pulsarworkshop.exception.InvalidParamException;
-import org.apache.commons.cli.Option;
 import org.apache.commons.lang3.StringUtils;
-
-import javax.jms.Destination;
 import javax.jms.JMSContext;
 import javax.jms.Queue;
 import javax.jms.Topic;

@@ -9,17 +9,12 @@ import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 public class PulsarClientConf {
-
-    private final static Logger logger = LoggerFactory.getLogger(PulsarClientConf.class);
-
     private final Map<String, String> clientConfMap = new HashMap<>();
 
     public PulsarClientConf(File clientConnFile) throws WorkshopRuntimException {
