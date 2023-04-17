@@ -102,8 +102,10 @@ public class IoTSensorKafkaProducer extends S4KCmdApp {
     @Override
     public void termApp() {
         try {
-            kafkaProducer.flush();
-            kafkaProducer.close();
+            if (kafkaProducer != null) {
+                kafkaProducer.flush();
+                kafkaProducer.close();
+            }
         }
         finally {
             logger.info("Terminating application: \"" + appName + "\" ...");

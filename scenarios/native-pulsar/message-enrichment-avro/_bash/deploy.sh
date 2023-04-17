@@ -16,7 +16,7 @@ usage() {
    echo "Usage: deploy.sh [-h]" 
    echo "                 -cc <client_conf_file>" 
    echo "                 [-na]"
-   echo "                 -dp <deploy_properties_file>"
+   echo "                 [-dp <deploy_properties_file>]"
    echo "       -h  : Show usage info"
    echo "       -cc : (Required) 'client.conf' file path."
    echo "       -na : (Optional) Non-Astra Streaming (Astra streaming is the default)."

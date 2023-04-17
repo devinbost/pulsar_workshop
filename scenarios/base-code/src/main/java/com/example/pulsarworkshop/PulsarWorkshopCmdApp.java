@@ -31,7 +31,7 @@ abstract public class PulsarWorkshopCmdApp {
     protected CommandLine commandLine;
     protected final DefaultParser commandParser;
     protected final Options cliOptions = new Options();
-    
+
     public abstract void processExtendedInputParams() throws InvalidParamException;
     public abstract void runApp();
     public abstract void termApp();
@@ -45,6 +45,7 @@ abstract public class PulsarWorkshopCmdApp {
         addRequiredCommandLineOption("n","numMsg", true, "Number of messages to process.");
         addRequiredCommandLineOption("t", "topic", true, "Pulsar topic name.");
         addRequiredCommandLineOption("c","connFile", true, "\"client.conf\" file path.");
+        addOptionalCommandLineOption("a", "astra", false, "Whether to use Astra streaming.");
     }
 
     protected void addRequiredCommandLineOption(String option, String longOption, boolean hasArg, String description) {
@@ -126,11 +127,14 @@ abstract public class PulsarWorkshopCmdApp {
         // (Required) CLI option for Pulsar topic
         topicName = processStringInputParam("t");
 
-        // (Optional) CLI option for client.conf file
+        // (Required) CLI option for client.conf file
         clientConnFile = processFileInputParam("c");
         if (clientConnFile != null) {
             clientConnConf = new ClientConnConf(clientConnFile);
         }
+
+        // (Optional) Whether to use Astra Streaming
+        useAstraStreaming = processBooleanInputParam("a", true);
 
         processExtendedInputParams();
     }

@@ -14,15 +14,19 @@ echo
 usage() {   
    echo
    echo "Usage: runProducer.sh [-h]" 
-   echo "                      [-na]"
    echo "                      -t <topic_name>"
    echo "                      -n <message_number>"
    echo "                      -cc <client_conf_file>" 
+   echo "                      [-na]"
+   echo "                      [-kp <kafka properties file>]"
+   echo "                      [srp <schema registry properties file>]"
    echo "       -h  : Show usage info"
-   echo "       -na : (Optional) Non-Astra Streaming (Astra streaming is the default)."
    echo "       -t  : (Required) The topic name to publish messages to."
    echo "       -n  : (Required) The number of messages to produce."
    echo "       -cc : (Required) 'client.conf' file path."
+   echo "       -na : (Optional) Non-Astra Streaming (Astra streaming is the default)."
+   echo "       -kp : (Optional) 'kafka.properties' file path (only relevant with non-Astra streaming deployment)."
+   echo "       -srp: (Optional) 'schema.registry.properties' file path (only relevant with non-Astra streaming deployment)."
    echo
 }
 
@@ -34,11 +38,13 @@ fi
 astraStreaming=1
 while [[ "$#" -gt 0 ]]; do
    case $1 in
-      -h)  usage; exit 0      ;;
-      -na) astraStreaming=0;  ;;
-      -t)  tpName=$2; shift   ;;
-      -n)  msgNum=$2; shift   ;;
-      -cc) clntConfFile=$2; shift ;;
+      -h)   usage; exit 0      ;;
+      -t)   tpName=$2; shift   ;;
+      -n)   msgNum=$2; shift   ;;
+      -cc)  clntConfFile=$2; shift ;;
+      -na)  astraStreaming=0;  ;;
+      -kp)  kafkaCfgPropFile=$2; shift ;;
+      -srp) schemaRegCfgPropFile=$2; shift ;;
       *)  errExit 20 "Unknown input parameter passed: $1" ;;
    esac
    shift
@@ -47,6 +53,8 @@ debugMsg "astraStreaming=${astraStreaming}"
 debugMsg "tpName=${tpName}"
 debugMsg "msgNum=${msgNum}"
 debugMsg "clntConfFile=${clntConfFile}"
+debugMsg "kafkaCfgPropFile=${kafkaCfgPropFile}"
+debugMsg "schemaRegCfgPropFile=${schemaRegCfgPropFile}"
 
 if [[ -z "${tpName}" ]]; then
    errExit 30 "Must provided a valid topic name in format \"<tenant>/<namespace>/<topic>\"!"
@@ -56,7 +64,7 @@ if ! [[ -f "${clntConfFile}" ]]; then
    errExit 40 "The specified 'client.conf' file is invalid!"
 fi
 
-clientAppJar="${SCENARIO_HOMEDIR}/target/s4j-pubsub-basic-1.0.0.jar"
+clientAppJar="${SCENARIO_HOMEDIR}/target/s4k-pubsub-basic-1.0.0.jar"
 if ! [[ -f "${clientAppJar}" ]]; then
   errExit 50 "Can't find the client app jar file. Please first build the programs!"
 fi
@@ -66,9 +74,22 @@ if ! [[ -f "${iotDataSrcFile}" ]]; then
   errExit 60 "Can't find the IoT sensor data source file is invalid!"
 fi
 
+if [[ ${astraStreaming} -eq 0 && ! -f "${kafkaCfgPropFile}" ]]; then
+  errExit 70 "For non-Astra Streaming deployment, a valid \"kafka.properties\" file is required!"
+fi
+
 javaCmd="java -cp ${clientAppJar} \
-    com.example.pulsarworkshop.IoTSensorTopicPublisher \
+    com.example.pulsarworkshop.IoTSensorKafkaProducer \
     -n ${msgNum} -t ${tpName} -c ${clntConfFile} -csv ${iotDataSrcFile}"
+if [[ ${astraStreaming} -eq 1 ]]; then
+  javaCmd="${javaCmd} -a"
+fi
+if [[ -n "${kafkaCfgPropFile// }" ]]; then
+   javaCmd="${javaCmd} -kp ${kafkaCfgPropFile}"
+fi
+if [[ -n "${schemaRegCfgPropFile// }" ]]; then
+   javaCmd="${javaCmd} -srp ${schemaRegCfgPropFile}"
+fi
 debugMsg "javaCmd=${javaCmd}"
 
 eval ${javaCmd}

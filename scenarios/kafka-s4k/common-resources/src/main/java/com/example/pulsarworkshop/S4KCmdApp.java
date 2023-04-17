@@ -20,9 +20,6 @@ abstract public class S4KCmdApp extends PulsarWorkshopCmdApp {
     public S4KCmdApp(String appName, String[] inputParams) {
         super(appName, inputParams);
         // Add the S4K/Kafka specific CLI options that are common to all S4K/Kafka client applications
-        addOptionalCommandLineOption("a", "astra",
-                false, "Whether to use Astra streaming.");
-
         addOptionalCommandLineOption("kp", "kafka.prop",
                 true, "Kafka configuration properties file.");
 
@@ -33,9 +30,6 @@ abstract public class S4KCmdApp extends PulsarWorkshopCmdApp {
 
     @Override
     public void processExtendedInputParams() throws InvalidParamException {
-        // (Optional) Whether to use Astra Streaming
-        useAstraStreaming = processBooleanInputParam("a", true);
-
         // (Optional) Only relevant with non-Astra Streaming deployment
         if (!useAstraStreaming) {
             kafkaCfgPropFile = processFileInputParam("kp");
