@@ -47,7 +47,7 @@ public class IoTSensorKafkaConsumer extends S4KCmdApp {
     private KafkaConsumer<String, String> createKafkaConsumer() {
         Properties properties = getBaseKafkaCfgProperties();
         properties.put("group.id", consumerGroupId);
-        properties.put("enable.auto.commit", "true");
+        properties.put("enable.auto.commit", "false");
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         return new KafkaConsumer<>(properties);
@@ -57,8 +57,9 @@ public class IoTSensorKafkaConsumer extends S4KCmdApp {
     public void runApp() throws WorkshopRuntimException {
         if (kafkaConsumer == null) {
             kafkaConsumer = createKafkaConsumer();
-            kafkaConsumer.subscribe(Collections.singletonList(topicName));
         }
+
+        kafkaConsumer.subscribe(Collections.singletonList(topicName));
 
         int msgRecvd = 0;
         if (numMsg == -1) {
@@ -67,6 +68,7 @@ public class IoTSensorKafkaConsumer extends S4KCmdApp {
 
         while (msgRecvd < numMsg) {
             ConsumerRecords<String, String> records = kafkaConsumer.poll(1000);
+            kafkaConsumer.commitSync();
             for (ConsumerRecord<String, String> record : records) {
                 logger.info("({}) Message received and acknowledged: " +
                                 "key={}; headers={}; value={}",
@@ -82,7 +84,9 @@ public class IoTSensorKafkaConsumer extends S4KCmdApp {
     @Override
     public void termApp() {
         try {
-            kafkaConsumer.close();
+            if (kafkaConsumer != null) {
+                kafkaConsumer.close();
+            }
         }
         finally {
             logger.info("Terminating application: \"" + appName + "\" ...");

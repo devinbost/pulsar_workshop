@@ -14,15 +14,15 @@ echo
 usage() {   
    echo
    echo "Usage: runProducer.sh [-h]" 
-   echo "                      [-na]"
    echo "                      -t <topic_name>"
    echo "                      -n <message_number>"
    echo "                      -cc <client_conf_file>" 
+   echo "                      [-na]"
    echo "       -h  : Show usage info"
-   echo "       -na : (Optional) Non-Astra Streaming (Astra streaming is the default)."
    echo "       -t  : (Required) The topic name to publish messages to."
    echo "       -n  : (Required) The number of messages to produce."
    echo "       -cc : (Required) 'client.conf' file path."
+   echo "       -na : (Optional) Non-Astra Streaming (Astra streaming is the default)."
    echo
 }
 

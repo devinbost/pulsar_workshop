@@ -14,15 +14,15 @@ echo
 usage() {   
    echo
    echo "Usage: runConsumer.sh [-h]" 
-   echo "                      [-na]"
    echo "                      -t <topic_name>"
    echo "                      -n <message_number>"
    echo "                      -cc <client_conf_file>" 
+   echo "                      [-na]"
    echo "       -h  : Show usage info"
-   echo "       -na : (Optional) Non-Astra Streaming (Astra streaming is the default)."
    echo "       -t  : (Required) The topic name to publish messages to."
    echo "       -n  : (Required) The number of messages to consume."
    echo "       -cc : (Required) 'client.conf' file path."
+   echo "       -na : (Optional) Non-Astra Streaming (Astra streaming is the default)."
    echo
 }
 
@@ -67,6 +67,9 @@ randomStr=$(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 20 | head -
 javaCmd="java -cp ${clientAppJar} \
     com.example.pulsarworkshop.IoTSensorQueueReceiver \
     -n ${msgNum} -t ${tpName} -c ${clntConfFile}"
+if [[ ${astraStreaming} -eq 1 ]]; then
+  javaCmd="${javaCmd} -a"
+fi
 debugMsg="javaCmd=${javaCmd}"
 
 eval ${javaCmd}
