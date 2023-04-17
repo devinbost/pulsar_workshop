@@ -15,3 +15,4 @@ The table below lists all scenarios that are available in this repository.
 | JMS + S4J | [jms-s4j/p2p-basic](scenarios/jms-s4j/p2p-basic/README.md) | Demonstrate basic JMS message sending and receiving with a JMS Queue using S4J API and Pulsar |
 | JMS + S4J | [jms-s4j/pubsub-basic](scenarios/jms-s4j/pubsub-basic/README.md) | Demonstrate basic JMS message publishing and subscribing with a JMS Topic using S4J API for Pulsar |
 | Kafka + S4K | [kafka-s4k/pubsub-basic](scenarios/kafka-s4k/pubsub-basic/README.md) | Demonstrate basic Kafka message producing and consuming with a Kafka Topic with Pulsar's S4K protocol handler |
+| RabbitMQ + S4R | [rabbitmq-s4r/pubsub-queue](scenarios/rabbitmq-s4r/pubsub-queue/README.md) | Demonstrate RabbitMQ message producing and consuming with a RabbitMQ Queue using S4R API and Pulsar |
