@@ -1,4 +1,5 @@
 application_code
+scenarios/*.log
 scenarios/.idea
 scenarios/*/.idea
 scenarios/*/*.idea

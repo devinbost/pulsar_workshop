@@ -5,7 +5,9 @@ import com.example.pulsarworkshop.exception.WorkshopRuntimException;
 import com.example.pulsarworkshop.util.CsvFileLineScanner;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,15 +16,15 @@ import java.io.IOException;
 import java.util.Properties;
 
 
-public class IoTSensorKafkaPublisher extends S4KCmdApp {
+public class IoTSensorKafkaProducer extends S4KCmdApp {
     // Must be set before initializing the "logger" object.
-    private final static String APP_NAME = "IoTSensorKafkaPublisher";
+    private final static String APP_NAME = "IoTSensorKafkaProducer";
     static { System.setProperty("log_file_base_name", getLogFileName(API_TYPE, APP_NAME)); }
-    private final static Logger logger = LoggerFactory.getLogger(IoTSensorKafkaPublisher.class);
+    private final static Logger logger = LoggerFactory.getLogger(IoTSensorKafkaProducer.class);
     private static Producer<String, String> kafkaProducer;
     private File iotSensorDataCsvFile;
 
-    public IoTSensorKafkaPublisher(String appName, String[] inputParams) {
+    public IoTSensorKafkaProducer(String appName, String[] inputParams) {
         super(appName, inputParams);
         addRequiredCommandLineOption("csv","csvFile", true, "IoT sensor data CSV file.");
 
@@ -30,18 +32,15 @@ public class IoTSensorKafkaPublisher extends S4KCmdApp {
     }
 
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new IoTSensorKafkaPublisher(APP_NAME, args);
+        PulsarWorkshopCmdApp workshopApp = new IoTSensorKafkaProducer(APP_NAME, args);
         int exitCode = workshopApp.run();
         System.exit(exitCode);
     }
 
     private KafkaProducer<String, String> createKafkaProducer() {
-        Properties properties = new Properties();
-        properties.put("bootstrap.servers", bootStrapServerUrl);
-        properties.put("key.serializer",
-                "org.apache.kafka.common.serialization.StringSerializer");
-        properties.put("value.serializer",
-                "org.apache.kafka.common.serialization.StringSerializer");
+        Properties properties = getBaseKafkaCfgProperties();
+        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         return new KafkaProducer<>(properties);
     }
 

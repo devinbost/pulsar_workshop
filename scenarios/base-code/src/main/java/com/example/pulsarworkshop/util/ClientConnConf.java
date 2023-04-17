@@ -14,10 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class PulsarClientConf {
+public class ClientConnConf {
     private final Map<String, String> clientConfMap = new HashMap<>();
 
-    public PulsarClientConf(File clientConnFile) throws WorkshopRuntimException {
+    public ClientConnConf(File clientConnFile) throws WorkshopRuntimException {
         String canonicalFilePath = "";
 
         try {

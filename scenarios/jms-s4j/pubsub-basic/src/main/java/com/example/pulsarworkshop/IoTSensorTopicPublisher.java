@@ -12,6 +12,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class IoTSensorTopicPublisher extends S4JCmdApp {
+    // Must be set before initializing the "logger" object.
+    private final static String APP_NAME = "IoTSensorTopicPublisher";
+    static { System.setProperty("log_file_base_name", getLogFileName(API_TYPE, APP_NAME)); }
     private final static Logger logger = LoggerFactory.getLogger(IoTSensorTopicPublisher.class);
 
     private static PulsarConnectionFactory connectionFactory;
@@ -23,10 +26,12 @@ public class IoTSensorTopicPublisher extends S4JCmdApp {
     public IoTSensorTopicPublisher(String appName, String[] inputParams) {
         super(appName, inputParams);
         addRequiredCommandLineOption("csv","csvFile", true, "IoT sensor data CSV file.");
+
+        logger.info("Starting application: \"" + appName + "\" ...");
     }
 
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new IoTSensorTopicPublisher("IoTSensorTopicPublisher", args);
+        PulsarWorkshopCmdApp workshopApp = new IoTSensorTopicPublisher(APP_NAME, args);
         int exitCode = workshopApp.run();
         System.exit(exitCode);
     }
@@ -54,7 +59,7 @@ public class IoTSensorTopicPublisher extends S4JCmdApp {
                 }
 
                 if (topicDestination == null) {
-                    topicDestination = createTopicDestination(jmsContext, pulsarTopicName);
+                    topicDestination = createTopicDestination(jmsContext, topicName);
                 }
             }
 
@@ -74,11 +79,10 @@ public class IoTSensorTopicPublisher extends S4JCmdApp {
                 if (!isTitleLine) {
                     if (msgSent < numMsg) {
                         jmsProducer.send(topicDestination, csvLine);
-                        if (logger.isDebugEnabled()) {
-                            logger.debug(">>> IoT sensor data published to topic {} (line# {}, {})",
-                                    topicDestination.getTopicName(), msgSent, csvLine);
-                        }
-
+                        logger.info("IoT sensor data published to topic {} [{}] {}",
+                                topicDestination.getTopicName(),
+                                msgSent,
+                                csvLine);
                         msgSent++;
                     } else {
                         break;
@@ -100,12 +104,18 @@ public class IoTSensorTopicPublisher extends S4JCmdApp {
 
     @Override
     public void termApp() {
-        if (jmsContext != null) {
-            jmsContext.close();
+        try {
+            if (jmsContext != null) {
+                jmsContext.close();
+            }
+
+            if (connectionFactory != null) {
+                connectionFactory.close();
+            }
         }
 
-        if (connectionFactory != null) {
-            connectionFactory.close();
+        finally {
+            logger.info("Terminating application: \"" + appName + "\" ...");
         }
     }
 }

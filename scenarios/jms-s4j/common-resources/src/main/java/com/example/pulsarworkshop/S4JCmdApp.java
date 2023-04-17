@@ -10,11 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 abstract public class S4JCmdApp extends PulsarWorkshopCmdApp {
-
+    protected final static String API_TYPE = "jms-s4j";
     protected int jmsSessionMode = JMSContext.AUTO_ACKNOWLEDGE;
 
     public S4JCmdApp(String appName, String[] inputParams) {
         super(appName, inputParams);
+        // Add the S4J/JMS specific CLI options that are common to all S4J/JMS client applications
         addOptionalCommandLineOption("s","session", true, "JMS session mode");
     }
 
@@ -40,13 +41,13 @@ abstract public class S4JCmdApp extends PulsarWorkshopCmdApp {
     public PulsarConnectionFactory createPulsarJmsConnectionFactory(Map<String, Object> cfgMap)  {
         Map<String, Object> jmsConnMap = new HashMap<>(cfgMap);
 
-        jmsConnMap.put("webServiceUrl", pulsarClientConf.getValue("webServiceUrl"));
-        jmsConnMap.put("brokerServiceUrl", pulsarClientConf.getValue("brokerServiceUrl"));
-        jmsConnMap.put("authPlugin", pulsarClientConf.getValue("authPlugin"));
-        jmsConnMap.put("authParams", pulsarClientConf.getValue("authParams"));
-        jmsConnMap.put("tlsEnableHostnameVerification", pulsarClientConf.getValue("tlsEnableHostnameVerification"));
-        jmsConnMap.put("tlsTrustCertsFilePath", pulsarClientConf.getValue("tlsTrustCertsFilePath"));
-        jmsConnMap.put("tlsAllowInsecureConnection", pulsarClientConf.getValue("tlsAllowInsecureConnection"));
+        jmsConnMap.put("webServiceUrl", clientConnConf.getValue("webServiceUrl"));
+        jmsConnMap.put("brokerServiceUrl", clientConnConf.getValue("brokerServiceUrl"));
+        jmsConnMap.put("authPlugin", clientConnConf.getValue("authPlugin"));
+        jmsConnMap.put("authParams", clientConnConf.getValue("authParams"));
+        jmsConnMap.put("tlsEnableHostnameVerification", clientConnConf.getValue("tlsEnableHostnameVerification"));
+        jmsConnMap.put("tlsTrustCertsFilePath", clientConnConf.getValue("tlsTrustCertsFilePath"));
+        jmsConnMap.put("tlsAllowInsecureConnection", clientConnConf.getValue("tlsAllowInsecureConnection"));
 
         return new PulsarConnectionFactory(jmsConnMap);
     }

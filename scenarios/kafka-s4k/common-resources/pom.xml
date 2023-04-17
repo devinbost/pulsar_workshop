@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.example.pulsarworkshop</groupId>
-        <artifactId>rabbitmq-s4r</artifactId>
+        <artifactId>kafka-s4k</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>s4r-common</artifactId>
+    <artifactId>s4k-common</artifactId>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

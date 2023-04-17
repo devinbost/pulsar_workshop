@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.example.pulsarworkshop</groupId>
-        <artifactId>jms-s4j</artifactId>
+        <artifactId>rabbitmq-s4r</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>s4j-common</artifactId>
+    <artifactId>s4r-common</artifactId>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

@@ -1,35 +1,36 @@
 package com.example.pulsarworkshop;
 
 import com.example.pulsarworkshop.exception.InvalidParamException;
+import com.example.pulsarworkshop.exception.WorkshopRuntimException;
+import com.example.pulsarworkshop.util.ClientConnConf;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pulsar.client.api.ClientBuilder;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
 
-import javax.jms.JMSContext;
-
 abstract public class NativePulsarCmdApp extends PulsarWorkshopCmdApp {
-
+    protected final static String API_TYPE = "native-pulsar";
     public NativePulsarCmdApp(String appName, String[] inputParams) {
         super(appName, inputParams);
-        addOptionalCommandLineOption("a", "astra", false, "Whether to use Astra streaming.");
+        addOptionalCommandLineOption("a", "astra",
+                false, "Whether to use Astra streaming.");
     }
 
     @Override
     public void processExtendedInputParams() throws InvalidParamException {
         // (Optional) Whether to use Astra Streaming
-        useAstraStreaming = processBooleanInputParam("a");
+        useAstraStreaming = processBooleanInputParam("a", true);
     }
 
     public PulsarClient createNativePulsarClient() throws PulsarClientException {
         ClientBuilder clientBuilder = PulsarClient.builder();
 
-        String pulsarSvcUrl = pulsarClientConf.getValue("brokerServiceUrl");
+        String pulsarSvcUrl = clientConnConf.getValue("brokerServiceUrl");
         clientBuilder.serviceUrl(pulsarSvcUrl);
 
-        String authPluginClassName = pulsarClientConf.getValue("authPlugin");
-        String authParams = pulsarClientConf.getValue("authParams");
+        String authPluginClassName = clientConnConf.getValue("authPlugin");
+        String authParams = clientConnConf.getValue("authParams");
         if ( !StringUtils.isAnyBlank(authPluginClassName, authParams) ) {
             clientBuilder.authentication(authPluginClassName, authParams);
         }
@@ -38,17 +39,17 @@ abstract public class NativePulsarCmdApp extends PulsarWorkshopCmdApp {
         // But for Luna streaming, they're required if TLS is expected.
         if ( !useAstraStreaming && StringUtils.contains(pulsarSvcUrl, "pulsar+ssl") ) {
             boolean tlsHostnameVerificationEnable = BooleanUtils.toBoolean(
-                    pulsarClientConf.getValue("tlsEnableHostnameVerification"));
+                    clientConnConf.getValue("tlsEnableHostnameVerification"));
             clientBuilder.enableTlsHostnameVerification(tlsHostnameVerificationEnable);
 
             String tlsTrustCertsFilePath =
-                    pulsarClientConf.getValue("tlsTrustCertsFilePath");
+                    clientConnConf.getValue("tlsTrustCertsFilePath");
             if (!StringUtils.isBlank(tlsTrustCertsFilePath)) {
                 clientBuilder.tlsTrustCertsFilePath(tlsTrustCertsFilePath);
             }
 
             boolean tlsAllowInsecureConnection = BooleanUtils.toBoolean(
-                    pulsarClientConf.getValue("tlsAllowInsecureConnection"));
+                    clientConnConf.getValue("tlsAllowInsecureConnection"));
             clientBuilder.allowTlsInsecureConnection(tlsAllowInsecureConnection);
         }
 

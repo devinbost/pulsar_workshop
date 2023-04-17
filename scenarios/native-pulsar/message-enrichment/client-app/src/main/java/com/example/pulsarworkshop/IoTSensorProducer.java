@@ -3,7 +3,6 @@ package com.example.pulsarworkshop;
 import com.example.pulsarworkshop.exception.InvalidParamException;
 import com.example.pulsarworkshop.exception.WorkshopRuntimException;
 import com.example.pulsarworkshop.util.CsvFileLineScanner;
-import org.apache.commons.cli.Option;
 import org.apache.pulsar.client.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +13,10 @@ import java.nio.charset.StandardCharsets;
 
 public class IoTSensorProducer extends NativePulsarCmdApp {
 
+    // Must be set before initializing the "logger" object.
+    private final static String APP_NAME = "IoTSensorProducer";
+    static { System.setProperty("log_file_base_name", getLogFileName(API_TYPE, APP_NAME)); }
+
     private final static Logger logger = LoggerFactory.getLogger(IoTSensorProducer.class);
 
     private static File iotSensorDataCsvFile;
@@ -23,10 +26,12 @@ public class IoTSensorProducer extends NativePulsarCmdApp {
     public IoTSensorProducer(String appName, String[] inputParams) {
         super(appName, inputParams);
         addRequiredCommandLineOption("csv","csvFile", true, "IoT sensor data CSV file.");
+
+        logger.info("Starting application: \"" + appName + "\" ...");
     }
 
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new IoTSensorProducer("IoTSensorProducer", args);
+        PulsarWorkshopCmdApp workshopApp = new IoTSensorProducer(APP_NAME, args);
         int exitCode = workshopApp.run();
         System.exit(exitCode);
     }
@@ -49,7 +54,7 @@ public class IoTSensorProducer extends NativePulsarCmdApp {
                 pulsarClient = createNativePulsarClient();
                 if (pulsarProducer == null) {
                     ProducerBuilder<byte[]> producerBuilder = pulsarClient.newProducer();
-                    pulsarProducer = producerBuilder.topic(pulsarTopicName).create();
+                    pulsarProducer = producerBuilder.topic(topicName).create();
                 }
             }
 
@@ -73,9 +78,9 @@ public class IoTSensorProducer extends NativePulsarCmdApp {
                         MessageId messageId = messageBuilder
                                 .value(csvLine.getBytes(StandardCharsets.UTF_8))
                                 .send();
-                        if (logger.isDebugEnabled()) {
-                            logger.debug(">>> Published a message: {}", messageId);
-                        }
+                        logger.info("Published a message with raw value: [{}] {}",
+                                msgSent,
+                                csvLine);
 
                         msgSent++;
                     } else {
@@ -108,6 +113,9 @@ public class IoTSensorProducer extends NativePulsarCmdApp {
         }
         catch (PulsarClientException pce) {
             throw new WorkshopRuntimException("Failed to terminate Pulsar producer or client!");
+        }
+        finally {
+            logger.info("Terminating application: \"" + appName + "\" ...");
         }
     }
 }

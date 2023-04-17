@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import javax.jms.*;
 
 public class IoTSensorQueueReceiver extends S4JCmdApp {
+    // Must be set before initializing the "logger" object.
+    private final static String APP_NAME = "IoTSensorQueueReceiver";
+    static { System.setProperty("log_file_base_name", getLogFileName(API_TYPE, APP_NAME)); }
     private final static Logger logger = LoggerFactory.getLogger(IoTSensorQueueReceiver.class);
 
     private static PulsarConnectionFactory connectionFactory;
@@ -18,10 +21,12 @@ public class IoTSensorQueueReceiver extends S4JCmdApp {
 
     public IoTSensorQueueReceiver(String appName, String[] inputParams) {
         super(appName, inputParams);
+
+        logger.info("Starting application: \"" + appName + "\" ...");
     }
 
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new IoTSensorQueueReceiver("IoTSensorQueueReceiver", args);
+        PulsarWorkshopCmdApp workshopApp = new IoTSensorQueueReceiver(APP_NAME, args);
         int exitCode = workshopApp.run();
         System.exit(exitCode);
     }
@@ -42,7 +47,7 @@ public class IoTSensorQueueReceiver extends S4JCmdApp {
                 }
 
                 if (queueDestination == null) {
-                    queueDestination = createQueueDestination(jmsContext, pulsarTopicName);
+                    queueDestination = createQueueDestination(jmsContext, topicName);
                     if (jmsConsumer == null) {
                         jmsConsumer = jmsContext.createConsumer(queueDestination);
                     }
@@ -56,11 +61,9 @@ public class IoTSensorQueueReceiver extends S4JCmdApp {
 
             while (msgRecvd < numMsg) {
                 Message message = jmsConsumer.receive();
-                if (logger.isDebugEnabled()) {
-                    logger.debug(">>> Message received from queue {} (msg-payload={})",
-                            queueDestination.getQueueName(), message.getBody(String.class));
-                }
-
+                logger.info("Message received from topic {}: value={}",
+                        queueDestination.getQueueName(),
+                        message.getBody(String.class));
                 msgRecvd++;
             }
         }
@@ -71,12 +74,17 @@ public class IoTSensorQueueReceiver extends S4JCmdApp {
 
     @Override
     public void termApp() {
-        if (jmsContext != null) {
-            jmsContext.close();
-        }
+        try {
+            if (jmsContext != null) {
+                jmsContext.close();
+            }
 
-        if (connectionFactory != null) {
-            connectionFactory.close();
+            if (connectionFactory != null) {
+                connectionFactory.close();
+            }
+        }
+        finally {
+            logger.info("Terminating application: \"" + appName + "\" ...");
         }
     }
 }
