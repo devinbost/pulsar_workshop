@@ -60,4 +60,7 @@ public class ClientConnConf {
                 append("clientConfMap", clientConfMap.toString()).
                 toString();
     }
+    public Map<String, String> getClientConfMap() {
+         return this.clientConfMap; 
+    }
 }
