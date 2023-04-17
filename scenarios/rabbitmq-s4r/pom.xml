@@ -75,14 +75,7 @@
         <dependency>
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>
-            <version>4.0.0</version>
+            <version>${rabbitmq.version}</version> 
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>com.rabbitmq</groupId>-->
-<!--            <artifactId>amqp-client</artifactId>-->
-<!--            <version>${amqp.version}}</version>-->
-<!--        </dependency>-->
     </dependencies>
-
 </project>
