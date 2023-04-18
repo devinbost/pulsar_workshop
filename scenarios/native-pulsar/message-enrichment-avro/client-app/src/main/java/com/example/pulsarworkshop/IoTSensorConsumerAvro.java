@@ -111,5 +111,8 @@ public class IoTSensorConsumerAvro extends NativePulsarCmdApp {
         catch (PulsarClientException pce) {
             throw new WorkshopRuntimException("Failed to terminate Pulsar producer or client!");
         }
+        finally {
+            logger.info("Terminating application: \"" + appName + "\" ...");
+        }
     }
 }

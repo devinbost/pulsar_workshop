@@ -56,7 +56,7 @@ if ! [[ -f "${clntConfFile}" ]]; then
    errExit 40 "The specified 'client.conf' file is invalid!"
 fi
 
-clientAppJar="${SCENARIO_HOMEDIR}/client-app/target/msgenrich-clientapp-1.0.0.jar"
+clientAppJar="${SCENARIO_HOMEDIR}/client-app/target/np-msgenrich-clientapp-1.0.0.jar"
 if ! [[ -f "${clientAppJar}" ]]; then
   errExit 50 "Can't find the client app jar file. Please first build the programs!"
 fi

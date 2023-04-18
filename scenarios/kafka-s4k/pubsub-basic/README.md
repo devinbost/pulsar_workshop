@@ -1,151 +1,95 @@
 - [1. Scenario Overview](#1-scenario-overview)
-  - [1.1. Program List](#11-program-list)
-    - [1.1.1. Build the Program](#111-build-the-program)
-  - [1.2. Software Requirement](#12-software-requirement)
-  - [1.3. JMS Topic](#13-jms-topic)
-    - [1.3.1. Customize the JMS Topic](#131-customize-the-jms-topic)
-- [2. Connect to the Pulsar Cluster](#2-connect-to-the-pulsar-cluster)
-- [3. IoT Sensor Reading Data Source](#3-iot-sensor-reading-data-source)
-- [4. Deploy the Scenario](#4-deploy-the-scenario)
-- [5. Run the Scenario](#5-run-the-scenario)
-  - [5.1. Run the JMS Topic Subscriber Client App](#51-run-the-jms-topic-subscriber-client-app)
-  - [5.2. Run the JMS Topic Publisher Client App](#52-run-the-jms-topic-publisher-client-app)
+  - [1.1. Scenario Programs](#11-scenario-programs)
+- [2. Enable Pulsar's S4K Protocol Handler](#2-enable-pulsars-s4k-protocol-handler)
+- [3. Deploy Pulsar Resources](#3-deploy-pulsar-resources)
+  - [3.1. Kafka Topic Schema](#31-kafka-topic-schema)
+- [4. Execution Steps](#4-execution-steps)
+- [5. Verify the Results](#5-verify-the-results)
 
+---
 
 # 1. Scenario Overview
 
 | | |
 | - | - |
-| **Name** | p2p-basic |
-| **Description** | This scenario shows how to use the Starlight for JMS (S4J) API with Pulsar to do native message sending and receiving with a JMS topic. |
-| **Data Flow Pattern** | <IoT_sensor_reading_data> -> [JMS Topic Publisher] -> (JMS topic) -> [JMS Topic Subscriber] |
+| **Name** | Kafka+S4K pubsub-basic |
+| **Description** | This scenario shows how to use the Starlight for JMS (S4J) API with Pulsar to do native message producing and consuming with a **Kafka topic**. |
+| **Data Flow Pattern** | <IoT_sensor_reading_data> -> [Kafka Producer] -> (Kafka topic) -> [Kafka Subscriber] |
 
-## 1.1. Program List
+## 1.1. Scenario Programs
 
 There are 2 programs used in this scenario to demonstrate the end-to-end data flow pattern. All these programs are written in **Java**. 
 
 | Name | Source Code | Description |
 | ---- | ----------- | ----------- |
-| IoTSensorTopicSubscriber | [IoTSensorTopicSubscriber.java](./src/main/java/com/example/pulsarworkshop/IoTSensorTopicSubscriber.java) | A JMS publisher client app that reads data from an IoT reading data source file (CSV format) and publishes the data to a JMS topic which is backed by a Pulsar topic behind the scene. |
-| IoTSensorTopicPublisher | [IoTSensorTopicPublisher.java](./src/main/java/com/example/pulsarworkshop/IoTSensorTopicPublisher.java) | A JMS subscriber client app that subscribes messages from a JMS topic which is backed by a Pulsar topic behind the scene. |
+| IoTSensorKafkaConsumer | [IoTSensorKafkaConsumer.java](./src/main/java/com/example/pulsarworkshop/IoTSensorKafkaConsumer.java) | A Kafka producer client app that reads data from an IoT reading data source file (CSV format) and publishes the data to a Kafka topic which is backed by a Pulsar topic behind the scene. |
+| IoTSensorKafkaProducer | [IoTSensorKafkaProducer.java](./src/main/java/com/example/pulsarworkshop/IoTSensorKafkaProducer.java) | A Kafka consumer client app that consumes messages from a Kafka topic which is backed by a Pulsar topic behind the scene. |
 
-### 1.1.1. Build the Program
+# 2. Enable Pulsar's S4K Protocol Handler
 
-The above programs need to be built in advance before running this scenario. Please refer to the document of [Building the Scenarios](../../../Build.Programs.md) for more details.
+Apache Pulsar provides **native** support to other messaging/streaming clients (Kafka, RabbitMQ, etc.) through Pulsar's [**pluggable protocol handler**](https://github.com/apache/pulsar/wiki/PIP-41%3A-Pluggable-Protocol-Handler) capability. DataStax implements the Kafka protocol handler via the Starlight for Kafka (S4K).
 
-## 1.2. Software Requirement
+By default, the S4K protocol handler is disabled in Pulsar. 
 
-Running the scenario require the following software to be installed on your local computer:
+* For the general procedure of enabling S4K in Pulsar, please refer to this DataStax [document](https://docs.datastax.com/en/streaming/starlight-for-kafka/2.10.1.x/installation/starlight-kafka-quickstart.html)
 
-1. `JDK 11`
-2. `curl` utility
+* For Astra streaming in particular, enabling the S4K feature is as simple as just clicking a button on from the UI as below:
+![astra streaming](../images/astra_streaming_s4k.png)
 
-## 1.3. JMS Topic
+# 3. Deploy Pulsar Resources
 
-In Pulsar, a JMS topic is backed by a Pulsar topic. Therefore, running this scenario requires the following default Pulsar tenant, namespace, and topic. 
+In Pulsar, a Kafka topic is backed by a Pulsar topic. In this scenario, the following default Pulsar resources need to be deployed first before running the scenario: 
 
 * **tenant**: `msgenrich`
 * **namespace**: `testns`
 * **topics**:
-   * `msgenrich/testns/p2p_s4j`
+   * `msgenrich/testns/kafka_pubsub`
 
-Please **NOTE** that the creation of the above Pulsar "resources" can be **automated** by using the `deploy.sh` scrip. (see [Chapter 4](#4-deploy-the-scenario))
+Please **NOTE** that the creation of the above Pulsar resources is done via the `deploy.sh` scrip. (see [Deploy a Scenario](../../../Deploy.Scenario.md) document for more details)
 
-### 1.3.1. Customize the JMS Topic
+## 3.1. Kafka Topic Schema
 
-If you want to run this scenario against a different set of Pulsar tenant, namespace, and topics, it can also be achieved by using a more advanced functionality of the `deploy.sh` script, via a `deployment properties` file. The document of [Deploying the Scenario](Deploy.Scenario.md) provides more details of how to do so.
+In Pulsar, the built-in schema registry can be used for Kafka topic schema management. In this scenario, both the message key and value use `STRING` as the underlying schema.
 
-# 2. Connect to the Pulsar Cluster
+# 4. Execution Steps
 
-Both the Pulsar producer and consumer client apps get the connection info to the target Pulsar cluster from a `client.conf` file as described in this [Apache Pulsar doc](https://pulsar.apache.org/docs/2.10.x/reference-configuration/#client).
+Let's assume the Pulsar cluster connection information is provided via the following file: `/tmp/client.conf`.
 
-Please **NOTE** that for Astra Streaming (AS), this requires creating an AS tenant in advance and downloading the corresponding `client.conf` from the UI. This is because AS is a managed service and as a client application, it is impossible to get the cluster admin token like in a self-managed Pulsar cluster. The AS token for a client application is always associated with a particular tenant.
-
-# 3. IoT Sensor Reading Data Source
-
-The CSV file that contains the raw IoT sensor reading data is available from [sensor_telemetry.csv](../../_raw_data_src/sensor_telemetry.csv). Each line of the CSV file represents a particular IoT device reading of the following types at a particular time.
-* Carbon monoxide
-* Humidity (%)
-* Light detection
-* Liquefied petroleum gas (LPG)
-* Motion detection
-* Smoke
-* Temperature
-
-For a more detailed description of this data source, please check from [here](https://www.kaggle.com/datasets/garystafford/environmental-sensor-data-132k).
-
-# 4. Deploy the Scenario
-
-The scenario deployment script, [`deploy.sh`](_bash/deploy.sh), is used to execute the following tasks which are required before running the scenario.
-1. Create the required Pulsar tenant (only relevant for non-Astra Streaming based Pulsar cluster)
-2. Create the required Pulsar namespace
-3. Create the required Pulsar topic
-
-This script has the following usage format. The only mandatory parameter is `-cc` which is used to specify the required Pulsar cluster client connection file. The `-dp` parameter is related with the scenario deployment customization (see [`Deploying the Scenario`](Deploy.Scenario.md) doc for more details.)
-
-```
-Usage: deploy.sh [-h]
-                 -cc <client_conf_file>
-                 [-na]
-                 [-dp <deploy_properties_file>]
-       -h  : Show usage info
-       -cc : (Required) 'client.conf' file path.
-       -na : (Optional) Non-Astra Streaming (Astra streaming is the default).
-       -dp : (Optional) 'deploy.properties' file path (default to '<SCENARIO_HOMEDIR>/deploy.properties').
-```
-
-An example of using this script to deploy the scenario is as below:
-
+1. Deploy the scenario specific resources
 ```
 deploy.sh -cc /tmp/client.conf
 ```
 
-# 5. Run the Scenario
-
-After all Pulsar resources are deployed, we can run the Pulsar client applications included in this scenario.
-
-## 5.1. Run the JMS Topic Subscriber Client App
-
-The following script [`runConsumer.sh`](_bash/runConsumer.sh) is used to run the JMS receiver client app that receives the messages from the JMS topic, `msgenrich/testns/s4j_pubsub`.
-
+2. Start a Kafka message consumer and wait for consuming messages from a Kafka topic that is backed by the Pulsar topic `msgenrich/testns/kafka_pubsub`
 ```
-Usage: runConsumer.sh [-h]
-                      [-na]
-                      -t <topic_name>
-                      -n <message_number>
-                      -cc <client_conf_file>
-       -h  : Show usage info
-       -na : (Optional) Non-Astra Streaming (Astra streaming is the default).
-       -t  : (Required) The topic name to publish messages to.
-       -n  : (Required) The number of messages to consume.
-       -cc : (Required) 'client.conf' file path.
+runConsumer.sh -cc /tmp/client.conf -n 2 -t msgenrich/testns/kafka_pubsub
 ```
 
-An example of using this script to consuming 100 messages is as below:
+The received messages will be recorded in an application log file named `kafka-s4k-IoTSensorKafkaConsumer-YYYMMDD.log`. This log file is created in the current folder where the `runConsumer.sh` script is executed. An example of two outputs of this log file is as below: 
 
 ```
-runConsumer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/s4j_pubsub
+20:57:27.424 [main] INFO  c.e.p.IoTSensorKafkaConsumer - Starting application: "IoTSensorKafkaConsumer" ...
+20:57:32.597 [main] INFO  c.e.p.IoTSensorKafkaConsumer - (mygroup) Message received and acknowledged: key=null; headers=RecordHeaders(headers = [], isReadOnly = false); value="1.5945120943859746E9","b8:27:eb:bf:9d:51","0.004955938648391245","51.0","false","0.00765082227055719","false","0.02041127012241292","22.7"
+20:57:32.597 [main] INFO  c.e.p.IoTSensorKafkaConsumer - (mygroup) Message received and acknowledged: key=null; headers=RecordHeaders(headers = [], isReadOnly = false); value="1.5945120947355676E9","00:0f:00:70:91:0a","0.0028400886071015706","76.0","false","0.005114383400977071","false","0.013274836704851536","19.700000762939453"
+20:57:32.646 [main] INFO  c.e.p.IoTSensorKafkaConsumer - Terminating application: "IoTSensorKafkaConsumer" ...
 ```
 
-## 5.2. Run the JMS Topic Publisher Client App
-
-The following script [`runProducer.sh`](_bash/runProducer.sh) is used to run the JMS sender client app that reads the IoT sensor data from a CSV source file and then sends them to the JMS topic, `msgenrich/testns/s4j_pubsub`.
-
+3. Start a Kafka message producer and publishes messages to a Kafka topic that is backed by the Pulsar topic `msgenrich/testns/kafka_pubsub`
 ```
-Usage: runProducer.sh [-h]
-                      [-na]
-                      -t <topic_name>
-                      -n <message_number>
-                      -cc <client_conf_file>
-       -h  : Show usage info
-       -na : (Optional) Non-Astra Streaming (Astra streaming is the default).
-       -t  : (Required) The topic name to publish messages to.
-       -n  : (Required) The number of messages to produce.
-       -cc : (Required) 'client.conf' file path.
+runProducer.sh -cc /tmp/client.conf -n 2 -t msgenrich/testns/kafka_pubsub
 ```
 
-An example of using this script to publish 100 messages is as below:
+The messages published will be recorded in an application log file named as `kafka-s4k-IoTSensorKafkaProducer-YYYMMDD.log`. This log file is created in the current folder where the `runProducer.sh` script is executed. An example of two outputs of this log file is as below: 
 
 ```
-runProducer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/s4j_pubsub
+20:57:23.522 [main] INFO  c.e.p.IoTSensorKafkaProducer - Starting application: "IoTSensorKafkaProducer" ...
+20:57:24.511 [main] INFO  c.e.p.IoTSensorKafkaProducer - Published a message with raw value: [0] "1.5945120943859746E9","b8:27:eb:bf:9d:51","0.004955938648391245","51.0","false","0.00765082227055719","false","0.02041127012241292","22.7"
+20:57:24.511 [main] INFO  c.e.p.IoTSensorKafkaProducer - Published a message with raw value: [1] "1.5945120947355676E9","00:0f:00:70:91:0a","0.0028400886071015706","76.0","false","0.005114383400977071","false","0.013274836704851536","19.700000762939453"
+20:57:24.824 [main] INFO  c.e.p.IoTSensorKafkaProducer - Terminating application: "IoTSensorKafkaProducer" ...
 ```
+
+# 5. Verify the Results
+
+This is a simple Kafka producer and consumer scenario without any extra message processing. The main purpose of this scenario is to demonstrate how to use Apache Pulsar as a drop-in replace of Apache Kafka and serve native Kafka client applications with no code change. 
+
+The Kafka consumer client application receives exactly the same IoT sensor data that are published by the Kafka producer client application.

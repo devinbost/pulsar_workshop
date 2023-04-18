@@ -226,11 +226,11 @@ if [[ ${#pulsarFunctions[@]} -gt 0 ]]; then
     #       one single jar file.
     #
     scnFuncPkgHomeDir="${SCENARIO_HOMEDIR}/function/target"
-    funcPkgName="msgenrich-avro-function-1.0.0.jar"
+    funcPkgName="np-msgenrich-avro-function-1.0.0.jar"
     if ! [[ -f "${scnFuncPkgHomeDir}/${funcPkgName}" ]]; then
         errExit 70 "The specified Pulsar function jar file (${scnFuncPkgHomeDir}/${funcPkgName}) is invalid!"
     fi
-
+a
     outputMsg "" 0 ${deployMainLogFile} true
     outputMsg ">>> Deploying the required Pulsar functions ..." 0 ${deployMainLogFile} true
     functionIdx=0
