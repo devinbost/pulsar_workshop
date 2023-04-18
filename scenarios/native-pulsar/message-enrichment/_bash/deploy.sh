@@ -196,7 +196,7 @@ if [[ ${#pulsarFunctions[@]} -gt 0 ]]; then
     #
     scnFuncCfgHomeDir="${SCENARIO_HOMEDIR}/_config"
     scnFuncPkgHomeDir="${SCENARIO_HOMEDIR}/function/target"
-    funcPkgName="msgenrich-function-1.0.0.jar"
+    funcPkgName="np-msgenrich-function-1.0.0.jar"
     if ! [[ -f "${scnFuncPkgHomeDir}/${funcPkgName}" ]]; then
         errExit 70 "The specified Pulsar function jar file (${scnFuncPkgHomeDir}/${funcPkgName}) is invalid!"
     fi

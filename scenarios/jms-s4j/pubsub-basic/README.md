@@ -1,26 +1,20 @@
 - [1. Scenario Overview](#1-scenario-overview)
-  - [1.1. Program List](#11-program-list)
-    - [1.1.1. Build the Program](#111-build-the-program)
-  - [1.2. Software Requirement](#12-software-requirement)
-  - [1.3. JMS Topic](#13-jms-topic)
-    - [1.3.1. Customize the JMS Topic](#131-customize-the-jms-topic)
-- [2. Connect to the Pulsar Cluster](#2-connect-to-the-pulsar-cluster)
-- [3. IoT Sensor Reading Data Source](#3-iot-sensor-reading-data-source)
-- [4. Deploy the Scenario](#4-deploy-the-scenario)
-- [5. Run the Scenario](#5-run-the-scenario)
-  - [5.1. Run the JMS Topic Subscriber Client App](#51-run-the-jms-topic-subscriber-client-app)
-  - [5.2. Run the JMS Topic Publisher Client App](#52-run-the-jms-topic-publisher-client-app)
+  - [1.1. Scenario Programs](#11-scenario-programs)
+- [2. Deploy Pulsar Resources](#2-deploy-pulsar-resources)
+- [3. Execution Steps](#3-execution-steps)
+- [4. Verify the Results](#4-verify-the-results)
 
+---
 
 # 1. Scenario Overview
 
 | | |
 | - | - |
-| **Name** | p2p-basic |
-| **Description** | This scenario shows how to use the Starlight for JMS (S4J) API with Pulsar to do native message sending and receiving with a JMS topic. |
+| **Name** | JMS+S4J pubsub-basic |
+| **Description** | This scenario shows how to use the Starlight for JMS (S4J) API with Pulsar to do native message publishing and subscribing with a **JMS topic**. |
 | **Data Flow Pattern** | <IoT_sensor_reading_data> -> [JMS Topic Publisher] -> (JMS topic) -> [JMS Topic Subscriber] |
 
-## 1.1. Program List
+## 1.1. Scenario Programs
 
 There are 2 programs used in this scenario to demonstrate the end-to-end data flow pattern. All these programs are written in **Java**. 
 
@@ -29,123 +23,56 @@ There are 2 programs used in this scenario to demonstrate the end-to-end data fl
 | IoTSensorTopicSubscriber | [IoTSensorTopicSubscriber.java](./src/main/java/com/example/pulsarworkshop/IoTSensorTopicSubscriber.java) | A JMS publisher client app that reads data from an IoT reading data source file (CSV format) and publishes the data to a JMS topic which is backed by a Pulsar topic behind the scene. |
 | IoTSensorTopicPublisher | [IoTSensorTopicPublisher.java](./src/main/java/com/example/pulsarworkshop/IoTSensorTopicPublisher.java) | A JMS subscriber client app that subscribes messages from a JMS topic which is backed by a Pulsar topic behind the scene. |
 
-### 1.1.1. Build the Program
+# 2. Deploy Pulsar Resources
 
-The above programs need to be built in advance before running this scenario. Please refer to the document of [Building the Scenarios](../../../Build.Programs.md) for more details.
-
-## 1.2. Software Requirement
-
-Running the scenario require the following software to be installed on your local computer:
-
-1. `JDK 11`
-2. `curl` utility
-
-## 1.3. JMS Topic
-
-In Pulsar, a JMS topic is backed by a Pulsar topic. Therefore, running this scenario requires the following default Pulsar tenant, namespace, and topic. 
+In Pulsar, a JMS topic is backed by a Pulsar topic. In this scenario, the following default Pulsar resources need to be deployed first before running the scenario: 
 
 * **tenant**: `msgenrich`
 * **namespace**: `testns`
 * **topics**:
-   * `msgenrich/testns/p2p_s4j`
+   * `msgenrich/testns/s4j_pubsub`
 
-Please **NOTE** that the creation of the above Pulsar "resources" can be **automated** by using the `deploy.sh` scrip. (see [Chapter 4](#4-deploy-the-scenario))
+Please **NOTE** that the creation of the above Pulsar resources is done via the `deploy.sh` scrip. (see [Deploy a Scenario](../../../Deploy.Scenario.md) document for more details)
 
-### 1.3.1. Customize the JMS Topic
+# 3. Execution Steps
 
-If you want to run this scenario against a different set of Pulsar tenant, namespace, and topics, it can also be achieved by using a more advanced functionality of the `deploy.sh` script, via a `deployment properties` file. The document of [Deploying the Scenario](Deploy.Scenario.md) provides more details of how to do so.
+Let's assume the Pulsar cluster connection information is provided via the following file: `/tmp/client.conf`.
 
-# 2. Connect to the Pulsar Cluster
-
-Both the Pulsar producer and consumer client apps get the connection info to the target Pulsar cluster from a `client.conf` file as described in this [Apache Pulsar doc](https://pulsar.apache.org/docs/2.10.x/reference-configuration/#client).
-
-Please **NOTE** that for Astra Streaming (AS), this requires creating an AS tenant in advance and downloading the corresponding `client.conf` from the UI. This is because AS is a managed service and as a client application, it is impossible to get the cluster admin token like in a self-managed Pulsar cluster. The AS token for a client application is always associated with a particular tenant.
-
-# 3. IoT Sensor Reading Data Source
-
-The CSV file that contains the raw IoT sensor reading data is available from [sensor_telemetry.csv](../../_raw_data_src/sensor_telemetry.csv). Each line of the CSV file represents a particular IoT device reading of the following types at a particular time.
-* Carbon monoxide
-* Humidity (%)
-* Light detection
-* Liquefied petroleum gas (LPG)
-* Motion detection
-* Smoke
-* Temperature
-
-For a more detailed description of this data source, please check from [here](https://www.kaggle.com/datasets/garystafford/environmental-sensor-data-132k).
-
-# 4. Deploy the Scenario
-
-The scenario deployment script, [`deploy.sh`](_bash/deploy.sh), is used to execute the following tasks which are required before running the scenario.
-1. Create the required Pulsar tenant (only relevant for non-Astra Streaming based Pulsar cluster)
-2. Create the required Pulsar namespace
-3. Create the required Pulsar topic
-
-This script has the following usage format. The only mandatory parameter is `-cc` which is used to specify the required Pulsar cluster client connection file. The `-dp` parameter is related with the scenario deployment customization (see [`Deploying the Scenario`](Deploy.Scenario.md) doc for more details.)
-
-```
-Usage: deploy.sh [-h]
-                 -cc <client_conf_file>
-                 [-na]
-                 [-dp <deploy_properties_file>]
-       -h  : Show usage info
-       -cc : (Required) 'client.conf' file path.
-       -na : (Optional) Non-Astra Streaming (Astra streaming is the default).
-       -dp : (Optional) 'deploy.properties' file path (default to '<SCENARIO_HOMEDIR>/deploy.properties').
-```
-
-An example of using this script to deploy the scenario is as below:
-
+1. Deploy the scenario specific resources
 ```
 deploy.sh -cc /tmp/client.conf
 ```
 
-# 5. Run the Scenario
-
-After all Pulsar resources are deployed, we can run the Pulsar client applications included in this scenario.
-
-## 5.1. Run the JMS Topic Subscriber Client App
-
-The following script [`runConsumer.sh`](_bash/runConsumer.sh) is used to run the JMS receiver client app that receives the messages from the JMS topic, `msgenrich/testns/s4j_pubsub`.
-
+2. Start a JMS message subscriber and wait for consuming messages from a JMS Topic (10 messages as in the example below)
 ```
-Usage: runConsumer.sh [-h]
-                      [-na]
-                      -t <topic_name>
-                      -n <message_number>
-                      -cc <client_conf_file>
-       -h  : Show usage info
-       -na : (Optional) Non-Astra Streaming (Astra streaming is the default).
-       -t  : (Required) The topic name to publish messages to.
-       -n  : (Required) The number of messages to consume.
-       -cc : (Required) 'client.conf' file path.
+runConsumer.sh -cc /tmp/client.conf -n 10 -t msgenrich/testns/s4j_pubsub
 ```
 
-An example of using this script to consuming 100 messages is as below:
+The received messages will be recorded in an application log file named `jms-s4j-IoTSensorTopicSubscriber-YYYMMDD.log`. This log file is created in the current folder where the `runConsumer.sh` script is executed. An example of this log file is as below: 
 
 ```
-runConsumer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/s4j_pubsub
+21:22:01.751 [main] INFO  c.e.p.IoTSensorTopicSubscriber - Starting application: "IoTSensorTopicSubscriber" ...
+21:22:16.474 [main] INFO  c.e.p.IoTSensorTopicSubscriber - Message received from topic persistent://msgenrich/testns/s4j_pubsub: value="1.5945120943859746E9","b8:27:eb:bf:9d:51","0.004955938648391245","51.0","false","0.00765082227055719","false","0.02041127012241292","22.7"
+21:22:16.491 [main] INFO  c.e.p.IoTSensorTopicSubscriber - Message received from topic persistent://msgenrich/testns/s4j_pubsub: value="1.5945120947355676E9","00:0f:00:70:91:0a","0.0028400886071015706","76.0","false","0.005114383400977071","false","0.013274836704851536","19.700000762939453"
+21:22:18.632 [main] INFO  c.e.p.IoTSensorTopicSubscriber - Terminating application: "IoTSensorTopicSubscriber" ...
 ```
 
-## 5.2. Run the JMS Topic Publisher Client App
-
-The following script [`runProducer.sh`](_bash/runProducer.sh) is used to run the JMS sender client app that reads the IoT sensor data from a CSV source file and then sends them to the JMS topic, `msgenrich/testns/s4j_pubsub`.
-
+3. Start a JMS message publisher and publishes messages to a JMS Topic
 ```
-Usage: runProducer.sh [-h]
-                      [-na]
-                      -t <topic_name>
-                      -n <message_number>
-                      -cc <client_conf_file>
-       -h  : Show usage info
-       -na : (Optional) Non-Astra Streaming (Astra streaming is the default).
-       -t  : (Required) The topic name to publish messages to.
-       -n  : (Required) The number of messages to produce.
-       -cc : (Required) 'client.conf' file path.
+runProducer.sh -cc /tmp/client.conf -n 10 -t msgenrich/testns/s4j_pubsub
 ```
 
-An example of using this script to publish 100 messages is as below:
+The messages published will be recorded in an application log file named as `jms-s4j-IoTSensorTopicPublisher-YYYMMDD.log`. This log file is created in the current folder where the `runProducer.sh` script is executed. An example of this log file is as below: 
 
 ```
-runProducer.sh -cc /tmp/client.conf -n 100 -t msgenrich/testns/s4j_pubsub
+21:22:14.415 [main] INFO  c.e.p.IoTSensorTopicPublisher - Starting application: "IoTSensorTopicPublisher" ...
+21:22:16.454 [main] INFO  c.e.p.IoTSensorTopicPublisher - IoT sensor data published to topic persistent://msgenrich/testns/s4j_pubsub [0] "1.5945120943859746E9","b8:27:eb:bf:9d:51","0.004955938648391245","51.0","false","0.00765082227055719","false","0.02041127012241292","22.7"
+21:22:16.493 [main] INFO  c.e.p.IoTSensorTopicPublisher - IoT sensor data published to topic persistent://msgenrich/testns/s4j_pubsub [1] "1.5945120947355676E9","00:0f:00:70:91:0a","0.0028400886071015706","76.0","false","0.005114383400977071","false","0.013274836704851536","19.700000762939453"
+21:22:18.632 [main] INFO  c.e.p.IoTSensorTopicPublisher - Terminating application: "IoTSensorTopicPublisher" ...
 ```
+
+# 4. Verify the Results
+
+This is a simple Kafka producer and consumer scenario without any extra message processing. The main purpose of this scenario is to demonstrate how to use Apache Pulsar as a drop-in replace of a JMS broker and serve native JMS client applications with JMS queues with no code change. 
+
+The JMS receiver client application receives exactly the same IoT sensor data that are published by the JMS publisher client application.
