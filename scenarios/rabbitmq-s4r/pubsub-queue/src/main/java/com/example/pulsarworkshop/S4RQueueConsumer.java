@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 public class S4RQueueConsumer extends S4RCmdApp {
+    private final static String APP_NAME = "S4RQueueConsumer";
+    static { System.setProperty("log_file_base_name", getLogFileName(API_TYPE, APP_NAME)); }
     private final static Logger logger = LoggerFactory.getLogger(S4RQueueConsumer.class);
     DefaultConsumer consumer;
     public S4RQueueConsumer(String appName, String[] inputParams) {

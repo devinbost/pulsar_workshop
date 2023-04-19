@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 public class S4RQueueProducer extends S4RCmdApp {
+    private final static String APP_NAME = "S4RQueueProducer";
+    static { System.setProperty("log_file_base_name", getLogFileName(API_TYPE, APP_NAME)); }
     private final static Logger logger = LoggerFactory.getLogger(S4RQueueProducer.class);
     public S4RQueueProducer(String appName, String[] inputParams) {
         super(appName, inputParams);
