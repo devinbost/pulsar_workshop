@@ -33,8 +33,8 @@ abstract public class PulsarWorkshopCmdApp {
     protected final Options cliOptions = new Options();
 
     public abstract void processExtendedInputParams() throws InvalidParamException;
-    public abstract void runApp();
-    public abstract void termApp();
+    public abstract void execute();
+    public abstract void termCmdApp();
 
     public PulsarWorkshopCmdApp(String appName, String[] inputParams) {
         this.appName = appName;
@@ -65,11 +65,11 @@ abstract public class PulsarWorkshopCmdApp {
     }
 
 
-    public int run() {
+    public int runCmdApp() {
         int exitCode = 0;
         try {
             this.processInputParams();
-            this.runApp();
+            this.execute();
         }
         catch (HelpExitException hee) {
             this.usage(appName);
@@ -86,7 +86,7 @@ abstract public class PulsarWorkshopCmdApp {
             exitCode = 3;
         }
         finally {
-            this.termApp();
+            this.termCmdApp();
         }
         
         return exitCode;

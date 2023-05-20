@@ -1,0 +1,22 @@
+spbp-pubsub:
+  num-msg: <positive_number_or_-1>
+  topic: <tenant/namespace/topic>
+
+spring:
+  pulsar:
+    defaults:
+      type-mappings:
+        # By default, the Spring Pulsar framework will try to build a Schema.JSON from the type
+        # Override the default with an explicit Avro type
+        - message-type: <pojo_class_fully_qualified_name>
+          schema-info:
+            schema-type: AVRO
+    client:
+      service-url: <pulsar_broker_service_url>
+      web-url: <pulsar_web_service_url>
+      auth-plugin-class-name: org.apache.pulsar.client.impl.auth.AuthenticationToken
+      authentication:
+        token: <jwt_token_value>
+
+    consumer:
+      subscription-name: <subscription_name>

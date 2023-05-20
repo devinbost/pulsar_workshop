@@ -3,6 +3,8 @@ application_code
 *.iml
 dependency-reduced-pom.xml
 scenarios/.idea
+scenarios/target
+scenarios/target/*
 scenarios/*/.idea
 scenarios/*/*.idea
 scenarios/*/*/*/.idea
@@ -11,3 +13,17 @@ scenarios/*/*/target
 scenarios/*/*/*/target
 scenarios/*/*/logs
 scenarios/*/*/mybkup
+spring-scenarios/.idea
+spring-scenarios/target
+spring-scenarios/target/*
+spring-scenarios/*/.idea
+spring-scenarios/*/*.idea
+spring-scenarios/*/target
+spring-scenarios/*/*/target
+spring-scenarios/*/*/logs
+spring-scenarios/*/*/mybkup
+*dependency-reduced-pom.xml
+*.log
+*.yml
+.java-version
+.gitignore
