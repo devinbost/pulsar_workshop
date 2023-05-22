@@ -55,6 +55,7 @@
 
     <modules>
         <module>common-resources</module>
+        <module>message-redelivery</module>
         <module>message-enrichment</module>
         <module>message-enrichment-avro</module>
         <module>schema-compatibility</module>
