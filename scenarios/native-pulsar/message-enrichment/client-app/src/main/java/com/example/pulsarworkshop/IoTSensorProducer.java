@@ -32,7 +32,7 @@ public class IoTSensorProducer extends NativePulsarCmdApp {
 
     public static void main(String[] args) {
         PulsarWorkshopCmdApp workshopApp = new IoTSensorProducer(APP_NAME, args);
-        int exitCode = workshopApp.run();
+        int exitCode = workshopApp.runCmdApp();
         System.exit(exitCode);
     }
 
@@ -48,7 +48,7 @@ public class IoTSensorProducer extends NativePulsarCmdApp {
     }
 
     @Override
-    public void runApp() throws WorkshopRuntimException {
+    public void execute() throws WorkshopRuntimException {
         try {
             if (pulsarClient == null ) {
                 pulsarClient = createNativePulsarClient();
@@ -101,7 +101,7 @@ public class IoTSensorProducer extends NativePulsarCmdApp {
     }
 
     @Override
-    public void termApp() {
+    public void termCmdApp() {
         try {
             if (pulsarProducer != null) {
                 pulsarProducer.close();

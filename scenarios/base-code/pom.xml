@@ -24,7 +24,7 @@
     </licenses>
 
     <properties>
-        <pulsar.version>2.10.3</pulsar.version>
+        <pulsar.version>2.10.4</pulsar.version>
     </properties>
 
     <build>

@@ -23,6 +23,9 @@
         </license>
     </licenses>
 
+    <properties>
+    </properties>
+
     <build>
         <plugins>
             <plugin>

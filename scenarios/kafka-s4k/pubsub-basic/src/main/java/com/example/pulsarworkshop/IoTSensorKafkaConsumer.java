@@ -32,7 +32,7 @@ public class IoTSensorKafkaConsumer extends S4KCmdApp {
 
     public static void main(String[] args) {
         PulsarWorkshopCmdApp workshopApp = new IoTSensorKafkaConsumer(APP_NAME, args);
-        int exitCode = workshopApp.run();
+        int exitCode = workshopApp.runCmdApp();
         System.exit(exitCode);
     }
 
@@ -54,7 +54,7 @@ public class IoTSensorKafkaConsumer extends S4KCmdApp {
     }
 
     @Override
-    public void runApp() throws WorkshopRuntimException {
+    public void execute() throws WorkshopRuntimException {
         if (kafkaConsumer == null) {
             kafkaConsumer = createKafkaConsumer();
         }
@@ -82,7 +82,7 @@ public class IoTSensorKafkaConsumer extends S4KCmdApp {
     }
 
     @Override
-    public void termApp() {
+    public void termCmdApp() {
         try {
             if (kafkaConsumer != null) {
                 kafkaConsumer.close();

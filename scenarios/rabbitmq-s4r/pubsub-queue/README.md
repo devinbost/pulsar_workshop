@@ -1,5 +1,5 @@
-- [1. Scenario Overview](#1-scenario-overview)
-  - [1.1. Scenario Programs](#11-scenario-programs)
+- [1. Demo Overview](#1-demo-overview)
+  - [1.1. Demo Programs](#11-demo-programs)
   - [1.2. Enable RabbitMQ on Pulsar](#12-enable-rabbitmq-on-pulsar)
     - [1.3. Build the Programs](#13-build-the-programs)
 - [2. Deploy the Pulsar Resources](#2-deploy-the-pulsar-resources)
@@ -9,17 +9,17 @@
   - [4.2. Run the RabbitMQ S4R Queue Producer Client App](#42-run-the-rabbitmq-s4r-queue-producer-client-app)
 
 
-# 1. Scenario Overview
+# 1. Demo Overview
 
 | | |
 | - | - |
-| **Name** | pubsub-queue |
-| **Description** | This scenario shows how to use the Starlight for RabbitMQ (S4R) API with Pulsar to do native message sending and receiving with a RabbitMQ queue hosted on Pulsar. |
+| **Name** | RabbitMQ+S4R pubsub-queue |
+| **Description** | This demo shows how to use the Starlight for RabbitMQ (S4R) API with Pulsar to do native message sending and receiving with a RabbitMQ queue hosted on Pulsar. |
 | **Data Flow Pattern** |  [S4R Queue Producer] -> (Pulsar RabbitMQ queue) -> [S4R Queue Consumer] |
 
-## 1.1. Scenario Programs
+## 1.1. Demo Programs
 
-There are 2 programs used in this scenario to demonstrate the end-to-end data flow pattern. These programs are written in **Java**. 
+There are 2 programs used in this demo to demonstrate the end-to-end data flow pattern. These programs are written in **Java**. 
 
 | Name | Source Code | Description |
 | ---- | ----------- | ----------- |
@@ -37,32 +37,32 @@ There are 2 programs used in this scenario to demonstrate the end-to-end data fl
 
 For details on Starlight for RabbitMQ (S4R) implementation, see docs at: https://github.com/datastax/starlight-for-rabbitmq
 
-Please **NOTE** for this scenario, you will need access to:
+Please **NOTE** for this demo, you will need access to:
 * Pulsar instance running with a Starlight for RabbitMQ implementation as stated above 
 **OR**
 * An Astra Streaming instance with RabbitMQ enabled.  It supports [S4R out-of-the-box](https://docs.datastax.com/en/streaming/astra-streaming/developing/astream-rabbit.html#starlight-for-rabbitmq-quickstart).  No setup required, ![just enable RabbitMQ](../images/AS-RabbitMQ-Enable.png)
 
 ### 1.3. Build the Programs
 
-The above programs need to be built in advance before running this scenario. Please refer to the document of [Building the Scenarios](../../../Build.Programs.md) for more details.
+The above programs need to be built in advance before running this demo. Please refer to the document of [Building the Scenarios](../../../Build.Programs.md) for more details.
 
 # 2. Deploy the Pulsar Resources 
 
-The scenario deployment script, [`deploy.sh`](_bash/deploy.sh), is used to execute the following tasks which are required before running the scenario.
+The demo deployment script, [`deploy.sh`](_bash/deploy.sh), is used to execute the following tasks which are required before running the demo.
 1. Create the required Pulsar tenant (only relevant for non-Astra Streaming based Pulsar cluster)
 2. Create the required Pulsar namespace
 3. Create the required Pulsar topic
 
-See [`Deploying the Scenario`](../../../Deploy.Scenario.md) doc for more details on the deploy script and options.
+See [`Deploying Demos`](../../../Deploy.Demos.md) doc for more details on the deploy script and options.
 
 The deployment script needs the connection info to the target Pulsar cluster.  This `client.conf` or similar file is  described in this [Apache Pulsar doc](https://pulsar.apache.org/docs/2.10.x/reference-configuration/#client).  For Astra Streaming, it can be **download directly** from the UI under the "Connect" tab under "Details".
 
-An example of using this script to deploy the scenario is as below, with the Pulsar Client Conf file in /tmp:
+An example of using this script to deploy the demo is as below, with the Pulsar Client Conf file in /tmp:
 
 ```
 deploy.sh -cc /tmp/client.conf
 ```
-In Pulsar, a RabbitMQ queue is backed by a Pulsar topic. Therefore, running this scenario requires a default Pulsar tenant, namespace, and topic.  For example:
+In Pulsar, a RabbitMQ queue is backed by a Pulsar topic. Therefore, running this demo requires a default Pulsar tenant, namespace, and topic.  For example:
 
 * **tenant**: `mys4r`
 * **namespace**: `rabbitmq`
@@ -71,7 +71,7 @@ In Pulsar, a RabbitMQ queue is backed by a Pulsar topic. Therefore, running this
 
 # 3. Connect to the Pulsar Cluster
 
-The RabbitMQ producer and consumer client apps can get connection info for the target Pulsar cluster from configuration file.  For this scenario, the client apps expect ths following parameters in a config file:
+The RabbitMQ producer and consumer client apps can get connection info for the target Pulsar cluster from configuration file.  For this demo, the client apps expect ths following parameters in a config file:
 
 ```
 username:
@@ -86,7 +86,7 @@ amqp_URI:
 
 # 4. Execution Steps
 
-After all Pulsar resources are deployed, we can run the S4R client applications included in this scenario.
+After all Pulsar resources are deployed, we can run the S4R client applications included in this demo.
 
 ## 4.1. Run the RabbitMQ S4R Queue Consumer Client App
 

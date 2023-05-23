@@ -1,23 +1,23 @@
-- [1. Scenario Overview](#1-scenario-overview)
-  - [1.1. Scenario Programs](#11-scenario-programs)
+- [1. Demo Overview](#1-demo-overview)
+  - [1.1. Demo Programs](#11-demo-programs)
 - [2. Deploy Pulsar Resources](#2-deploy-pulsar-resources)
   - [2.1. Pulsar Topic Schema](#21-pulsar-topic-schema)
 - [3. Execution Steps](#3-execution-steps)
-- [4. Verify the Results](#4-verify-the-results)
+- [5. Verify the Results](#5-verify-the-results)
 
 ---
 
-# 1. Scenario Overview
+# 1. Demo Overview
 
 | | |
 | - | - |
-| **Name** |message-enrichment |
-| **Description** | <ul><li>This scenario shows how to configure a Pulsar consumer for message redelivery and how to handle a message once it's been redelivered the maximum times allowed by the configuration .</li> <li>Messages are produced by a standard producer and consumed by a consumer that will negative acknowledge the message triggering a redelivery attempt.  The consumer will try five times and then publish the failed message to the configured dead letter topic</li> <li>The raw data source is a CSV file that includes actual readings in a particular time range from a given set of IoT sensors.  This demo will only use the first record in the file</li></ul> |
+| **Name** | message-redlivery |
+| **Description** | <ul><li>This demo shows how to configure a Pulsar consumer for message redelivery and how to handle a message once it's been redelivered the maximum times allowed by the configuration .</li> <li>Messages are produced by a standard producer and consumed by a consumer that will negative acknowledge the message triggering a redelivery attempt.  The consumer will try five times and then publish the failed message to the configured dead letter topic</li> <li>The raw data source is a CSV file that includes actual readings in a particular time range from a given set of IoT sensors.  This demo will only use the first record in the file</li></ul> |
 | **Data Flow Pattern** | <IoT_sensor_reading_data> -> [Pulsar Producer] -> (topic) -> [Pulsar Consumer] -> (dead letter topic) -> [Dead Letter Pulsar Consumer] |
 
-## 1.1. Scenario Programs
+## 1.1. Demo Programs
 
-There are 3 programs used in this scenario to demonstrate the end-to-end data flow pattern. All these programs are written in **Java**. 
+There are 3 programs used in this demo to demonstrate the end-to-end data flow pattern. All these programs are written in **Java**. 
 
 | Name | Type | Source Code | Description |
 | ---- | ---- | ----------- | ----------- |
@@ -27,7 +27,7 @@ There are 3 programs used in this scenario to demonstrate the end-to-end data fl
 
 # 2. Deploy Pulsar Resources
 
-In this scenario, the following default Pulsar resources need to be deployed first before running the scenario:
+In this demo, the following default Pulsar resources need to be deployed first before running the demo:
 
 * **tenant**: `redelivery-demo`
 * **namespace**: `demo`
@@ -35,17 +35,17 @@ In this scenario, the following default Pulsar resources need to be deployed fir
    * `redelivery-demo/demo/target-topic`
    * `redelivery-demo/demo/dlt-topic`
 
-Please **NOTE** that the creation of the above Pulsar resources is done via the `deploy.sh` script. (see [Deploy a Scenario](../../../Deploy.Scenario.md) document for more details)
+Please **NOTE** that the creation of the above Pulsar resources is done via the `deploy.sh` script. (see [Deploy Demos](../../../Deploy.Demos.md) document for more details)
 
 ## 2.1. Pulsar Topic Schema
 
-In this scenario, both topics `redelivery-demo/demo/dlt-topic` and `redelivery-demo/demo/target-topic` use `STRING` as the message schema that represents the IoT Sensor Reading data.
+In this demo, both topics `redelivery-demo/demo/dlt-topic` and `redelivery-demo/demo/target-topic` use `STRING` as the message schema that represents the IoT Sensor Reading data.
 
 # 3. Execution Steps
 
 Let's assume the Pulsar cluster connection information is provided via the following file: `/tmp/client.conf`.
 
-1. Deploy the scenario specific resources
+1. Deploy the demo specific resources
 ```
 deploy.sh -cc /tmp/client.conf
 ```

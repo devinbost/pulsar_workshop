@@ -1,5 +1,5 @@
-- [1. Scenario Overview](#1-scenario-overview)
-  - [1.1. Scenario Programs](#11-scenario-programs)
+- [1. Demo Overview](#1-demo-overview)
+  - [1.1. Demo Programs](#11-demo-programs)
 - [2. Deploy Pulsar Resources](#2-deploy-pulsar-resources)
   - [2.1. Pulsar Topic Schema](#21-pulsar-topic-schema)
 - [3. Execution Steps](#3-execution-steps)
@@ -7,20 +7,20 @@
 
 ---
 
-# 1. Scenario Overview
+# 1. Demo Overview
 
-Function wise this scenario, `message-enrichment-avro` is exactly the same as the [`message-enrichment`](../message-enrichment/) scenario in which the following end-to-end data processing flow is demonstrated:
+Function wise this demo, `message-enrichment-avro` is exactly the same as the [`message-enrichment`](../message-enrichment/) demo in which the following end-to-end data processing flow is demonstrated:
 ```
 <IoT_sensor_reading_data> -> [Pulsar Producer] -> (raw topic) -> [Pulsar Function] -> (processed topic) -> [Pulsar Consumer]
 ```
 
-The **ONLY** difference between this scenario and the `message-enrichment` scenario is:
-* In `message-enrichment` scenario, all messages are processed as simple strings. The corresponding topics have `STRING` as the message schema.
-* In this scenario, all messages are processed as Apache AVRO records. The corresponding topics have `AVRO` as the message schema.
+The **ONLY** difference between this demo and the `message-enrichment` demo is:
+* In `message-enrichment` demo, all messages are processed as simple strings. The corresponding topics have `STRING` as the message schema.
+* In this demo, all messages are processed as Apache AVRO records. The corresponding topics have `AVRO` as the message schema.
 
-## 1.1. Scenario Programs
+## 1.1. Demo Programs
 
-There are 3 programs used in this scenario to demonstrate the end-to-end data flow pattern with Apache AVRO as the message schema for all topics involved in the processing. All these programs are written in **Java**. 
+There are 3 programs used in this demo to demonstrate the end-to-end data flow pattern with Apache AVRO as the message schema for all topics involved in the processing. All these programs are written in **Java**. 
 
 | Name | Type | Source Code | Description |
 | ---- | ---- | ----------- | ----------- |
@@ -30,7 +30,7 @@ There are 3 programs used in this scenario to demonstrate the end-to-end data fl
 
 # 2. Deploy Pulsar Resources
 
-By default, running this scenario requires the following Pulsar tenant, namespace, and topics. 
+By default, running this demo requires the following Pulsar tenant, namespace, and topics. 
 
 * **tenant**: `msgenrich`
 * **namespace**: `testns`
@@ -42,13 +42,13 @@ By default, running this scenario requires the following Pulsar tenant, namespac
      * It takes topic `msgenrich/testns/raw_a` as the input topic
      * It takes topic `msgenrich/testns/processed_a` as the output topic
 
-Please **NOTE** that the creation of the above Pulsar "resources" can be **automated** by using the `deploy.sh` scrip. (see [Chapter 4](#4-deploy-the-scenario))
+Please **NOTE** that the creation of the above Pulsar "resources" can be **automated** by using the `deploy.sh` scrip. (see [Chapter 4](#4-deploy-the-demo))
 
-Please **NOTE** that the creation of the above Pulsar resources is done via the `deploy.sh` scrip. (see [Deploy a Scenario](../../../Deploy.Scenario.md) document for more details)
+Please **NOTE** that the creation of the above Pulsar resources is done via the `deploy.sh` scrip. (see [Deploy Demos](../../../Deploy.Demos.md) document for more details)
 
 ## 2.1. Pulsar Topic Schema
 
-In this scenario, both topic `raw_a` and `processed_a` use the same Apache AVRO schema that represents the IoT Sensor Reading data.
+In this demo, both topic `raw_a` and `processed_a` use the same Apache AVRO schema that represents the IoT Sensor Reading data.
 ```
 {
   "type": "record",
@@ -107,7 +107,7 @@ In this scenario, both topic `raw_a` and `processed_a` use the same Apache AVRO 
 
 Let's assume the Pulsar cluster connection information is provided via the following file: `/tmp/client.conf`.
 
-1. Deploy the scenario specific resources
+1. Deploy the demo specific resources
 ```
 deploy.sh -cc /tmp/client.conf
 ```

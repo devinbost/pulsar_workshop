@@ -3,7 +3,7 @@
 CUR_SCRIPT_FOLDER=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCENARIO_HOMEDIR=$( cd -- "${CUR_SCRIPT_FOLDER}/.." &> /dev/null && pwd )
 
-source "${SCENARIO_HOMEDIR}/../../_bash/utilities.sh"
+source "${SCENARIO_HOMEDIR}/../../../_bash/utilities.sh"
 # DEBUG=true
 
 echo
@@ -69,7 +69,7 @@ if ! [[ -f "${clientAppJar}" ]]; then
   errExit 50 "Can't find the client app jar file. Please first build the programs!"
 fi
 
-iotDataSrcFile="${SCENARIO_HOMEDIR}/../../_raw_data_src/sensor_telemetry.csv"
+iotDataSrcFile="${SCENARIO_HOMEDIR}/../../../_raw_data_src/sensor_telemetry.csv"
 if ! [[ -f "${iotDataSrcFile}" ]]; then
   errExit 60 "Can't find the IoT sensor data source file is invalid!"
 fi

@@ -96,6 +96,56 @@ outputMsg() {
     fi
 }
 
+##
+# Check if the sed being used is GNU sed
+isGnuSed() {
+    local gnu_sed=$(sed --version 2>&1 | grep -v 'illegal\|usage\|^\s' | grep "GNU sed" | wc -l)
+    echo ${gnu_sed}
+}
+
+##
+# Replace the occurrence of a string place holder with a specific value in a file
+# Four input prarameters:
+# - 1st parameter: the place holder string to be replaced
+# - 2nd parameter: the value string to replace the place holder
+# - 3rd parameter: the file
+# - 4th parameter: (Optional) a particular line identififer to replace.
+#                  if specified, only replace the place holder in the matching line
+#                  otherwise, replace all occurrence in the file
+#
+# TBD: use this function to hide GNU difference (Mac vs Linux, GNU or not)
+#
+replaceStringInFile() {
+    local placeHolderStr=${1}
+    local valueStr=${2}
+    local fileToScan=${3}
+    local lineIdentifier=${4}
+
+    debugMsg "placeHolderStr=${placeHolderStr}"
+    debugMsg "valueStr=${valueStr}"
+    debugMsg "fileToScan=${fileToScan}"
+    debugMsg "lineIdentifier=${lineIdentifier}"
+
+    # in case '/' is part of the string
+    placeHolderStr=$(echo ${placeHolderStr} | sed 's/\//\\\//g')
+    valueStr=$(echo ${valueStr} | sed 's/\//\\\//g')
+
+    gnuSed=$(isGnuSed)
+    if [[ "$OSTYPE" == "darwin"* && ${gnuSed} -eq 0 ]]; then
+        if ! [[ -z "${lineIdentifier// }" ]]; then
+            sed -i '' "${lineIdentifier}s/${placeHolderStr}/${valueStr}/g" ${fileToScan}
+        else
+            sed -i '' "s/${placeHolderStr}/${valueStr}/g" ${fileToScan}
+        fi
+    else
+        if ! [[ -z "${lineIdentifier// }" ]]; then
+            sed -i "${lineIdentifier}s/${placeHolderStr}/${valueStr}/g" ${funcCfgJsonFileTgt}
+        else
+            sed -i "s/${placeHolderStr}/${valueStr}/g" ${fileToScan}
+        fi
+    fi
+}
+
 
 ##
 # NOTE: only applicable to LS, not AS

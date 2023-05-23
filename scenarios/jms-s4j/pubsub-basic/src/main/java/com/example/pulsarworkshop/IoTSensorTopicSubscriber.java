@@ -43,7 +43,7 @@ public class IoTSensorTopicSubscriber extends S4JCmdApp {
 
     public static void main(String[] args) {
         PulsarWorkshopCmdApp workshopApp = new IoTSensorTopicSubscriber(APP_NAME, args);
-        int exitCode = workshopApp.run();
+        int exitCode = workshopApp.runCmdApp();
         System.exit(exitCode);
     }
 
@@ -63,7 +63,7 @@ public class IoTSensorTopicSubscriber extends S4JCmdApp {
     }
 
     @Override
-    public void runApp() throws WorkshopRuntimException {
+    public void execute() throws WorkshopRuntimException {
         try {
             if (connectionFactory == null) {
                 connectionFactory = createPulsarJmsConnectionFactory();
@@ -115,7 +115,7 @@ public class IoTSensorTopicSubscriber extends S4JCmdApp {
     }
 
     @Override
-    public void termApp() {
+    public void termCmdApp() {
         try {
             if (jmsContext != null) {
                 jmsContext.close();
