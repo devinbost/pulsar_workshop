@@ -3,8 +3,8 @@
   - [1.2. Build Demo Programs](#12-build-demo-programs)
   - [1.3. Deploy and Run the Demos](#13-deploy-and-run-the-demos)
 - [2. Demo List](#2-demo-list)
-  - [2.1. Demos under `**scenarios**` subfolder](#21-demos-under-scenarios-subfolder)
-  - [2.2. Demos under `**spring-scenarios**` subfolder](#22-demos-under-spring-scenarios-subfolder)
+  - [2.1. Demos under `scenarios` subfolder](#21-demos-under-scenarios-subfolder)
+  - [2.2. Demos under `spring-scenarios` subfolder](#22-demos-under-spring-scenarios-subfolder)
 
 ---
 
@@ -14,13 +14,13 @@ The goal of this GitHub repository is to demonstrate with concrete code examples
 
 This repository is composed of a series of `demo scenarios` (or simply `demos`). Each **demo** is a self-contained unit that covers a complete, end-to-end messaging/streaming processing use case using a specific message processing protocol that is supported by Pulsar. 
 
-The majority of the demos are organized under the subfolder of `**scenarios**`, and they're then further grouped into following categories based on the underlying API and/or messaging protocols being used.
+The majority of the demos are organized under the subfolder of `scenarios`, and they're then further grouped into following categories based on the underlying API and/or messaging protocols being used.
 * Native Pulsar API and protocol (`native-pulsar`)
 * JMS specification with Starlight for JMS (S4J) API (`jms-s4j`)
 * Kafka protocol with Starlight for Kafka (S4J) protocol handler (`kafka-s4k`)
 * AMQP protocol with Starlight for RabbitMQ (S4R) protocol handler (`rabbitmq-s4r`)
 
-There are also a subset of the demos that are organized under another subfolder of `**spring-scenarios**`. These demos are written using the Java Spring Boot framework for Pulsar. Because this framework requires JDK17 as the minimum version requirement. This is different from the rest of the demos that run at JDK11. (Please see [Build. Programs](./Build.Programs.md) for more details)
+There are also a subset of the demos that are organized under another subfolder of `spring-scenarios`. These demos are written using the Java Spring Boot framework for Pulsar. Because this framework requires JDK17 as the minimum version requirement. This is different from the rest of the demos that run at JDK11. (Please see [Build. Programs](./Build.Programs.md) for more details)
 
 ## 1.1. Software Requirement
 
@@ -47,7 +47,7 @@ After that, we can either run `runProducer.sh` to publish/produce/send messages 
 
 # 2. Demo List
 
-## 2.1. Demos under `**scenarios**` subfolder
+## 2.1. Demos under `scenarios` subfolder
 
 | API | Demo Name | Description |
 | --- | --------- | ----------- |
@@ -58,7 +58,7 @@ After that, we can either run `runProducer.sh` to publish/produce/send messages 
 | Kafka + S4K | [kafka-s4k/pubsub-basic](scenarios/kafka-s4k/pubsub-basic/README.md) | Demonstrate basic Kafka message producing and consuming with a Kafka Topic with Pulsar's S4K protocol handler |
 | RabbitMQ + S4R | [rabbitmq-s4r/pubsub-queue](scenarios/rabbitmq-s4r/pubsub-queue/README.md) | Demonstrate RabbitMQ message producing and consuming with a RabbitMQ Queue using S4R API and Pulsar |
 
-## 2.2. Demos under `**spring-scenarios**` subfolder
+## 2.2. Demos under `spring-scenarios` subfolder
 
 | Spring Boot Demo Name | Description |
 | --------------------- | ----------- |
