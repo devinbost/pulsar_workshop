@@ -1,6 +1,6 @@
 - [1. Overview](#1-overview)
   - [1.1. Deployment Properties File](#11-deployment-properties-file)
-  - [1.2. Deploy the Scenario](#12-deploy-the-scenario)
+  - [1.2. Deploy the Demo](#12-deploy-the-demo)
 - [2. Connect to the Pulsar Cluster](#2-connect-to-the-pulsar-cluster)
 - [3. Pulsar Rest API](#3-pulsar-rest-api)
   - [3.1. Create the Tenant](#31-create-the-tenant)
@@ -17,14 +17,14 @@
 
 # 1. Overview
 
-The **`deploy.sh`** is needs to be executed as the first step. Each scenario has its own version of `deploy.sh` file and when running it, it will create a default set of Pulsar resources that are specific to that particular scenario. For example for the [`message-enrich`](./native-pulsar/message-enrichment/) scenario, the following default Pulsar resources will be created: 
+The **`deploy.sh`** is needs to be executed as the first step. Each demo has its own version of `deploy.sh` file and when running it, it will create a default set of Pulsar resources that are specific to that particular demo. For example for the [`message-enrich`](./native-pulsar/message-enrichment/) demo, the following default Pulsar resources will be created: 
 * **tenant**: `msgenrich`
 * **namespace**: `testns`
 * **topics**:
    * `msgenrich/testns/raw`
    * `msgenrich/testns/processed`
 
-If you want to run the scenario against a different set of Pulsar tenant, namespace, and topics, you can also achieve so by specifying them in a deployment properties file.
+If you want to run the demo against a different set of Pulsar tenant, namespace, and topics, you can also achieve so by specifying them in a deployment properties file.
 
 ## 1.1. Deployment Properties File
 
@@ -48,13 +48,13 @@ nas.clusterName=<cluster_name>
 
 Through this file,
 
-1. You first can specify the Pulsar tenant, namespace, and topic names that you want to run this scenario against.
+1. You first can specify the Pulsar tenant, namespace, and topic names that you want to run this demo against.
   
-2. If the scenario requires deploying Pulsar functions, you need to put the list of the core function names (without "<tenant>/<namespace>" prefix) 
+2. If the demo requires deploying Pulsar functions, you need to put the list of the core function names (without "<tenant>/<namespace>" prefix) 
   
 3. For non-Astra streaming based Pulsar cluster, you also need to specify the Pulsar cluster name so that the Pulsar tenant can be automatically created. For Astra streaming based Pulsar cluster, this is NOT needed.
 
-## 1.2. Deploy the Scenario
+## 1.2. Deploy the Demo
 
 Running the deployment script is easy, and it takes the following command line input parameters:
 ```
@@ -68,9 +68,9 @@ Usage: deploy.sh [-h]
        -dp : (Optional) 'deploy.properties' file path (default to '<SCENARIO_HOMEDIR>/deploy.properties')
 ```
 
-Among all the input parameters, the optional parameter `-dp` is used to specify a customer deployment properties file. Every scenario has a default one called, `deploy.properties`, under the scenario home directory. When running the `deploy.sh` script without the `-dp` option, it will read the Pulsar tenant, namespace, and topics information from the default deployment properties file.
+Among all the input parameters, the optional parameter `-dp` is used to specify a customer deployment properties file. Every demo has a default one called, `deploy.properties`, under the demo home directory. When running the `deploy.sh` script without the `-dp` option, it will read the Pulsar tenant, namespace, and topics information from the default deployment properties file.
 
-If you want to run the scenario with non-default Pulsar resource names, you can either update the default deployment properties file or create a new one and run the `deploy.sh` script with the `-dp` option: 
+If you want to run the demo with non-default Pulsar resource names, you can either update the default deployment properties file or create a new one and run the `deploy.sh` script with the `-dp` option: 
 ```
 deploy.sh -cc /tmp/client.conf -dp /path/to/customized_deployment_properties_file
 ```
@@ -85,7 +85,7 @@ Please **NOTE** that for Astra Streaming (AS), this requires creating an AS tena
 
 The `deploy.sh` script creates all Pulsar resources via the Pulsar rest API through the `curl` command. The benefit of doing so is you don't need to download or install any Pulsar admin client tools like *pulsar-admin* or *pulsar-shell*. Using these tools to create the corresponding Pulsar resources is easy and straightforward. Please refer to the [Pulsar Admin CLI doc](https://pulsar.apache.org/docs/2.11.x/reference-pulsar-admin/)
 
-In the scenarios included in this repository, the REST APIs are used to create the following Pulsar resources. 
+In the demos included in this repository, the REST APIs are used to create the following Pulsar resources. 
 
 ## 3.1. Create the Tenant
 
@@ -111,7 +111,7 @@ curl -sS -k -X PUT \
 
 ## 3.3. Create the Topic
 
-**NOTE** The `deploy.sh` script will always create a partitioned topic with 5 partitions, which should be good enough for the common demo scenarios.
+**NOTE** The `deploy.sh` script will always create a partitioned topic with 5 partitions, which should be good enough for the common demo demos.
 
 The rest API to create a Pulsar namespace is as below:
 ```
@@ -135,7 +135,7 @@ curl -sS -k -X POST \
 
 ### 3.4.1. Schema Config JSON String
 
-In the above command, the `--data` payload requires a JSON string that represents the schema. Please **NOTE** not all scenarios require updating topic schemas. An example of such a schema JSON string can be found in the scenario [message-enrichment-avro](./native-pulsar/message-enrichment-avro/_config/topic-schema.json). 
+In the above command, the `--data` payload requires a JSON string that represents the schema. Please **NOTE** not all demos require updating topic schemas. An example of such a schema JSON string can be found in the demo [message-enrichment-avro](./native-pulsar/message-enrichment-avro/_config/topic-schema.json). 
 
 ## 3.5. Deploy the Function
 
@@ -151,12 +151,12 @@ curl -sS -k -X POST \
 
 ### 3.5.1. Function Configuration JSON File
 
-In order to deploy a Pulsar function this way, a function configuration JSON file is needed via the `--form 'functionConfig=...;type=application/json'` payload option. Please **NOTE** not all scenarios require deploying a Pulsar function. An example of such a function configuration JSON string can be found in the scenario [message-enrichment](./native-pulsar/message-enrichment/_config/add-metadata.json). 
+In order to deploy a Pulsar function this way, a function configuration JSON file is needed via the `--form 'functionConfig=...;type=application/json'` payload option. Please **NOTE** not all demos require deploying a Pulsar function. An example of such a function configuration JSON string can be found in the demo [message-enrichment](./native-pulsar/message-enrichment/_config/add-metadata.json). 
 
 Please **NOTE** that the `deploy.sh` file will NOT create this file for you. You need to create it in advance before running the script. The requirements for this file are:
 1. The JSON file must use the function name as the file. 
    * In the above example, a funciton named `add-metadata` will be deployed.
-2. The JSON file must be under `_config` sub-folder of the scenario home directory
+2. The JSON file must be under `_config` sub-folder of the demo home directory
 ```
 config
 └── add-metadata.json
