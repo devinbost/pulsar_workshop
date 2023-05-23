@@ -30,8 +30,21 @@ jobs:
         distribution: 'temurin'
         cache: maven
         
-    - name: Build with Maven
+    - name: Build scenarios with Maven
       run: |
         cd scenarios
         mvn -B clean package --file pom.xml
         cd .. 
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Build spring-scenarios with Maven
+      run: |
+        cd spring-scenarios
+        mvn -B clean package --file pom.xml
+        cd ..
