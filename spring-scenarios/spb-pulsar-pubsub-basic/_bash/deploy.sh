@@ -3,6 +3,8 @@
 CUR_SCRIPT_FOLDER=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCENARIO_HOMEDIR=$( cd -- "${CUR_SCRIPT_FOLDER}/.." &> /dev/null && pwd )
 
+echo "SCENARIO_HOMEDIR=${SCENARIO_HOMEDIR}"
+
 source "${SCENARIO_HOMEDIR}/../../_bash/utilities.sh"
 # DEBUG=true
 
@@ -47,9 +49,11 @@ debugMsg "deployPropFile=${deployPropFile}"
 if ! [[ -f "${clntConfFile}" ]]; then
    errExit 30 "The specified 'client.conf' file is invalid!"
 fi
+brkrServiceUrl=$(getPropVal ${clntConfFile} "brokerServiceUrl")
 webServiceUrl=$(getPropVal ${clntConfFile} "webServiceUrl")
 authPlugin=$(getPropVal ${clntConfFile} "authPlugin")
 authParams=$(getPropVal ${clntConfFile} "authParams")
+debugMsg "brkrServiceUrl=${brkrServiceUrl}"
 debugMsg "webServiceUrl=${webServiceUrl}"
 debugMsg "authPlugin=${authPlugin}"
 debugMsg "authParams=${authParams}"
@@ -172,6 +176,5 @@ if [[ ${#pulsarTopics[@]} -gt 0 ]]; then
         outputMsg "" 0 ${deployMainLogFile} true
     done
 fi
-
 
 echo

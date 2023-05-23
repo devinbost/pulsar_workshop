@@ -55,23 +55,77 @@ fi
 if ! [[ -f "${clntConfFile}" ]]; then
    errExit 40 "The specified 'client.conf' file is invalid!"
 fi
+brkrServiceUrl=$(getPropVal ${clntConfFile} "brokerServiceUrl")
+webServiceUrl=$(getPropVal ${clntConfFile} "webServiceUrl")
+authPlugin=$(getPropVal ${clntConfFile} "authPlugin")
+authParams=$(getPropVal ${clntConfFile} "authParams")
+debugMsg "brkrServiceUrl=${brkrServiceUrl}"
+debugMsg "webServiceUrl=${webServiceUrl}"
+debugMsg "authPlugin=${authPlugin}"
+debugMsg "authParams=${authParams}"
 
-clientAppJar="${SCENARIO_HOMEDIR}/target/s4j-pubsub-basic-1.0.0.jar"
+if ! [[ -z "${authPlugin}" ]]; then
+    jwtTokenAuthEnabled=1
+    IFS=':' read -r -a tokenStrArr <<< "${authParams}"
+    jwtTokenValue="${tokenStrArr[1]}"
+    debugMsg "jwtTokenValue=${jwtTokenValue}"
+fi
+if [[ ${jwtTokenAuthEnabled} -eq 1 && -z "${jwtTokenValue// }" ]]; then
+    errExit 50 "Missing JWT token value in the specified 'client.conf' file when JWT token authentication is enabled!"
+fi
+
+
+producerSubFolder="spb-pulsar-producer"
+
+clientAppJar="${SCENARIO_HOMEDIR}/${producerSubFolder}/target/spb-pulsar-producer-1.0.0.jar"
 if ! [[ -f "${clientAppJar}" ]]; then
-  errExit 50 "Can't find the client app jar file. Please first build the programs!"
+  errExit 60 "Can't find the client app jar file. Please first build the programs!"
 fi
 
 iotDataSrcFile="${SCENARIO_HOMEDIR}/../../_raw_data_src/sensor_telemetry.csv"
 if ! [[ -f "${iotDataSrcFile}" ]]; then
-  errExit 60 "Can't find the IoT sensor data source file is invalid!"
+  errExit 7 0 "Can't find the IoT sensor data source file is invalid!"
 fi
 
-javaCmd="java -cp ${clientAppJar} \
-    com.example.pulsarworkshop.IoTSensorTopicPublisher \
-    -n ${msgNum} -t ${tpName} -c ${clntConfFile} -csv ${iotDataSrcFile}"
-if [[ ${astraStreaming} -eq 1 ]]; then
-  javaCmd="${javaCmd} -a"
+
+#####
+## 1. Generate "application.yml" file that is required by the Spring Boot application
+#####
+springConfigYamlTemplate="${SCENARIO_HOMEDIR}/../_templates/producer.application.yml.tmpl"
+if ! [[ -f "${springConfigYamlTemplate}" ]]; then
+    errExit 100 "The specified producer spring application config template yaml file is invalid!"
 fi
+
+producerConfigYaml="${SCENARIO_HOMEDIR}/${producerSubFolder}/application.yml"
+cp -rf ${springConfigYamlTemplate} ${producerConfigYaml}
+
+replaceStringInFile "<TMPL_pulsar_broker_service_url>" "${brkrServiceUrl}" "${producerConfigYaml}"
+replaceStringInFile "<TMPL_pulsar_web_service_url>" "${webServiceUrl}" "${producerConfigYaml}"
+if [[ ${jwtTokenAuthEnabled} -eq 1 ]]; then
+    replaceStringInFile \
+        "<TMPL_auth_method>" \
+        "org.apache.pulsar.client.impl.auth.AuthenticationToken" \
+        "${producerConfigYaml}"
+    replaceStringInFile \
+        "<TMPL_auth_parameters>" \
+        "token: ${jwtTokenValue}" \
+        "${producerConfigYaml}"
+else
+    replaceStringInFile "<TMPL_auth_method>" "" "${producerConfigYaml}"
+    replaceStringInFile "<TMPL_auth_parameters>" "" "${producerConfigYaml}"
+fi
+
+replaceStringInFile "<TMPL_num_message>" "${msgNum}" "${producerConfigYaml}"
+replaceStringInFile "<TMPL_full_topic_name>" "${tpName}" "${producerConfigYaml}"
+replaceStringInFile "<TMPL_iot_source_csv_file>" "${iotDataSrcFile}" "${producerConfigYaml}"
+
+#####
+## 2. Run the producer Spring Boot application
+#####
+javaCmd="java \
+    -cp ${clientAppJar} \
+    com.example.pulsarworkshop.IoTSensorSpbpProducer \
+    --spring.config.location=${SCENARIO_HOMEDIR}/${producerSubFolder}/"
 debugMsg "javaCmd=${javaCmd}"
 
 eval ${javaCmd}

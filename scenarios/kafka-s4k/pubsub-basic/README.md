@@ -1,5 +1,5 @@
-- [1. Scenario Overview](#1-scenario-overview)
-  - [1.1. Scenario Programs](#11-scenario-programs)
+- [1. Demo Overview](#1-demo-overview)
+  - [1.1. Demo Programs](#11-demo-programs)
 - [2. Enable Pulsar's S4K Protocol Handler](#2-enable-pulsars-s4k-protocol-handler)
 - [3. Deploy Pulsar Resources](#3-deploy-pulsar-resources)
   - [3.1. Kafka Topic Schema](#31-kafka-topic-schema)
@@ -8,17 +8,17 @@
 
 ---
 
-# 1. Scenario Overview
+# 1. Demo Overview
 
 | | |
 | - | - |
 | **Name** | Kafka+S4K pubsub-basic |
-| **Description** | This scenario shows how to use the Starlight for JMS (S4J) API with Pulsar to do native message producing and consuming with a **Kafka topic**. |
+| **Description** | This demo shows how to use the Starlight for JMS (S4J) API with Pulsar to do native message producing and consuming with a **Kafka topic**. |
 | **Data Flow Pattern** | <IoT_sensor_reading_data> -> [Kafka Producer] -> (Kafka topic) -> [Kafka Subscriber] |
 
-## 1.1. Scenario Programs
+## 1.1. Demo Programs
 
-There are 2 programs used in this scenario to demonstrate the end-to-end data flow pattern. All these programs are written in **Java**. 
+There are 2 programs used in this demo to demonstrate the end-to-end data flow pattern. All these programs are written in **Java**. 
 
 | Name | Source Code | Description |
 | ---- | ----------- | ----------- |
@@ -38,24 +38,24 @@ By default, the S4K protocol handler is disabled in Pulsar.
 
 # 3. Deploy Pulsar Resources
 
-In Pulsar, a Kafka topic is backed by a Pulsar topic. In this scenario, the following default Pulsar resources need to be deployed first before running the scenario: 
+In Pulsar, a Kafka topic is backed by a Pulsar topic. In this demo, the following default Pulsar resources need to be deployed first before running the demo: 
 
 * **tenant**: `msgenrich`
 * **namespace**: `testns`
 * **topics**:
    * `msgenrich/testns/kafka_pubsub`
 
-Please **NOTE** that the creation of the above Pulsar resources is done via the `deploy.sh` scrip. (see [Deploy a Scenario](../../../Deploy.Scenario.md) document for more details)
+Please **NOTE** that the creation of the above Pulsar resources is done via the `deploy.sh` scrip. (see [Deploy Demos](../../../Deploy.Demos.md) document for more details)
 
 ## 3.1. Kafka Topic Schema
 
-In Pulsar, the built-in schema registry can be used for Kafka topic schema management. In this scenario, both the message key and value use `STRING` as the underlying schema.
+In Pulsar, the built-in schema registry can be used for Kafka topic schema management. In this demo, both the message key and value use `STRING` as the underlying schema.
 
 # 4. Execution Steps
 
 Let's assume the Pulsar cluster connection information is provided via the following file: `/tmp/client.conf`.
 
-1. Deploy the scenario specific resources
+1. Deploy the demo specific resources
 ```
 deploy.sh -cc /tmp/client.conf
 ```
@@ -90,6 +90,6 @@ The messages published will be recorded in an application log file named as `kaf
 
 # 5. Verify the Results
 
-This is a simple Kafka producer and consumer scenario without any extra message processing. The main purpose of this scenario is to demonstrate how to use Apache Pulsar as a drop-in replace of Apache Kafka and serve native Kafka client applications with no code change. 
+This is a simple Kafka producer and consumer demo without any extra message processing. The main purpose of this demo is to demonstrate how to use Apache Pulsar as a drop-in replace of Apache Kafka and serve native Kafka client applications with no code change. 
 
 The Kafka consumer client application receives exactly the same IoT sensor data that are published by the Kafka producer client application.

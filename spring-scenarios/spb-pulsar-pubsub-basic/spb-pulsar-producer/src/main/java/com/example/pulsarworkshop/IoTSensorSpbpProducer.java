@@ -15,7 +15,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Import;
 import org.springframework.pulsar.core.ProducerBuilderCustomizer;
 import org.springframework.pulsar.core.PulsarTemplate;
 import org.springframework.pulsar.core.TypedMessageBuilderCustomizer;
@@ -106,7 +105,7 @@ public class IoTSensorSpbpProducer implements CommandLineRunner  {
             String csvLine = csvFileLineScanner.getNextLine();
             // Skip the first line which is a title line
             if (!isTitleLine) {
-                if ((numMessages == -1) || (totalMsgSent++ < numMessages)) {
+                if ((numMessages == -1) || (totalMsgSent < numMessages)) {
                     IoTSensorData data = SpringPulsarCmdAppUtils.csvToPojo(csvLine);
                     MessageId messageId = pulsarTemplate
                             .newMessage(data)
@@ -116,6 +115,7 @@ public class IoTSensorSpbpProducer implements CommandLineRunner  {
                             .send();
 
                     logger.info("Successfully sent message: {} msg-payload={})", messageId, data);
+                    totalMsgSent++;
                 } else {
                     break;
                 }

@@ -1,5 +1,5 @@
-- [1. Scenario Overview](#1-scenario-overview)
-  - [1.1. Scenario Programs](#11-scenario-programs)
+- [1. Demo Overview](#1-demo-overview)
+  - [1.1. Demo Programs](#11-demo-programs)
 - [2. Deploy Pulsar Resources](#2-deploy-pulsar-resources)
   - [2.1. Pulsar Topic Schema](#21-pulsar-topic-schema)
 - [3. Execution Steps](#3-execution-steps)
@@ -7,17 +7,17 @@
 
 ---
 
-# 1. Scenario Overview
+# 1. Demo Overview
 
 | | |
 | - | - |
-| **Name** |message-enrichment |
-| **Description** | <ul><li>This scenario shows how to use a Pulsar function to enrich Pulsar messages that are published by a producer to a Pulsar topic.</li> <li>The enriched messages are sent by the function to another topic with a consumer subscribed to it for message consumption.</li> <li>The raw data source is a CSV file that includes actual readings in a particular time range from a given set of IoT sensors.</li></ul> |
+| **Name** | message-enrichment |
+| **Description** | <ul><li>This demo shows how to use a Pulsar function to enrich Pulsar messages that are published by a producer to a Pulsar topic.</li> <li>The enriched messages are sent by the function to another topic with a consumer subscribed to it for message consumption.</li> <li>The raw data source is a CSV file that includes actual readings in a particular time range from a given set of IoT sensors.</li></ul> |
 | **Data Flow Pattern** | <IoT_sensor_reading_data> -> [Pulsar Producer] -> (raw topic) -> [Pulsar Function] -> (processed topic) -> [Pulsar Consumer] |
 
-## 1.1. Scenario Programs
+## 1.1. Demo Programs
 
-There are 3 programs used in this scenario to demonstrate the end-to-end data flow pattern. All these programs are written in **Java**. 
+There are 3 programs used in this demo to demonstrate the end-to-end data flow pattern. All these programs are written in **Java**. 
 
 | Name | Type | Source Code | Description |
 | ---- | ---- | ----------- | ----------- |
@@ -27,7 +27,7 @@ There are 3 programs used in this scenario to demonstrate the end-to-end data fl
 
 # 2. Deploy Pulsar Resources
 
-In this scenario, the following default Pulsar resources need to be deployed first before running the scenario:
+In this demo, the following default Pulsar resources need to be deployed first before running the demo:
 
 * **tenant**: `msgenrich`
 * **namespace**: `testns`
@@ -39,17 +39,17 @@ In this scenario, the following default Pulsar resources need to be deployed fir
      * It takes topic `msgenrich/testns/raw` as the input topic
      * It takes topic `msgenrich/testns/processed` as the output topic
 
-Please **NOTE** that the creation of the above Pulsar resources is done via the `deploy.sh` scrip. (see [Deploy a Scenario](../../../Deploy.Scenario.md) document for more details)
+Please **NOTE** that the creation of the above Pulsar resources is done via the `deploy.sh` scrip. (see [Deploy Demos](../../../Deploy.Demos.md) document for more details)
 
 ## 2.1. Pulsar Topic Schema
 
-In this scenario, both topics `msgenrich/testns/raw_a` and `msgenrich/testns/processed` use `STRING` as the message schema that represents the IoT Sensor Reading data.
+In this demo, both topics `msgenrich/testns/raw_a` and `msgenrich/testns/processed` use `STRING` as the message schema that represents the IoT Sensor Reading data.
 
 # 3. Execution Steps
 
 Let's assume the Pulsar cluster connection information is provided via the following file: `/tmp/client.conf`.
 
-1. Deploy the scenario specific resources
+1. Deploy the demo specific resources
 ```
 deploy.sh -cc /tmp/client.conf
 ```

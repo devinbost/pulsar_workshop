@@ -22,6 +22,7 @@ spring-scenarios/*/target
 spring-scenarios/*/*/target
 spring-scenarios/*/*/logs
 spring-scenarios/*/*/mybkup
+spring-scenarios/*/scn-application.yml.tmpl
 *dependency-reduced-pom.xml
 *.log
 *.yml

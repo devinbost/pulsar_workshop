@@ -1,6 +1,7 @@
 - [1. Overview](#1-overview)
 - [2. Connect to the Pulsar Cluster](#2-connect-to-the-pulsar-cluster)
-- [3. Raw Input Data: IoT Sensor Reading Data](#3-raw-input-data-iot-sensor-reading-data)
+- [3. Raw Input Data Sets](#3-raw-input-data-sets)
+  - [3.1. IoT Sensor Reading Data](#31-iot-sensor-reading-data)
 
 
 ---
@@ -33,9 +34,17 @@ Both scripts need to be able to connect to a Pulsar cluster successfully before 
 
 Please **NOTE** that for Astra Streaming (AS), this requires creating an AS tenant in advance and downloading the corresponding `client.conf` from the UI. This is because AS is a managed service and as a client application, it is impossible to get the cluster admin token like in a self-managed Pulsar cluster. The AS token for a client application is always associated with a particular tenant.
 
-# 3. Raw Input Data: IoT Sensor Reading Data
+# 3. Raw Input Data Sets
 
-For many of the scenarios in this repository, instead of letting random messages being published/produced/sent to a topic, the "producer" client application reads data from an actual **IoT sensor reading data** as the raw input data. These data are from a CSV file that is available from [sensor_telemetry.csv](./scenarios/_raw_data_src//sensor_telemetry.csv). Each line of the CSV file represents a particular IoT device reading of the following types at a particular time.
+For many of the scenarios included this repository, instead of letting random messages being published/produced/sent to a topic, the "producer" client application reads data from some standard datasets (normally in .csv format) that have realistic data sources. The sections below list these data sources.
+
+These raw dataset files are placed under the folder [**_raw_data_src**](./_raw_data_src). 
+
+## 3.1. IoT Sensor Reading Data
+
+The first data source represents environmental sensor telemetry data that was collected from a series of three identical, custom-built, breadboard-based sensor arrays. Each array was connected to a Raspberry Pi devices. Each of the three IoT devices was placed in a physical location with varied environmental conditions.
+
+More details about this data source can be found from the Kaggle website ([link](https://www.kaggle.com/datasets/garystafford/environmental-sensor-data-132k)). At high level, each record in this data source represents a total of seven different readings from four sensors by an IoT device at a particular time. Each column/field of a record corresponds to one of the following readings:
 * Carbon monoxide
 * Humidity (%)
 * Light detection
@@ -44,4 +53,4 @@ For many of the scenarios in this repository, instead of letting random messages
 * Smoke
 * Temperature
 
-For a more detailed description of this data source, please check from [here](https://www.kaggle.com/datasets/garystafford/environmental-sensor-data-132k).
+**Data Source File**: [sensor_telemetry.csv](./_raw_data_src//sensor_telemetry.csv)

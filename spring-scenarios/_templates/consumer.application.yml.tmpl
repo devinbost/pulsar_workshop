@@ -1,0 +1,26 @@
+spbp-pubsub:
+  # default number of messages (for message publishing and consuming)
+  # - can be overwriteen in "runProducer.sh" or "runConsumer.sh"
+  num-msg: <TMPL_num_message>
+  topic: <TMPL_full_topic_name>
+
+spring:
+  pulsar:
+    defaults:
+      type-mappings:
+        # By default, the Spring Pulsar framework will try to build a Schema.JSON from the type
+        # Override the default with an explicit Avro type
+        - message-type: com.example.pulsarworkshop.pojo.IoTSensorData
+          schema-info:
+            schema-type: AVRO
+    client:
+      service-url: <TMPL_pulsar_broker_service_url>
+      web-url: <TMPL_pulsar_web_service_url>
+      auth-plugin-class-name: <TMPL_auth_method>
+      authentication:
+        <TMPL_auth_parameters>
+
+    consumer:
+      # default subscription name
+      # - can be overwriteen in "runConsumer.sh"
+      subscription-name: <TMPL_subscription_name>

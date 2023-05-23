@@ -30,7 +30,7 @@ public class RedeliveryConsumer extends NativePulsarCmdApp {
 
     public static void main(String[] args) {
         PulsarWorkshopCmdApp workshopApp = new RedeliveryConsumer(APP_NAME, args);
-        int exitCode = workshopApp.run();        
+        int exitCode = workshopApp.runCmdApp();
         System.exit(exitCode);
     }
 
@@ -41,10 +41,9 @@ public class RedeliveryConsumer extends NativePulsarCmdApp {
     }
 
     @Override
-    public void runApp() {
+    public void execute() {
 
         try {
-        	
             pulsarClient = createNativePulsarClient();
             System.out.println("########### Using dlt: " + deadLetterTopicName);
 
@@ -73,7 +72,7 @@ public class RedeliveryConsumer extends NativePulsarCmdApp {
     }
 
     @Override
-    public void termApp() {
+    public void termCmdApp() {
         try {
             if (pulsarConsumer != null) {
                 pulsarConsumer.close();

@@ -34,9 +34,12 @@ public class IoTSensorSpbpConsumer implements CommandLineRunner  {
      *   https://docs.spring.io/spring-pulsar/docs/current-SNAPSHOT/reference/html/#_message_consumption
      */
 
+    private static int numMessages;
 
     @Value("${spbp-pubsub.num-msg}")
-    private int numMessages;
+    public void setNameStatic(int num){
+        IoTSensorSpbpConsumer.numMessages = num;
+    }
 
     @Value("${spbp-pubsub.topic}")
     private String topic;
@@ -61,11 +64,19 @@ public class IoTSensorSpbpConsumer implements CommandLineRunner  {
         }
         finally {
             if (ctx != null) {
-                // Can't close the context because the message is received in async
-                //ctx.close();
+                while ( (numMessages == -1) || (totalMsgReceived < numMessages) ) {
+                    try {
+                        Thread.sleep(5);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        break;
+                    }
+                }
+
+                ctx.close();
+                logger.info("Existing Spring boot Pulsar consumer application 'IoTSensorSpbpConsumer'");
+                logger.info("Total message received: {}\n", totalMsgReceived);
             }
-            logger.info("Existing Spring boot Pulsar consumer application 'IoTSensorSpbpConsumer'");
-            logger.info("Total message received: {}\n", totalMsgReceived);
         }
     }
 

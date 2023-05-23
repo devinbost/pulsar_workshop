@@ -1,44 +1,61 @@
+- [1. Build the Scenario Programs](#1-build-the-scenario-programs)
+  - [1.1. Build Java Programs](#11-build-java-programs)
+  - [1.2. Manage Multiple Java Versions](#12-manage-multiple-java-versions)
+
+
+---
+
 
 # 1. Build the Scenario Programs
 
-The scenario programs included in this GitHub repository may be written in different languages such as Java, Python, Go, etc. The building process of these programs may vary from language to language.
+The scenario programs included in this GitHub repository can be written in different languages such as Java, Python, Go, etc. The building process of these programs may vary from language to language.
 
 ## 1.1. Build Java Programs
 
-All Java based programs in this GitHub repository are organized in a single [`Apache Maven`](https://maven.apache.org/) project in a structure like below:
+All Java based programs in this GitHub repository are organized in two main [`Apache Maven`](https://maven.apache.org/) projects, `scenario` and `spring-scenarios` in a structure like below. 
+
+The only reason to use two separate Maven projects is that they require different Java versions:
+1. `scenario` project requires Java 11 and can't work with Java 17 because Java 17 based Pulsar function can't be deployed in Astra Streaming yet.
+2. `spring-scenarios` project requires Java 17 and can't work with Java 11 because that is the [requirement](https://docs.spring.io/spring-pulsar/docs/current-SNAPSHOT/reference/html/#_minimum_supported_versions) of Spring boot Pulsar starter.
+
 ```
-scenarios
-  |--- base-code
-  |--- native-pulsar
-  |      |--- <scenario_1_main_module>
-  |             |--- <scenario_1_sub_module_1>
-  |             |--- <scenario_1_sub_module_2>
-  |             |--- ... ...
-  |      |--- <scenario_2_main_module>
-  |             |--- ... ...
-  |--- jms-s4j
-  |      |--- ... ...
-  |--- kafka-s4k
-  |      |--- ... ...
-  |--- rabbitmq-s4r
-  |      |--- ... ...
-  |--- spring-pulsar
-  |      |--- ... ...
-  |--- ... ...
+pulsar_workshop
+├── scenarios
+│   ├── base-code
+│   ├── jms-s4j
+│   │   ├── common-resources
+│   │   ├── <jms_s4j_module_1>
+│   │   ├── <jms_s4j_module_2>
+│   │   └── ... ...
+│   ├── kafka-s4k
+│   │   ├── common-resources
+│   │   ├── <kafka-s4k_module_1>
+│   │   ├── <kafka-s4k_module_2>
+│   │   └── ... ...
+│   ├── native-pulsar
+│   │   ├── common-resources
+│   │   ├── <native-pulsar_module_1>
+│   │   ├── <native-pulsar_module_2>
+│   │   └── ... ...
+│   └── rabbitmq-s4r
+│       ├── <rabbitmq-s4r_module_1>
+│       ├── <rabiitmq-s4r_module_2>
+│       └── ... ...
+└── spring-scenarios
+    ├── spb-common-resources
+    └── spb-pulsar-pubsub-basic
+        ├── <spring-boot-pulsar-module_1>
+        ├── <spring-boot-pulsar-module_2>        
+        └── ... ...
 ``` 
 
-In the above structure,
-* The `scenarios` module is the "root" parent module for all other modules
-* The `base-code` module contains some common codes that are used by scenario specific modules.
-* The scenario specific modules are further organized by the APIs that scenario programs are using
-   * Native Pulsar API
-   * Starlight for JMS API
-   * Starlight for Kafka API
-   * Starlight for RabbitMQ API
-   * Spring Boot Pulsar API
-* Each scenario specific module may or may not have its own submodules.
-
-In order to build all scenarios, go to `scenarios` folder and run the following command:
+Building these Maven projects is as simple as running the following maven command under the project home directory:
 ```
 mvn clean install
 ```
+
+## 1.2. Manage Multiple Java Versions
+
+Since building this repo requires two different Java versions, it is recommended to use a multi-java-version management tool like [jEnv](https://github.com/jenv/jenv).
+
+Based on the `jenv` utility, a convenience bash script [`buildScn.sh`](_bash/buildScn.sh) is created to build all Java scenario programs.

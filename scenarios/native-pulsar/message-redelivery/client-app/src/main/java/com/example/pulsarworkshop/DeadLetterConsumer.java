@@ -25,13 +25,12 @@ public class DeadLetterConsumer extends NativePulsarCmdApp {
 
     public static void main(String[] args) {
         PulsarWorkshopCmdApp workshopApp = new DeadLetterConsumer(APP_NAME, args);
-        int exitCode = workshopApp.run();        
+        int exitCode = workshopApp.runCmdApp();
         System.exit(exitCode);
     }
 
     @Override
-    public void runApp() {
-
+    public void execute() {
         try {
         	
             pulsarClient = createNativePulsarClient();
@@ -58,7 +57,7 @@ public class DeadLetterConsumer extends NativePulsarCmdApp {
     }
 
     @Override
-    public void termApp() {
+    public void termCmdApp() {
         try {
             if (pulsarConsumer != null) {
                 pulsarConsumer.close();
