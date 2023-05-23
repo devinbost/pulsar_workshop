@@ -9,14 +9,14 @@
 
 # 1. Overview
 
-No matter which messaging processing API or protocol we're working with, message publishing/producing/sending and message subscribing/consuming/receiving are two common fundamental activities to take. Because of this, each scenario in this repository provides 2 bash scripts: `runProducer.sh` and `runConsumer.sh`.
+No matter which messaging processing API or protocol we're working with, message publishing/producing/sending and message subscribing/consuming/receiving are two common fundamental activities to take. Because of this, each demo in this repository provides 2 bash scripts: `runProducer.sh` and `runConsumer.sh`.
 
-Across all scenarios, these 2 scripts share some common command line input parameters such as:
+Across all demos, these 2 scripts share some common command line input parameters such as:
 * `-n` for how many messages to process
 * `-t` for which Pulsar topic to interact with
 * `-cc` for the connection information to the Pulsar cluster (see below)
 
-However, for different scenarios they may take some extra command line input parameters that are unique to each scenario. In order to find out the exact details for each scenario, please run the `-h` option to find out:
+However, for different demos they may take some extra command line input parameters that are unique to each demo. In order to find out the exact details for each demo, please run the `-h` option to find out:
 
 ```
 runProducer.sh -h
@@ -36,7 +36,7 @@ Please **NOTE** that for Astra Streaming (AS), this requires creating an AS tena
 
 # 3. Raw Input Data Sets
 
-For many of the scenarios included this repository, instead of letting random messages being published/produced/sent to a topic, the "producer" client application reads data from some standard datasets (normally in .csv format) that have realistic data sources. The sections below list these data sources.
+For many of the demos included this repository, instead of letting random messages being published/produced/sent to a topic, the "producer" client application reads data from some standard datasets (normally in .csv format) that have realistic data sources. The sections below list these data sources.
 
 These raw dataset files are placed under the folder [**_raw_data_src**](./_raw_data_src). 
 

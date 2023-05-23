@@ -1,4 +1,4 @@
-- [1. Build the Scenario Programs](#1-build-the-scenario-programs)
+- [1. Build the Demos](#1-build-the-demos)
   - [1.1. Build Java Programs](#11-build-java-programs)
   - [1.2. Manage Multiple Java Versions](#12-manage-multiple-java-versions)
 
@@ -6,21 +6,21 @@
 ---
 
 
-# 1. Build the Scenario Programs
+# 1. Build the Demos
 
-The scenario programs included in this GitHub repository can be written in different languages such as Java, Python, Go, etc. The building process of these programs may vary from language to language.
+The demo programs included in this GitHub repository can be written in different languages such as Java, Python, Go, etc. The building process of these programs may vary from language to language.
 
 ## 1.1. Build Java Programs
 
-All Java based programs in this GitHub repository are organized in two main [`Apache Maven`](https://maven.apache.org/) projects, `scenario` and `spring-scenarios` in a structure like below. 
+All Java based programs in this GitHub repository are organized in two main [`Apache Maven`](https://maven.apache.org/) projects, `demo` and `spring-demos` in a structure like below. 
 
 The only reason to use two separate Maven projects is that they require different Java versions:
-1. `scenario` project requires Java 11 and can't work with Java 17 because Java 17 based Pulsar function can't be deployed in Astra Streaming yet.
-2. `spring-scenarios` project requires Java 17 and can't work with Java 11 because that is the [requirement](https://docs.spring.io/spring-pulsar/docs/current-SNAPSHOT/reference/html/#_minimum_supported_versions) of Spring boot Pulsar starter.
+1. `demo` project requires Java 11 and can't work with Java 17 because Java 17 based Pulsar function can't be deployed in Astra Streaming yet.
+2. `spring-demos` project requires Java 17 and can't work with Java 11 because that is the [requirement](https://docs.spring.io/spring-pulsar/docs/current-SNAPSHOT/reference/html/#_minimum_supported_versions) of Spring boot Pulsar starter.
 
 ```
 pulsar_workshop
-├── scenarios
+├── demos
 │   ├── base-code
 │   ├── jms-s4j
 │   │   ├── common-resources
@@ -41,7 +41,7 @@ pulsar_workshop
 │       ├── <rabbitmq-s4r_module_1>
 │       ├── <rabiitmq-s4r_module_2>
 │       └── ... ...
-└── spring-scenarios
+└── spring-demos
     ├── spb-common-resources
     └── spb-pulsar-pubsub-basic
         ├── <spring-boot-pulsar-module_1>
@@ -58,4 +58,4 @@ mvn clean install
 
 Since building this repo requires two different Java versions, it is recommended to use a multi-java-version management tool like [jEnv](https://github.com/jenv/jenv).
 
-Based on the `jenv` utility, a convenience bash script [`buildScn.sh`](_bash/buildScn.sh) is created to build all Java scenario programs.
+Based on the `jenv` utility, a convenience bash script [`buildScn.sh`](_bash/buildScn.sh) is created to build all Java demo programs.
