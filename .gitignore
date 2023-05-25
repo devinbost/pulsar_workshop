@@ -29,3 +29,4 @@ spring-scenarios/*/scn-application.yml.tmpl
 .java-version
 .gitignore
 .vscode
+*.swp
