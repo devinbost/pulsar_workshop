@@ -3,6 +3,9 @@ package com.example.pulsarworkshop;
 import com.example.pulsarworkshop.exception.InvalidParamException;
 import com.example.pulsarworkshop.pojo.IoTSensorData;
 import com.example.pulsarworkshop.util.SpringPulsarCmdAppUtils;
+import org.apache.pulsar.client.api.Consumer;
+import org.apache.pulsar.client.api.Message;
+import org.apache.pulsar.client.api.Schema;
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.common.schema.SchemaType;
 import org.slf4j.Logger;
@@ -18,7 +21,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.pulsar.annotation.PulsarListener;
 import org.springframework.pulsar.core.ConsumerBuilderCustomizer;
+import org.springframework.pulsar.core.ProducerBuilderCustomizer;
+import org.springframework.pulsar.core.PulsarConsumerFactory;
 import org.springframework.pulsar.listener.AckMode;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 @SpringBootApplication
 public class IoTSensorSpbpConsumer implements CommandLineRunner  {
@@ -43,6 +51,9 @@ public class IoTSensorSpbpConsumer implements CommandLineRunner  {
 
     @Value("${spbp-pubsub.topic}")
     private String topic;
+
+     @Value("${spring.pulsar.consumer.subscription-name}")
+     private String subscriptionName;
 
     //@Value("${spring.pulsar.consumer.subscription-type}")
     //private String subTypeStr;
@@ -80,18 +91,48 @@ public class IoTSensorSpbpConsumer implements CommandLineRunner  {
         }
     }
 
-    /*
-     * Causing the following error:
-     *   Error creating bean with name 'ioTSensorSpbpConsumer': Requested bean is currently in creation: Is there an unresolvable circular reference?
-    ----------------------------------------
-    @Bean
-    public ConsumerBuilderCustomizer<IoTSensorData> myConsumerCustomizer() {
-        return cb -> {
-            cb.subscriptionType(SubscriptionType.valueOf(subTypeStr));
-        };
-    }
-    */
+    @Autowired
+    PulsarConsumerFactory pulsarConsumerFactory;
 
+    @Override
+    public void run(String... args) throws Exception {
+
+        logger.info(">> numMessages: {}, topic: {}", numMessages, topic);
+
+        SpringPulsarCmdAppUtils.processNumMsgInputParam(numMessages);
+        SpringPulsarCmdAppUtils.processTopicNameInputParam(topic);
+
+        // Set the required consumer configurations
+        ConsumerBuilderCustomizer<IoTSensorData> consumerBuilderCustomizer =
+                consumerBuilder -> {
+                    consumerBuilder
+                            .consumerName(IoTSensorSpbpConsumer.APP_NAME)
+                            .subscriptionType(SubscriptionType.Shared);
+                };
+
+        Consumer<IoTSensorData> consumer = pulsarConsumerFactory.createConsumer(
+                Schema.AVRO(IoTSensorData.class),
+                Collections.singletonList(topic),
+                subscriptionName,
+                consumerBuilderCustomizer);
+
+        while ((numMessages == -1) || (totalMsgReceived < numMessages)) {
+            Message<IoTSensorData> message = consumer.receive();
+            logger.info("Message received and acknowledged: key={}; properties={}; value={}",
+                    message.getKey(),
+                    message.getProperties(),
+                    message.getValue());
+            consumer.acknowledge(message);
+            totalMsgReceived++;
+        }
+    }
+
+
+    /*
+     * Below is another way of receiving messages asynchronously.
+     * Since we want to more control of the consumer in this demo (and receive messages syncrhonously),
+     *   we'll keep using the above approach
+     ----------------------------------------
     @PulsarListener(
             topics = "${spbp-pubsub.topic}",
             subscriptionName = "${spring.pulsar.consumer.subscription-name}",
@@ -99,19 +140,20 @@ public class IoTSensorSpbpConsumer implements CommandLineRunner  {
             subscriptionType = SubscriptionType.Exclusive,
             schemaType = SchemaType.AVRO,
             ackMode = AckMode.RECORD)
-    public void listen(IoTSensorData message) {
+    public void listen(IoTSensorData message, org.apache.pulsar.client.api.Consumer<IoTSensorData> consumer) {
+        // NOTE: When accessing the Consumer object this way, do NOT invoke any operations that would change the
+        //       Consumer’s cursor position by invoking any receive methods. All such operations must be done by the container.
         while ((numMessages == -1) || (totalMsgReceived++ < numMessages)) {
             logger.info("Successfully received message: msg-payload={})", message);
             totalMsgReceived++;
         }
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        SpringPulsarCmdAppUtils.processNumMsgInputParam(numMessages);
-        SpringPulsarCmdAppUtils.processTopicNameInputParam(topic);
-        //SpringPulsarCmdAppUtils.processSubTypeInputParam(subTypeStr);
-
-        logger.info(">> numMessages: {}, topic: {}", numMessages, topic);
+    @Bean
+    public ConsumerBuilderCustomizer<IoTSensorData> myConsumerCustomizer() {
+        return cb -> {
+            cb.subscriptionType(SubscriptionType.valueOf(subTypeStr));
+        };
     }
+    */
 }
