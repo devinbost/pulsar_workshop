@@ -24,6 +24,12 @@
     </licenses>
 
     <properties>
+        <java.version>11</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <pulsar.version>2.10.3</pulsar.version>
+        <slf4j.version>2.0.6</slf4j.version>
     </properties>
 
     <build>
@@ -57,11 +63,19 @@
     </build>
 
     <modules>
-        <module>common-resources</module>
+        <module>np-common</module>
         <module>message-redelivery</module>
         <module>message-enrichment</module>
         <module>message-enrichment-avro</module>
         <module>schema-compatibility</module>
+        <module>splitter-function</module>
+        <module>integration-tests</module>
+        <module>add-yyyymm-transform-function</module>
+        <module>deduplication-function</module>
+        <module>route-by-length-function</module>
+        <module>accumulate-by-count-function</module>
+        <module>filter-if-exists-function</module>
+        <module>group-sort-top-function</module>
     </modules>
 
     <dependencies>
