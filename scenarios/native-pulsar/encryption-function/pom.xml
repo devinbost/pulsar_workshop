@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>scenarios</artifactId>
+    <groupId>com.example.pulsarworkshop</groupId>
+    <version>1.0.0</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>encryption-function</artifactId>
+
+  <properties>
+    <datastax.version>4.14.1</datastax.version>
+    <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
+    <lombok.version>1.18.22</lombok.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jackson.version>2.15.1</jackson.version>
+    <datastax.version>4.14.1</datastax.version>
+    <!-- Must match version in pulsar -->
+    <avro.version>1.10.2</avro.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+      <scope>provided</scope>
+      <version>${avro.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.pulsar</groupId>
+      <artifactId>pulsar-client</artifactId>
+      <version>${pulsar.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.datastax.oss</groupId>
+      <artifactId>pulsar-functions-api</artifactId>
+      <scope>provided</scope>
+      <version>2.10.2.5</version>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>datastax-public-releases-local</id>
+      <url>https://repo.datastax.com/artifactory/datastax-public-releases-local</url>
+    </repository>
+  </repositories>
+</project>

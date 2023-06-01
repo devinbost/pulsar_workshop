@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>scenarios</artifactId>
+    <groupId>com.example.pulsarworkshop</groupId>
+    <version>1.0.0</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>crypto-examples</artifactId>
+
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jcommander.version>1.78</jcommander.version>
+    <pulsar.version>2.10.2.5</pulsar.version>
+    <lombok.version>1.18.22</lombok.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>com.datastax.oss</groupId>
+      <artifactId>pulsar-functions-api</artifactId>
+      <scope>provided</scope>
+      <version>${pulsar.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>${jcommander.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.datastax.oss</groupId>
+      <artifactId>pulsar-client</artifactId>
+      <version>${pulsar.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.20</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>datastax-public-releases-local</id>
+      <url>https://repo.datastax.com/artifactory/datastax-public-releases-local</url>
+    </repository>
+  </repositories>
+</project>
