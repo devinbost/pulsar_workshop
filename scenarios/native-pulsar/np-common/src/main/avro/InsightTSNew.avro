@@ -1,0 +1,29 @@
+{
+  "namespace": "com.example.pulsarworkshop",
+  "type": "record",
+  "name": "DeviceTSNew",
+  "fields": [
+    {
+      "name": "tag_id",
+      "type": "string"
+    },
+    {
+      "name": "data_quality",
+      "type": "int"
+    },
+    {
+      "name": "event_time",
+      "type": "string",
+      "logicalType": "timestamp-millis",
+      "doc": "The date and time is stored as string in ISO 8601 format"
+    },
+    {
+      "name": "event_value",
+      "type": "double"
+    },
+    {
+       "name": "yyyymm",
+       "type": "int"
+    }
+  ]
+}
