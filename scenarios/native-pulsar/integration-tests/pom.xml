@@ -13,8 +13,6 @@
   <artifactId>integration-tests</artifactId>
 
   <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <pulsar.version>2.10.3</pulsar.version>
     <datastax.version>4.14.1</datastax.version>
