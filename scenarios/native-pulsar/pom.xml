@@ -76,6 +76,7 @@
         <module>accumulate-by-count-function</module>
         <module>filter-if-exists-function</module>
         <module>group-sort-top-function</module>
+        <module>encryption-function</module>
     </modules>
 
     <dependencies>
