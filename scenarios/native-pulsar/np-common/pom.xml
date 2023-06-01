@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+      <groupId>com.example.pulsarworkshop</groupId>
+      <artifactId>native-pulsar</artifactId>
+      <version>1.0.0</version>
+      <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>np-common</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <resourceBundles>
+                        <resourceBundle>com.example.pulsarworkshop:base-code:${project.version}</resourceBundle>
+                    </resourceBundles>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+              <plugin>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-maven-plugin</artifactId>
+        <version>1.11.0</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>schema</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
+          <outputDirectory>${project.build.directory}/generated-sources/avro</outputDirectory>
+          <testSourceDirectory>${project.basedir}/src/main/myavro/</testSourceDirectory>
+          <testOutputDirectory>${project.basedir}/src/test/java/</testOutputDirectory>
+          <fieldVisibility>PRIVATE</fieldVisibility>
+          <includes>
+            <include>**/*.avro</include>
+          </includes>
+          <testIncludes>
+            <testInclude>**/*.test</testInclude>
+          </testIncludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <release>11</release>
+        </configuration>
+      </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>base-code</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.26</version>
+        </dependency>
+      <!-- https://mvnrepository.com/artifact/org.apache.avro/avro -->
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro</artifactId>
+        <version>1.11.1</version>
+      </dependency>
+    </dependencies>
+
+</project>
