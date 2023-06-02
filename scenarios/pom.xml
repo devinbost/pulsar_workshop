@@ -51,7 +51,6 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    
     <build>
         <plugins>
             <plugin>
@@ -76,34 +75,8 @@
                                 <exclude>**/*.log</exclude>
                                 <exclude>**/*.patch</exclude>
                                 <exclude>**/*.avsc</exclude>
-                                <exclude>**/*.versionsBackup</exclude>
-                                <exclude>**/*.pyc</exclude>
-                                <exclude>**/*.graffle</exclude>
-                                <exclude>**/*.hgrm</exclude>
-                                <exclude>**/src/main/java/org/apache/bookkeeper/mledger/proto/MLDataFormats.java</exclude>
-                                <exclude>**/src/main/java/org/apache/pulsar/transaction/coordinator/proto/PulsarTransactionMetadata.java</exclude>
-                                <exclude>**/src/main/java/org/apache/pulsar/broker/service/schema/proto/SchemaRegistryFormat.java</exclude>
-                                <exclude>**/src/main/java/org/apache/pulsar/common/api/proto/*.java</exclude>
-                                <exclude>**/src/test/java/org/apache/pulsar/common/api/proto/*.java</exclude>
-                                <exclude>**/src/main/java/org/apache/pulsar/io/kinesis/fbs/CompressionType.java</exclude>
-                                <exclude>**/src/main/java/org/apache/pulsar/io/kinesis/fbs/EncryptionCtx.java</exclude>
-                                <exclude>**/src/main/java/org/apache/pulsar/io/kinesis/fbs/EncryptionKey.java</exclude>
-                                <exclude>**/src/main/java/org/apache/pulsar/io/kinesis/fbs/KeyValue.java</exclude>
-                                <exclude>**/src/main/java/org/apache/pulsar/io/kinesis/fbs/Message.java</exclude>
-                                <exclude>**/src/main/java/org/apache/bookkeeper/mledger/util/AbstractCASReferenceCounted.java</exclude>
-                                <exclude>**/ByteBufCodedInputStream.java</exclude>
-                                <exclude>**/ByteBufCodedOutputStream.java</exclude>
-                                <exclude>**/ahc.properties</exclude>
-                                <exclude>bin/proto/*</exclude>
-                                <exclude>conf/schema_example.conf</exclude>
-                                <exclude>data/**</exclude>
-                                <exclude>logs/**</exclude>
-                                <exclude>images/**</exclude>
+                                <exclude>**/*.avro</exclude>
                                 <exclude>**/circe/**</exclude>
-                                <exclude>pulsar-broker/src/test/resources/authentication/basic/.htpasswd</exclude>
-                                <exclude>**/django/stats/migrations/*.py</exclude>
-                                <exclude>site2/**</exclude>
-                                <exclude>generated-site/**</exclude>
                                 <exclude>**/*.md</exclude>
                                 <exclude>**/.idea/**</exclude>
                                 <exclude>**/.mvn/**</exclude>
