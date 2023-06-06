@@ -92,7 +92,7 @@ public class FilterIfExistsFunction implements Function<DeviceTS, Void> {
         if(outputs.size() > 0) { // i.e. if matching data exists in target table
             var row = outputs.get(0);
             var lastUpdatedTime = row.getInstant("event_time");
-            if (lastUpdatedTime.isBefore(Instant.now())) {
+            if (lastUpdatedTime.isBefore(Instant.parse(input.getEventTime()))) {
                 // if last entry is older than now, update it.
                 context.newOutputMessage(context.getOutputTopic(), schema).value(input).sendAsync();
             }
