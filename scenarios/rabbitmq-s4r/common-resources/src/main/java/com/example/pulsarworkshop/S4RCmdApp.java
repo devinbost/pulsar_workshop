@@ -15,6 +15,7 @@ abstract public class S4RCmdApp extends PulsarWorkshopCmdApp {
     protected final static String API_TYPE = "rabbitmq-s4r";
     int S4RPort = 5672;
     String S4RQueueName = "s4r-default-queue";
+    String S4RExchangeName = "s4r-default-exchange";
     String S4RRabbitMQHost = "localhost";
     String S4RPassword = "";
     String S4RUser = "";
@@ -30,6 +31,7 @@ abstract public class S4RCmdApp extends PulsarWorkshopCmdApp {
         super(appName, inputParams);
         // Add the S4R/RabbitMQ specific CLI options that are common to all S4R/RabbitMQ client applications
         addOptionalCommandLineOption("q", "s4rqueue", true, "S4R Pulsar RabbitMQ queue name.");
+        addOptionalCommandLineOption("e", "s4rexchange", true, "S4R Pulsar RabbitMQ Exchange name.");
         addOptionalCommandLineOption("a", "useAstra", true, "Use Astra Streaming for RabbitMQ server.");
         addOptionalCommandLineOption("m", "s4rmessage", true, "S4R Pulsar RabbitMQ message to send, otherwise a default is used.");
 
@@ -39,6 +41,10 @@ abstract public class S4RCmdApp extends PulsarWorkshopCmdApp {
         String queueName = processStringInputParam("s4rqueue");
         if (!StringUtils.isBlank(queueName)) {
             S4RQueueName = queueName;
+        }
+        String exchangeName = processStringInputParam("s4rexchange");
+        if (!StringUtils.isBlank(exchangeName)) {
+            S4RExchangeName = exchangeName;
         }
         rabbitmqConnfFile = processFileInputParam("connFile");
         if(rabbitmqConnfFile == null) {

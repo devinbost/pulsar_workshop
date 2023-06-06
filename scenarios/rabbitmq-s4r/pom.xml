@@ -58,6 +58,9 @@
 
     <modules>
         <module>common-resources</module>
+        <module>pubsub-queue</module>
+        <module>fanout-exchange</module>
+
     </modules>
 
     <dependencies>
