@@ -21,12 +21,12 @@ public class S4RQueueConsumer extends S4RCmdApp {
 
     public static void main(String[] args) {
         PulsarWorkshopCmdApp workshopApp = new S4RQueueConsumer("S4RConsummer", args);
-        int exitCode = workshopApp.run();
+        int exitCode = workshopApp.runCmdApp();
         System.exit(exitCode);
     }
 
     @Override
-    public void runApp() {
+    public void execute() {
         try {
             S4RFactory= new ConnectionFactory();
             S4RFactory.setHost(S4RRabbitMQHost);
@@ -60,7 +60,7 @@ public class S4RQueueConsumer extends S4RCmdApp {
     }
 
     @Override
-    public void termApp() {
+    public void termCmdApp() {
         try {
             channel.close();
             connection.close();

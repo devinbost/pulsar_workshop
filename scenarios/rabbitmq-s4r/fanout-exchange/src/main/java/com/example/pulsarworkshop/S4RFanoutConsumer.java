@@ -1,20 +1,27 @@
 package com.example.pulsarworkshop;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.example.pulsarworkshop.exception.WorkshopRuntimException;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public class S4RQueueProducer extends S4RCmdApp {
-    private final static String APP_NAME = "S4RQueueProducer";
+public class S4RFanoutConsumer extends S4RCmdApp {
+    private final static String APP_NAME = "S4RFanoutConsumer";
     static { System.setProperty("log_file_base_name", getLogFileName(API_TYPE, APP_NAME)); }
-    private final static Logger logger = LoggerFactory.getLogger(S4RQueueProducer.class);
-    public S4RQueueProducer(String appName, String[] inputParams) {
+    private final static Logger logger = LoggerFactory.getLogger(S4RFanoutConsumer.class);
+    DefaultConsumer consumer;
+    public S4RFanoutConsumer(String appName, String[] inputParams) {
         super(appName, inputParams);
     }
+
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new S4RQueueProducer("S4RQueueProducer",args);
+        PulsarWorkshopCmdApp workshopApp = new S4RFanoutConsumer("S4RFanoutConsumer", args);
         int exitCode = workshopApp.runCmdApp();
         System.exit(exitCode);
     }
@@ -33,20 +40,25 @@ public class S4RQueueProducer extends S4RCmdApp {
             }
             connection = S4RFactory.newConnection();
             channel = connection.createChannel();
-            channel.confirmSelect();
+            channel.exchangeDeclare(S4RExchangeName, BuiltinExchangeType.FANOUT);
             channel.queueDeclare(S4RQueueName, true, false, false, null);
-            int msgSent = 0;
-            while (numMsg > msgSent) {
-                String message = S4RMessage; 
-                channel.basicPublish("", S4RQueueName, null, message.getBytes());
-                if (logger.isDebugEnabled()) {
-                    logger.debug("S4R Published a message: {}", msgSent);
-                }
-                msgSent++;
-                channel.waitForConfirmsOrDie(5000);  //basically flush after each message published
+            channel.queueBind(S4RQueueName, S4RExchangeName, ""); //Routing key is ignored in "fanout" exchange
+            consumer = new DefaultConsumer(channel) {
+                @Override
+                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                        String message = new String(body, "UTF-8");
+                        // process the message
+                        logger.info("SR4 Consumer received message count: " + MsgReceived + " Message: " + message);
+                        MsgReceived++;
+                 }
+            };
+            channel.basicConsume(S4RQueueName, true, consumer);
+            logger.info("SR4 Consumer created for queue " + S4RQueueName + " running until " + numMsg + " messages are received.");
+            while (numMsg > MsgReceived) {
+                Thread.sleep(2000);    
             }
         } catch (Exception e) {
-            throw new WorkshopRuntimException("Unexpected error when producing S4R messages: " + e.getMessage());  
+            throw new WorkshopRuntimException("Unexpected error when consuming S4R messages: " + e.getMessage());   
         }
     }
 
