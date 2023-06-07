@@ -60,6 +60,7 @@
         <module>common-resources</module>
         <module>pubsub-queue</module>
         <module>fanout-exchange</module>
+        <module>topic-exchange</module>
 
     </modules>
 
