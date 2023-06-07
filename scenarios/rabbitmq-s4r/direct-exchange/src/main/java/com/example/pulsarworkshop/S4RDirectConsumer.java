@@ -4,23 +4,24 @@ import org.slf4j.LoggerFactory;
 
 import com.example.pulsarworkshop.exception.WorkshopRuntimException;
 import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public class S4RQueueConsumer extends S4RCmdApp {
-    private final static String APP_NAME = "S4RQueueConsumer";
+public class S4RDirectConsumer extends S4RCmdApp {
+    private final static String APP_NAME = "S4RDirectConsumer";
     static { System.setProperty("log_file_base_name", getLogFileName(API_TYPE, APP_NAME)); }
-    private final static Logger logger = LoggerFactory.getLogger(S4RQueueConsumer.class);
+    private final static Logger logger = LoggerFactory.getLogger(S4RDirectConsumer.class);
     DefaultConsumer consumer;
-    public S4RQueueConsumer(String appName, String[] inputParams) {
+    public S4RDirectConsumer(String appName, String[] inputParams) {
         super(appName, inputParams);
     }
 
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new S4RQueueConsumer("S4RConsummer", args);
+        PulsarWorkshopCmdApp workshopApp = new S4RDirectConsumer("S4RDirectConsumer", args);
         int exitCode = workshopApp.runCmdApp();
         System.exit(exitCode);
     }
@@ -39,13 +40,17 @@ public class S4RQueueConsumer extends S4RCmdApp {
             }
             connection = S4RFactory.newConnection();
             channel = connection.createChannel();
+            channel.exchangeDeclare(S4RExchangeName, BuiltinExchangeType.DIRECT);
             channel.queueDeclare(S4RQueueName, true, false, false, null);
+            channel.queueBind(S4RQueueName, S4RExchangeName, S4RRoutingKey); //Routing key is ignored in "fanout" exchange
+            logger.info("Queue name: " + S4RQueueName + " Exchange name: " + S4RExchangeName + " RoutingKey: " + S4RRoutingKey);
             consumer = new DefaultConsumer(channel) {
                 @Override
                  public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                         String message = new String(body, "UTF-8");
                         // process the message
-                        logger.info("SR4 Consumer received message count: " + MsgReceived + " Message: " + message);
+                        logger.info("SR4 Consumer received message count: " + MsgReceived + " Message: " + message + " RoutingKey: " +
+                        envelope.getRoutingKey());
                         MsgReceived++;
                  }
             };
@@ -65,9 +70,9 @@ public class S4RQueueConsumer extends S4RCmdApp {
             channel.close();
             connection.close();
         } catch (IOException ioe) {
-            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Queue Producer IO Exception: " + ioe.getMessage());  
+            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Consumer IO Exception: " + ioe.getMessage());  
         } catch (TimeoutException te) {
-            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Queue Producer Timeout Exception: " + te.getMessage());  
+            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Consumer Timeout Exception: " + te.getMessage());  
         }
     }
 }
