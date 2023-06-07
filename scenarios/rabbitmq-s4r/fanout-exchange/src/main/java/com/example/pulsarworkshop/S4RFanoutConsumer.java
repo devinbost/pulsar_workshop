@@ -43,6 +43,7 @@ public class S4RFanoutConsumer extends S4RCmdApp {
             channel.exchangeDeclare(S4RExchangeName, BuiltinExchangeType.FANOUT);
             channel.queueDeclare(S4RQueueName, true, false, false, null);
             channel.queueBind(S4RQueueName, S4RExchangeName, ""); //Routing key is ignored in "fanout" exchange
+            logger.info("Queue name: " + S4RQueueName + " Exchange name: " + S4RExchangeName);
             consumer = new DefaultConsumer(channel) {
                 @Override
                  public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
@@ -68,9 +69,9 @@ public class S4RFanoutConsumer extends S4RCmdApp {
             channel.close();
             connection.close();
         } catch (IOException ioe) {
-            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Queue Producer IO Exception: " + ioe.getMessage());  
+            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Fanout Consumer IO Exception: " + ioe.getMessage());  
         } catch (TimeoutException te) {
-            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Queue Producer Timeout Exception: " + te.getMessage());  
+            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Fanout Consumer Timeout Exception: " + te.getMessage());  
         }
     }
 }

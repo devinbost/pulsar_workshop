@@ -63,7 +63,7 @@ if ! [[ -f "${clntConfFile}" ]]; then
    errExit 40 "The specified client config file is invalid!"
 fi
 
-clientAppJar="${SCENARIO_HOMEDIR}/target/s4r-pubsub-queue-1.0.0.jar"
+clientAppJar="${SCENARIO_HOMEDIR}/target/s4r-fanout-exchange-1.0.0.jar"
 if ! [[ -f "${clientAppJar}" ]]; then
   errExit 50 "Can't find the client app jar file. Please first build the programs!"
 fi

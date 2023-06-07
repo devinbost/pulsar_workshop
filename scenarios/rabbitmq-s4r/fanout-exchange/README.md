@@ -5,17 +5,17 @@
 - [2. Deploy the Pulsar Resources](#2-deploy-the-pulsar-resources)
 - [3. Connect to the Pulsar Cluster](#3-connect-to-the-pulsar-cluster)
 - [4. Execution Steps](#4-execution-steps)
-  - [4.1. Run the RabbitMQ S4R Queue Consumer Client App](#41-run-the-rabbitmq-s4r-queue-consumer-client-app)
-  - [4.2. Run the RabbitMQ S4R Queue Producer Client App](#42-run-the-rabbitmq-s4r-queue-producer-client-app)
+  - [4.1. Run the RabbitMQ S4R Fanout Exchange Queue Consumer Client App](#41-run-the-rabbitmq-s4r-fanout-exchange-queue-consumer-client-app)
+  - [4.2. Run the RabbitMQ S4R Fanout Exchange Producer Client App](#42-run-the-rabbitmq-s4r-fanout-exchange-producer-client-app)
 
 
 # 1. Demo Overview
 
 | | |
 | - | - |
-| **Name** | RabbitMQ+S4R pubsub-queue |
-| **Description** | This demo shows how to use the Starlight for RabbitMQ (S4R) API with Pulsar to do native message sending and receiving with a RabbitMQ queue hosted on Pulsar. |
-| **Data Flow Pattern** |  [S4R Queue Producer] -> (Pulsar RabbitMQ queue) -> [S4R Queue Consumer] |
+| **Name** | RabbitMQ+S4R fanout-exchange |
+| **Description** | This demo shows how to use the Starlight for RabbitMQ (S4R) API with Pulsar to do native message sending and receiving with a RabbitMQ Fanout Exchange hosted on Pulsar. |
+| **Data Flow Pattern** |  [S4R Fanout Producer] -> (Pulsar RabbitMQ Exchange) -> [S4R Fanout Queue Consumer] |
 
 ## 1.1. Demo Programs
 
@@ -23,8 +23,8 @@ There are 2 programs used in this demo to demonstrate the end-to-end data flow p
 
 | Name | Source Code | Description |
 | ---- | ----------- | ----------- |
-| S4RQueueProducer | [S4RQueueProducer.java](./src/main/java/com/example/pulsarworkshop/S4RQueueProducer.java) | A RabbitMQ producer client app that sends messages to a RabbitMQ queue which is backed by a Pulsar topic behind the scene. |
-| S4RQueueConsumer | [S4RQueueConsumer.java](./src/main/java/com/example/pulsarworkshop/S4RQueueConsumer.java) | A RabbitMQ consumer client app that receives messages from a RabbitMQ queue which is backed by a Pulsar topic and subscription behind the scene. |
+| S4RFanoutProducer | [S4RFanoutProducer.java](./src/main/java/com/example/pulsarworkshop/S4RFanoutProducer.java) | A RabbitMQ producer client app that sends messages to a RabbitMQ Fanout Exchange which is backed by a Pulsar topic behind the scene. |
+| S4RFanoutConsumer | [S4RFanoutConsumer.java](./src/main/java/com/example/pulsarworkshop/S4RFanoutConsumer.java) | A RabbitMQ consumer client app that receives messages from a RabbitMQ Fanout Exchange Queue which is backed by a Pulsar topic and subscription behind the scene. |
 
 
 ## 1.2. Enable RabbitMQ on Pulsar
@@ -88,37 +88,38 @@ amqp_URI:
 
 After all Pulsar resources are deployed, we can run the S4R client applications included in this demo.
 
-## 4.1. Run the RabbitMQ S4R Queue Consumer Client App
+## 4.1. Run the RabbitMQ S4R Fanout Exchange Queue Consumer Client App
 
 The following script [`runConsumer.sh`](_bash/runConsumer.sh) is used to run the RabbitMQ S4R consumer client app that receives the messages from the RabbitMQ queue hosted on Pulsar.
 
 An example of using this script to consuming 100 messages is as below:
 
 ```
-runConsumer.sh -cc /tmp/rabbitmq.conf -n 100 -q s4rqueue
+runConsumer.sh -cc /tmp/rabbitmq.conf -n 100 -q s4rqueue -e s4rfanoutexchange
 ```
 After the consumer starts, an example output is below:
 ```
-bash-prompt$ ./runConsumer.sh -cc ../_config/rabbitmq.conf -n 10 -q s4rqueue
+bash-prompt$ ./runConsumer.sh -cc ../_config/rabbitmq.conf -n 10 -q s4rqueue -e s4rfanoutexchange
 
-09:44:19.246 [main] INFO  c.e.pulsarworkshop.S4RQueueConsumer - SR4 Consumer created for queue s4rqueue running until 10 messages are received.
-09:46:05.961 [pool-1-thread-4] INFO  c.e.pulsarworkshop.S4RQueueConsumer - SR4 Consumer received message count: 0 Message: This is a RabbitMQ message ********
-09:46:06.051 [pool-1-thread-5] INFO  c.e.pulsarworkshop.S4RQueueConsumer - SR4 Consumer received message count: 1 Message: This is a RabbitMQ message ********
+09:44:19.190 [main] INFO  c.e.pulsarworkshop.S4RFanoutConsumer - Queue name: s4rqueue Exchange name: s4rfanoutexchange
+09:44:19.246 [main] INFO  c.e.pulsarworkshop.S4RFanoutConsumer - SR4 Consumer created for queue s4rqueue running until 10 messages are received.
+09:46:05.961 [pool-1-thread-4] INFO  c.e.pulsarworkshop.S4RFanoutConsumer - SR4 Consumer received message count: 0 Message: This is a RabbitMQ message ********
+09:46:06.051 [pool-1-thread-5] INFO  c.e.pulsarworkshop.S4RFanoutConsumer - SR4 Consumer received message count: 1 Message: This is a RabbitMQ message ********
 
 ```
-## 4.2. Run the RabbitMQ S4R Queue Producer Client App
+## 4.2. Run the RabbitMQ S4R Fanout Exchange Producer Client App
 
-The following script [`runProducer.sh`](_bash/runProducer.sh) is used to run the RabbitMQ S4R producer client app.
+The following script [`runProducer.sh`](_bash/runProducer.sh) is used to run the RabbitMQ S4R Fanout Exchange producer client app.
 
 An example of using this script to publish 100 messages is as below:
 
 ```
-runProducer.sh -cc /tmp/client.conf -n 100 -q mys4r/rabbitmq/s4rqueue
+runProducer.sh -cc /tmp/client.conf -n 100 -e mys4r/rabbitmq/s4rfanoutexchange
 ```
 After running the producer, an example output is below:
 ```
-bash-prompt$ ./runProducer.sh -cc ../_config/rabbitmq.conf -n 2 -q s4rqueue
+bash-prompt$ ./runProducer.sh -cc ../_config/rabbitmq.conf -n 2 -e s4rfanoutexchange
 
-09:46:05.755 [main] DEBUG c.e.pulsarworkshop.S4RQueueProducer - S4R Published a message: 0
-09:46:05.954 [main] DEBUG c.e.pulsarworkshop.S4RQueueProducer - S4R Published a message: 1
+09:46:05.755 [main] DEBUG c.e.pulsarworkshop.S4RFanoutProducer - S4R Published a message: 0
+09:46:05.954 [main] DEBUG c.e.pulsarworkshop.S4RFanoutProducer - S4R Published a message: 1
 ```
