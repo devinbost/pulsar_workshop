@@ -7,15 +7,15 @@ import com.rabbitmq.client.BuiltinExchangeType;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public class S4RTopicProducer extends S4RCmdApp {
-    private final static String APP_NAME = "S4RTopicProducer";
+public class S4RDirectProducer extends S4RCmdApp {
+    private final static String APP_NAME = "S4RDirectProducer";
     static { System.setProperty("log_file_base_name", getLogFileName(API_TYPE, APP_NAME)); }
-    private final static Logger logger = LoggerFactory.getLogger(S4RTopicProducer.class);
-    public S4RTopicProducer(String appName, String[] inputParams) {
+    private final static Logger logger = LoggerFactory.getLogger(S4RDirectProducer.class);
+    public S4RDirectProducer(String appName, String[] inputParams) {
         super(appName, inputParams);
     }
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new S4RTopicProducer("S4RTopicProducer",args);
+        PulsarWorkshopCmdApp workshopApp = new S4RDirectProducer("S4RDirectProducer",args);
         int exitCode = workshopApp.runCmdApp();
         System.exit(exitCode);
     }
@@ -35,7 +35,7 @@ public class S4RTopicProducer extends S4RCmdApp {
             connection = S4RFactory.newConnection();
             channel = connection.createChannel();
             channel.confirmSelect();
-            channel.exchangeDeclare(S4RExchangeName, BuiltinExchangeType.TOPIC);
+            channel.exchangeDeclare(S4RExchangeName, BuiltinExchangeType.DIRECT);
             logger.info("Exchange name is: " + S4RExchangeName);
             int msgSent = 0;
             while (numMsg > msgSent) {
