@@ -15,12 +15,12 @@ usage() {
    echo
    echo "Usage: runProducer.sh [-h]" 
    echo "                      [-na]"
-   echo "                      -q <queue_name>"
+   echo "                      -e <exchange_name>"
    echo "                      -n <message_number>"
    echo "                      -cc <client_conf_file>" 
    echo "       -h  : Show usage info"
    echo "       -na : (Optional) Non-Astra Streaming (Astra streaming is the default)."
-   echo "       -q  : (Required) The RabbitMQ queue name to publish messages to."
+   echo "       -e  : (Required) The RabbitMQ Exchange name to publish messages to."
    echo "       -n  : (Required) The number of messages to produce."
    echo "       -cc : (Required) RabbitMQ 'client.conf' file and path."
    echo
@@ -36,7 +36,7 @@ while [[ "$#" -gt 0 ]]; do
    case $1 in
       -h)  usage; exit 0      ;;
       -na) astraStreaming=0;  ;;
-      -q)  tpName=$2; shift   ;;
+      -e)  tpName=$2; shift   ;;
       -n)  msgNum=$2; shift   ;;
       -cc) clntConfFile=$2; shift ;;
       *)  errExit 20 "Unknown input parameter passed: $1" ;;
@@ -56,14 +56,14 @@ if ! [[ -f "${clntConfFile}" ]]; then
    errExit 40 "The specified 'client.conf' file is invalid!"
 fi
 
-clientAppJar="${SCENARIO_HOMEDIR}/target/s4r-pubsub-queue-1.0.0.jar"
+clientAppJar="${SCENARIO_HOMEDIR}/target/s4r-fanout-exchange-1.0.0.jar"
 if ! [[ -f "${clientAppJar}" ]]; then
   errExit 50 "Can't find the client app jar file. Please first build the programs!"
 fi
 
 javaCmd="java -cp ${clientAppJar} \
     com.example.pulsarworkshop.S4RFanoutProducer \
-    -n ${msgNum} -q ${tpName} -c ${clntConfFile} -a ${astraStreaming} "
+    -n ${msgNum} -e ${tpName} -c ${clntConfFile} -a ${astraStreaming} "
 debugMsg "javaCmd=${javaCmd}"
 
 eval ${javaCmd}

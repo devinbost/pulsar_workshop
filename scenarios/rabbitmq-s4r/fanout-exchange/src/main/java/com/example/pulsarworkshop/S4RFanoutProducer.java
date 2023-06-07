@@ -15,7 +15,7 @@ public class S4RFanoutProducer extends S4RCmdApp {
         super(appName, inputParams);
     }
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new S4RFanoutProducer("S4RQueueProducer",args);
+        PulsarWorkshopCmdApp workshopApp = new S4RFanoutProducer("S4RFanoutProducer",args);
         int exitCode = workshopApp.runCmdApp();
         System.exit(exitCode);
     }
@@ -36,6 +36,7 @@ public class S4RFanoutProducer extends S4RCmdApp {
             channel = connection.createChannel();
             channel.confirmSelect();
             channel.exchangeDeclare(S4RExchangeName, BuiltinExchangeType.FANOUT);
+            logger.info("Exchange name is: " + S4RExchangeName);
             int msgSent = 0;
             while (numMsg > msgSent) {
                 String message = S4RMessage; 
@@ -57,9 +58,9 @@ public class S4RFanoutProducer extends S4RCmdApp {
             channel.close();
             connection.close();
         } catch (IOException ioe) {
-            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Queue Producer IO Exception: " + ioe.getMessage());  
+            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Fanout Producer IO Exception: " + ioe.getMessage());  
         } catch (TimeoutException te) {
-            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Queue Producer Timeout Exception: " + te.getMessage());  
+            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Fanout Producer Timeout Exception: " + te.getMessage());  
         }
     }
 }
