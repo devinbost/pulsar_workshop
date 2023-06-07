@@ -3,18 +3,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.pulsarworkshop.exception.WorkshopRuntimException;
 import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.BuiltinExchangeType;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public class S4RQueueProducer extends S4RCmdApp {
-    private final static String APP_NAME = "S4RQueueProducer";
+public class S4RFanoutProducer extends S4RCmdApp {
+    private final static String APP_NAME = "S4RFanoutProducer";
     static { System.setProperty("log_file_base_name", getLogFileName(API_TYPE, APP_NAME)); }
-    private final static Logger logger = LoggerFactory.getLogger(S4RQueueProducer.class);
-    public S4RQueueProducer(String appName, String[] inputParams) {
+    private final static Logger logger = LoggerFactory.getLogger(S4RFanoutProducer.class);
+    public S4RFanoutProducer(String appName, String[] inputParams) {
         super(appName, inputParams);
     }
     public static void main(String[] args) {
-        PulsarWorkshopCmdApp workshopApp = new S4RQueueProducer("S4RQueueProducer",args);
+        PulsarWorkshopCmdApp workshopApp = new S4RFanoutProducer("S4RFanoutProducer",args);
         int exitCode = workshopApp.runCmdApp();
         System.exit(exitCode);
     }
@@ -34,11 +35,12 @@ public class S4RQueueProducer extends S4RCmdApp {
             connection = S4RFactory.newConnection();
             channel = connection.createChannel();
             channel.confirmSelect();
-            channel.queueDeclare(S4RQueueName, true, false, false, null);
+            channel.exchangeDeclare(S4RExchangeName, BuiltinExchangeType.FANOUT);
+            logger.info("Exchange name is: " + S4RExchangeName);
             int msgSent = 0;
             while (numMsg > msgSent) {
                 String message = S4RMessage; 
-                channel.basicPublish("", S4RQueueName, null, message.getBytes());
+                channel.basicPublish(S4RExchangeName, "", null, message.getBytes());
                 if (logger.isDebugEnabled()) {
                     logger.debug("S4R Published a message: {}", msgSent);
                 }
@@ -56,9 +58,9 @@ public class S4RQueueProducer extends S4RCmdApp {
             channel.close();
             connection.close();
         } catch (IOException ioe) {
-            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Queue Producer IO Exception: " + ioe.getMessage());  
+            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Fanout Producer IO Exception: " + ioe.getMessage());  
         } catch (TimeoutException te) {
-            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Queue Producer Timeout Exception: " + te.getMessage());  
+            throw new WorkshopRuntimException("Unexpected error when shutting down S4R Fanout Producer Timeout Exception: " + te.getMessage());  
         }
     }
 }
