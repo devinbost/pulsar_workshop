@@ -43,7 +43,7 @@ abstract public class PulsarWorkshopCmdApp {
 
         addOptionalCommandLineOption("h", "help", false, "Displays the usage method.");
         addRequiredCommandLineOption("n","numMsg", true, "Number of messages to process.");
-        addRequiredCommandLineOption("t", "topic", true, "Pulsar topic name.");
+        addOptionalCommandLineOption("t", "topic", true, "Pulsar topic name.");
         addRequiredCommandLineOption("c","connFile", true, "\"client.conf\" file path.");
         addOptionalCommandLineOption("a", "astra", false, "Whether to use Astra streaming.");
     }

@@ -58,6 +58,9 @@ After that, we can either run `runProducer.sh` to publish/produce/send messages 
 | JMS + S4J | [jms-s4j/pubsub-basic](scenarios/jms-s4j/pubsub-basic/README.md) | Demonstrate basic JMS message publishing and subscribing with a JMS Topic using S4J API for Pulsar |
 | Kafka + S4K | [kafka-s4k/pubsub-basic](scenarios/kafka-s4k/pubsub-basic/README.md) | Demonstrate basic Kafka message producing and consuming with a Kafka Topic with Pulsar's S4K protocol handler |
 | RabbitMQ + S4R | [rabbitmq-s4r/pubsub-queue](scenarios/rabbitmq-s4r/pubsub-queue/README.md) | Demonstrate RabbitMQ message producing and consuming with a RabbitMQ Queue using S4R API and Pulsar |
+| RabbitMQ + S4R | [rabbitmq-s4r/fanout-exchange](scenarios/rabbitmq-s4r/fanout-exchange/README.md) | Demonstrate RabbitMQ message producing and consuming with a RabbitMQ Fanout Exchange using S4R API and Pulsar |
+| RabbitMQ + S4R | [rabbitmq-s4r/topic-exchange](scenarios/rabbitmq-s4r/topic-exchange/README.md) | Demonstrate RabbitMQ message producing and consuming with a RabbitMQ Topic Exchange and Routing Key using S4R API and Pulsar |
+| RabbitMQ + S4R | [rabbitmq-s4r/direct-exchange](scenarios/rabbitmq-s4r/direct-exchange/README.md) | Demonstrate RabbitMQ message producing and consuming with a RabbitMQ Direct Exchange and Routing Key using S4R API and Pulsar |
 
 ## 2.2. Demos under `spring-scenarios` subfolder
 
