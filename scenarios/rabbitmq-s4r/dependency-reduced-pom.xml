@@ -48,5 +48,6 @@
     <module>pubsub-queue</module>
     <module>fanout-exchange</module>
     <module>topic-exchange</module>
+    <module>direct-exchange</module>
   </modules>
 </project>
