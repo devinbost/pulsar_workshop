@@ -52,6 +52,7 @@
     <module>splitter-function</module>
     <module>integration-tests</module>
     <module>add-yyyymm-transform-function</module>
+    <module>add-yyyymm-cdc-transform-function</module>
     <module>deduplication-function</module>
     <module>route-by-length-function</module>
     <module>accumulate-by-count-function</module>
