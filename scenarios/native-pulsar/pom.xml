@@ -76,6 +76,11 @@
         <module>accumulate-by-count-function</module>
         <module>filter-if-exists-function</module>
         <module>group-sort-top-function</module>
+<<<<<<< Updated upstream
+=======
+        <module>encryption-function</module>
+        <module>openai-product-embedding-function</module>
+>>>>>>> Stashed changes
     </modules>
 
     <dependencies>

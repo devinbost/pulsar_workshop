@@ -1,0 +1,1 @@
+pip3 download --requirement <file> --platform <platform> --python-version <python_version> --no-index --dest <dir>

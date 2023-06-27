@@ -1,0 +1,4 @@
+pulsar-client 
+avro-python3
+fastavro
+openai
