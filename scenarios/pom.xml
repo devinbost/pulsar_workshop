@@ -152,6 +152,5 @@
         <module>jms-s4j</module>
         <module>kafka-s4k</module>
         <module>rabbitmq-s4r</module>
-        <module>native-pulsar/crypto-examples</module>
     </modules>
 </project>
