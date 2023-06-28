@@ -52,11 +52,13 @@
     <module>splitter-function</module>
     <module>integration-tests</module>
     <module>add-yyyymm-transform-function</module>
+    <module>add-yyyymm-cdc-transform-function</module>
     <module>deduplication-function</module>
     <module>route-by-length-function</module>
     <module>accumulate-by-count-function</module>
     <module>filter-if-exists-function</module>
     <module>group-sort-top-function</module>
+    <module>encryption-function</module>
   </modules>
   <properties>
     <java.version>11</java.version>
