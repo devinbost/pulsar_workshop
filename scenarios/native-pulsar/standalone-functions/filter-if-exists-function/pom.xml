@@ -25,12 +25,12 @@
 
   <parent>
     <groupId>com.example.pulsarworkshop</groupId>
-    <artifactId>native-pulsar</artifactId>
+    <artifactId>standalone-functions</artifactId>
     <version>1.0.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
+  
   <modelVersion>4.0.0</modelVersion>
-
   <artifactId>filter-if-exists-function</artifactId>
   <packaging>jar</packaging>
 

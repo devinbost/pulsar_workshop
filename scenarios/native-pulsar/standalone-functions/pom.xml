@@ -19,49 +19,40 @@
     under the License.
 
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>com.example.pulsarworkshop</groupId>
-        <artifactId>rabbitmq-s4r</artifactId>
+        <artifactId>native-pulsar</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>s4r-fanout-exchange</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>standalone-functions</artifactId>
+    <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
-        <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-remote-resources-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <resourceBundles>
-                        <resourceBundle>com.example.pulsarworkshop:s4r-common:${project.version}</resourceBundle>
-                    </resourceBundles>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>s4r-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
+    
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
+    <modules>
+        <!--<module>integration-tests</module>-->
+        <module>splitter-function</module>
+        <module>add-yyyymm-transform-function</module>
+        <module>add-yyyymm-cdc-transform-function</module>
+        <module>deduplication-function</module>
+        <module>route-by-length-function</module>
+        <module>accumulate-by-count-function</module>
+        <module>filter-if-exists-function</module>
+        <module>group-sort-top-function</module>
+        <module>encryption-function</module>
+    </modules>
 </project>

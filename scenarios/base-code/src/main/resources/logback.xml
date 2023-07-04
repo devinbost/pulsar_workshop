@@ -16,8 +16,9 @@
     KIND, either express or implied.  See the License for the
     specific language governing permissions and limitations
     under the License.
-
+    
 -->
+
 <configuration debug="false">
     <timestamp key="byDate" datePattern="yyyyMMdd"/>
     <timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss"/>

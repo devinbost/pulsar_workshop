@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -25,23 +46,57 @@
         </license>
     </licenses>
 
-    <!-- Refer to the "base-code" library under "scenarios" folder
-    <repositories>
-        <repository>
-            <id>pulsarworkshop-scenarios-base-code-repo</id>
-            <url>file:///${project.basedir}/../base-code/target/base-code-1.0.0.jar</url>
-        </repository>
-    </repositories>
-    -->
-
     <properties>
         <java.version>17</java.version>
         <!-- spring boot starter for pulsar -->
         <spbsp.version>0.2.0</spbsp.version>
+        <license-maven-plugin.version>4.1</license-maven-plugin.version>
     </properties>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${license-maven-plugin.version}</version>
+                <configuration>
+                    <licenseSets>
+                        <licenseSet>
+                            <header>${session.executionRootDirectory}/../misc/license-header.txt</header>
+                            <excludes>
+                                <exclude>LICENSE</exclude>
+                                <exclude>NOTICE</exclude>
+                                <exclude>**/*.properties</exclude>
+                                <exclude>**/*.md</exclude>
+                                <exclude>**/.java-version</exclude>
+                                <exclude>**/dependency-reduced-pom.xml</exclude>
+                                <exclude>logs/**</exclude>
+                            </excludes>
+                        </licenseSet>
+                    </licenseSets>
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                        <conf>SCRIPT_STYLE</conf>
+                        <ini>SCRIPT_STYLE</ini>
+                        <yaml>SCRIPT_STYLE</yaml>
+                        <cfg>SCRIPT_STYLE</cfg>
+                        <Makefile>SCRIPT_STYLE</Makefile>
+                        <service>SCRIPT_STYLE</service>
+                        <cc>JAVADOC_STYLE</cc>
+                        <md>XML_STYLE</md>
+                        <txt>SCRIPT_STYLE</txt>
+                    </mapping>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
