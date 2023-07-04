@@ -51,6 +51,7 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    
     <build>
         <plugins>
             <plugin>
@@ -60,10 +61,13 @@
                 <configuration>
                     <licenseSets>
                         <licenseSet>
-                            <header>${session.executionRootDirectory}/misc/license-header.txt</header>
+                            <header>${session.executionRootDirectory}/../misc/license-header.txt</header>
                             <excludes>
                                 <exclude>LICENSE</exclude>
                                 <exclude>NOTICE</exclude>
+                                <exclude>**/*.properties</exclude>
+                                <exclude>**/*.md</exclude>
+                                <exclude>**/dependency-reduced-pom.xml</exclude>
                                 <exclude>**/*.txt</exclude>
                                 <exclude>**/*.pem</exclude>
                                 <exclude>**/*.crt</exclude>
@@ -94,6 +98,7 @@
                                 <exclude>conf/schema_example.conf</exclude>
                                 <exclude>data/**</exclude>
                                 <exclude>logs/**</exclude>
+                                <exclude>images/**</exclude>
                                 <exclude>**/circe/**</exclude>
                                 <exclude>pulsar-broker/src/test/resources/authentication/basic/.htpasswd</exclude>
                                 <exclude>**/django/stats/migrations/*.py</exclude>

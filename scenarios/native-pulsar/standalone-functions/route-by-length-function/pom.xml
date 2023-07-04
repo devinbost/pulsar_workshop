@@ -25,12 +25,13 @@
 
   <parent>
     <groupId>com.example.pulsarworkshop</groupId>
-    <artifactId>native-pulsar</artifactId>
+    <artifactId>standalone-functions</artifactId>
     <version>1.0.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
+  
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>accumulate-by-count-function</artifactId>
+  <artifactId>route-by-length-function</artifactId>
   <packaging>jar</packaging>
 
   <properties>
@@ -42,11 +43,6 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>np-common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>np-common</artifactId>
@@ -93,12 +89,7 @@
       <artifactId>guava</artifactId>
       <version>31.1-jre</version>
     </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.9.5</version>
-      <scope>test</scope>
-    </dependency>
+
   </dependencies>
   <build>
     <plugins>
