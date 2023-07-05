@@ -37,13 +37,9 @@ import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 public class InquiryTransformFunction implements Function<String, Void> {
     private Logger logger;
     private Schema<InquiryResult> schema;
-
     private String openAiToken;
-
     private ObjectMapper mapper;
-
     private CqlSession astraDbSession;
-
     private PreparedStatement preparedSelect;
     private String dbClientId;
     private String dbClientSecret;
