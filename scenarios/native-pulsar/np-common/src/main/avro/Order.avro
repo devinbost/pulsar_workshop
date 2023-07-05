@@ -1,0 +1,22 @@
+{
+  "namespace": "com.example.pulsarworkshop",
+  "type": "record",
+  "name": "Order",
+  "fields": [
+    {"name": "order_id", "type": "int"},
+    {"name": "customer_id", "type": "int"},
+    {"name": "customer_first_name", "type": "string"},
+    {"name": "customer_last_name", "type": "string"},
+    {"name": "customer_email", "type": "string"},
+    {"name": "customer_phone", "type": "string"},
+    {"name": "customer_address", "type": "string"},
+    {"name": "product_id", "type": "int"},
+    {"name": "product_name", "type": "string"},
+    {"name": "product_description", "type": "string"},
+    {"name": "product_price", "type": "double"},
+    {"name": "order_quantity", "type": "int"},
+    {"name": "order_date", "type": "string"},
+    {"name": "total_amount", "type": "double"},
+    {"name": "shipping_address", "type": "string"}
+  ]
+}

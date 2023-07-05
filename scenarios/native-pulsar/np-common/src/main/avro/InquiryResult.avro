@@ -1,0 +1,10 @@
+{
+  "namespace": "com.example.pulsarworkshop",
+  "type": "record",
+  "name": "InquiryResult",
+  "fields": [
+    {"name": "product_name", "type": "string"},
+    {"name": "product_description", "type": "string"},
+    {"name": "order_date", "type": "string"}
+  ]
+}

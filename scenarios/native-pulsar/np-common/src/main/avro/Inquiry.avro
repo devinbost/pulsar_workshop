@@ -1,0 +1,9 @@
+{
+  "namespace": "com.example.pulsarworkshop",
+  "type": "record",
+  "name": "Inquiry",
+  "fields": [
+    {"name": "customer_id", "type": "int"},
+    {"name": "inquiry_text", "type": "string"}
+  ]
+}

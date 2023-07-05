@@ -21,9 +21,13 @@ package com.example.pulsarworkshop;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.Row;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.apache.pulsar.client.api.AuthenticationFactory;
@@ -246,5 +250,80 @@ public class IntegrationTests {
         var boundStatement = this.preparedSelect.bind(input.getTagId(), input.getDataQuality());
         var output = this.astraDbSession.execute(boundStatement);
         return output.all();
+    }
+
+    @Test
+    public void testEmbeddingFunction() throws PulsarClientException, JsonProcessingException, InterruptedException {
+        String SERVICE_URL = "pulsar+ssl://pulsar-gcp-useast1.streaming.datastax.com:6651";
+        // Create client object
+        PulsarClient client = PulsarClient.builder()
+                .serviceUrl(SERVICE_URL)
+                .authentication(
+                        AuthenticationFactory.token(getToken())
+                )
+                .build();
+
+        // Create producer on a topic
+        Producer<Order> producer = client.newProducer(Schema.AVRO(Order.class))
+                .topic("persistent://openai/default/orders")
+                .create();
+        // Produce list of orders to Pulsar topic. (Assume downstream function and sink have been deployed.)
+        String orderListString = "[{\"order_id\":1,\"customer_id\":101,\"customer_first_name\":\"John\",\"customer_last_name\":\"Doe\",\"customer_email\":\"johndoe@gmail.com\",\"customer_phone\":\"1234567890\",\"customer_address\":\"123 Main St, Anytown, USA\",\"product_id\":1,\"product_name\":\"Apple iPhone 12\",\"product_description\":\"Apple iPhone 12 with 64GB memory, 6.1-inch Super Retina XDR display, A14 Bionic chip, and dual-camera system, in a sleek black color.\",\"product_price\":699.99,\"order_quantity\":1,\"order_date\":\"2023-06-21\",\"total_amount\":699.99,\"shipping_address\":\"123 Main St, Anytown, USA\"},{\"order_id\":2,\"customer_id\":102,\"customer_first_name\":\"Emma\",\"customer_last_name\":\"Johnson\",\"customer_email\":\"emmajohnson@gmail.com\",\"customer_phone\":\"2345678901\",\"customer_address\":\"456 Pine St, Somewhere, USA\",\"product_id\":2,\"product_name\":\"Samsung Galaxy S24\",\"product_description\":\"Samsung Galaxy S24 with 128GB storage, 6.2-inch Dynamic AMOLED 2X display, Exynos 2100 processor, and a pro-grade camera, in an elegant silver color.\",\"product_price\":799.99,\"order_quantity\":1,\"order_date\":\"2023-06-21\",\"total_amount\":799.99,\"shipping_address\":\"456 Pine St, Somewhere, USA\"},{\"order_id\":10,\"customer_id\":110,\"customer_first_name\":\"Jacob\",\"customer_last_name\":\"Smith\",\"customer_email\":\"jacobsmith@gmail.com\",\"customer_phone\":\"9876543210\",\"customer_address\":\"789 Oak St, Anywhere, USA\",\"product_id\":10,\"product_name\":\"Sony PlayStation 5\",\"product_description\":\"Sony PlayStation 5 Standard Edition, features ultra-high-speed SSD, integrated I/O, ray-tracing, 4K-TV gaming, up to 120fps with 120Hz output, HDR technology, in an attractive white color.\",\"product_price\":499.99,\"order_quantity\":1,\"order_date\":\"2023-06-21\",\"total_amount\":499.99,\"shipping_address\":\"789 Oak St, Anywhere, USA\"}]";
+        var mapper = new ObjectMapper();
+        mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+        var myObjects = Arrays.asList(mapper.readValue(orderListString, Order[].class));
+        myObjects.stream().forEach(obj -> {
+            try {
+                producer.send(obj);
+            } catch (PulsarClientException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        producer.close();
+
+        // After producing, wait a moment and then check if embedding exists on AstraDB table
+        Thread.sleep(5000);
+        // After that, then produce a chat inquiry to the inquiry topic
+        Producer<String> inquiryProducer = client.newProducer(Schema.STRING)
+                .topic("persistent://openai/default/inquiries")
+                .create();
+        var inquiry = "{\"customer_id\":1,{\"inquiry_text\":\"i ordered a game console, and it's not working\"}";
+        inquiryProducer.send(inquiry);
+        // TODO: Check downstream topic to verify that the result is the most similar order
+
+        //Close the producer
+
+        inquiryProducer.close();
+
+        // Close the client
+        client.close();
+    }
+    @Test
+    public void testInquiryFunction() throws PulsarClientException, JsonProcessingException, InterruptedException {
+        String SERVICE_URL = "pulsar+ssl://pulsar-gcp-useast1.streaming.datastax.com:6651";
+        // Create client object
+        PulsarClient client = PulsarClient.builder()
+                .serviceUrl(SERVICE_URL)
+                .authentication(
+                        AuthenticationFactory.token(getToken())
+                )
+                .build();
+
+        // Create producer on a topic
+        // After that, then produce a chat inquiry to the inquiry topic
+        Producer<String> inquiryProducer = client.newProducer(Schema.STRING)
+                .topic("persistent://openai/default/inquiries")
+                .create();
+        var inquiry = "{\"customer_id\":1,\"inquiry_text\":\"i ordered a game console, and it's not working\"}";
+
+        inquiryProducer.send(inquiry);
+        // TODO: Check downstream topic to verify that the result is the most similar order
+
+        //Close the producer
+
+        inquiryProducer.close();
+
+        // Close the client
+        client.close();
     }
 }
