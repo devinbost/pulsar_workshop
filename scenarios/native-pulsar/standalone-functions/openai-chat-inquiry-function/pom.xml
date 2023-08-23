@@ -35,7 +35,7 @@
   <artifactId>openai-chat-inquiry-function</artifactId>
 
   <properties>
-    <datastax.version>4.16.0</datastax.version>
+    <datastax.version>4.17.0</datastax.version>
     <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
     <lombok.version>1.18.22</lombok.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

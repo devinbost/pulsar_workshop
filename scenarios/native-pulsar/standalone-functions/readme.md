@@ -29,5 +29,5 @@ For OpenAI examples:
 `CREATE CUSTOM INDEX IF NOT EXISTS product_ann_index ON openai.order_with_embedding(embedding) USING 'StorageAttachedIndex'`
 
 
-CREATE TABLE IF NOT EXISTS openai.order_with_embedding (order_id int, customer_id int, embedding VECTOR<float,1536>, PRIMARY KEY ((order_id), customer_id));
+CREATE TABLE IF NOT EXISTS openai.order_with_embedding (order_id int, customer_id int,  , PRIMARY KEY ((order_id), customer_id));
 

@@ -18,6 +18,7 @@
  */
 package com.example.pulsarworkshop;
 
+import com.datastax.oss.driver.api.core.type.codec.PrimitiveFloatCodec;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.theokanning.openai.embedding.EmbeddingRequest;
@@ -25,14 +26,17 @@ import com.theokanning.openai.service.OpenAiService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
+import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.Schema;
 import org.apache.pulsar.functions.api.Context;
 import org.apache.pulsar.functions.api.Function;
 import org.slf4j.Logger;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
+import com.datastax.oss.driver.api.core.data.CqlVector;
 
 public class InquiryTransformFunction implements Function<String, Void> {
     private Logger logger;
@@ -76,16 +80,21 @@ public class InquiryTransformFunction implements Function<String, Void> {
     }
     @Override
     public Void process(String input, Context context) throws Exception {
-        var newObj = processLogic(input, context);
-
-        context.newOutputMessage(context.getOutputTopic(), schema).value(newObj).sendAsync();
+        var newObjList = processLogic(input, context);
+        newObjList.stream().forEach(obj -> {
+            try {
+                context.newOutputMessage(context.getOutputTopic(), Schema.AVRO(InquiryResult.class)).value(obj).sendAsync();
+            } catch (PulsarClientException e) {
+                throw new RuntimeException(e);
+            }
+        });
         return null;
     }
     public void prepareQueries(){
-        String selectQuery = "SELECT order_id, customer_id, customer_first_name, customer_last_name, customer_email, customer_phone, customer_address, product_id, product_name, product_description, product_price, order_quantity, order_date, total_amount, shipping_address, embedding FROM openai.order_with_embedding WHERE customer_id = ? ORDER BY embedding ANN OF ? LIMIT 1";
+        String selectQuery = "SELECT product_id, product_name, product_description, product_price, embedding FROM openai.retail_products_embedding ORDER BY embedding ANN OF ? LIMIT 3";
         this.preparedSelect = this.astraDbSession.prepare(selectQuery);
     }
-    public InquiryResult processLogic(String input, Context context) throws Exception {
+    public List<InquiryResult> processLogic(String input, Context context) throws Exception {
         // Deserialize the input string into Inquiry type
         // Then, produce this type to Pulsar
         var myInquiry = mapper.readValue(input, Inquiry.class);
@@ -98,26 +107,30 @@ public class InquiryTransformFunction implements Function<String, Void> {
             .input(inquiryList)
             .build();
         // Request embedding of inquiry text
-        var embedding = this.openAiService.createEmbeddings(embeddingRequest).getData().get(0).getEmbedding();
+        var embedding = this.openAiService.createEmbeddings(embeddingRequest).getData().get(0).getEmbedding()
+                .stream().map(Double::floatValue).collect(Collectors.toList());
 
         // TODO: Run vector search against table in DB
-        var embeddingString = "[" + embedding.stream().map(String::valueOf)
-                .collect(Collectors.joining(",")) + "]";
-
-        var boundStatement = this.preparedSelect.bind(myInquiry.getCustomerId(), embeddingString);
+        var embeddingVector = CqlVector.newInstance(embedding);
+        var boundStatement = this.preparedSelect.bind(embeddingVector);
         var outputs = this.astraDbSession.execute(boundStatement).all();
-        var output = outputs.get(0);
-        // product_name, product_description, product_price, order_date
-        var product_name = output.getString("product_name");
-        var product_description = output.getString("product_description");
-        var order_date = output.getString("order_date");
+        ArrayList<InquiryResult> resultsList = new ArrayList<>();
+        outputs.stream().forEach(product ->
+        {
+            var product_name = product.getString("product_name");
+            var product_description = product.getString("product_description");
+            var product_price = product.getFloat("product_price");
+            var inquiryResult = new InquiryResult(product_name, product_description, product_price);
+            resultsList.add(inquiryResult);
+        });
 
-        var inquiryResult = new InquiryResult(product_name, product_description, order_date);
-        return inquiryResult;
+        return resultsList;
     }
 
     @Override
     public void close() throws Exception {
         Function.super.close();
+        this.openAiService.shutdownExecutor();
+        this.astraDbSession.close();
     }
 }

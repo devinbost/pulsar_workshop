@@ -1,0 +1,194 @@
+[
+  {
+    "product_id": 1,
+    "product_name": "Red Moroccan Rug",
+    "product_description": "Elegantly crafted 9x12 rug featuring traditional Moroccan geometrical patterns. Made with high-quality materials, this rug is both durable and a beautiful centerpiece, adding a touch of North African charm to any room.",
+    "product_price": 299.99
+  },
+  {
+    "product_id": 2,
+    "product_name": "Blue Moroccan Rug",
+    "product_description": "A stunning 8x10 rug showcasing the intricate designs Morocco is famous for. Dyed in a deep azure hue, this rug provides both comfort and a splash of color to rejuvenate your living space.",
+    "product_price": 249.99
+  },
+  {
+    "product_id": 3,
+    "product_name": "Gold Moroccan Rug",
+    "product_description": "This luxurious 7x9 rug gleams with golden patterns inspired by the Saharan sands. Woven meticulously by expert artisans, its radiant aesthetics and plush texture are sure to captivate guests and elevate your home decor.",
+    "product_price": 279.99
+  },
+  {
+    "product_id": 4,
+    "product_name": "Emerald Moroccan Trellis Rug",
+    "product_description": "Boasting a vibrant 8x11 design, this rug marries modern trellis motifs with a touch of Moroccan tradition. The emerald undertones are reminiscent of the Atlas Mountains, making it a perfect addition to both contemporary and classic interiors.",
+    "product_price": 319.99
+  },
+  {
+    "product_id": 5,
+    "product_name": "Desert Sunset Moroccan Rug",
+    "product_description": "Experience the beauty of a Saharan sunset with this 9x13 masterpiece. Its warm, gradient hues, combined with authentic Moroccan patterns, bring a cozy and romantic ambiance to any room.",
+    "product_price": 349.99
+  },
+  {
+    "product_id": 6,
+    "product_name": "Berber-inspired Ivory Rug",
+    "product_description": "Inspired by traditional Berber designs, this 7x10 ivory rug adds sophistication with its subtle patterns and plush texture. Hand-knotted with precision, it's a timeless piece that complements a wide range of décor styles.",
+    "product_price": 289.99
+  },
+  {
+    "product_id": 7,
+    "product_name": "Casablanca Charcoal Medallion Rug",
+    "product_description": "Echoing the historic charm of Casablanca, this 8x12 rug features dark charcoal motifs against a muted backdrop. Its medallion patterns are a nod to ancient palaces, providing an air of elegance and grandeur.",
+    "product_price": 329.99
+  },
+  {
+    "product_id": 8,
+    "product_name": "Marrakech Brass Lantern",
+    "product_description": "Handcrafted in the heart of Marrakech, this brass lantern casts mesmerizing patterns when lit, infusing your space with the mystical charm of Moroccan nights. Suitable for both indoor and outdoor use.",
+    "product_price": 49.99
+  },
+  {
+    "product_id": 9,
+    "product_name": "Fez Ceramic Tagine",
+    "product_description": "This authentic ceramic tagine, sourced from the historic town of Fez, is not only perfect for traditional Moroccan dishes but also a beautiful centerpiece for your dining table. Its intricate patterns are hand-painted by local artisans.",
+    "product_price": 59.99
+  },
+  {
+    "product_id": 10,
+    "product_name": "Atlas Mountains Argan Oil",
+    "product_description": "100% pure Argan oil, cold-pressed from nuts harvested in the Atlas Mountains. Renowned for its rejuvenating properties, it's perfect for skin, hair, and nails.",
+    "product_price": 29.99
+  },
+  {
+    "product_id": 11,
+    "product_name": "Sahara Sandalwood Perfume",
+    "product_description": "Capture the essence of the Sahara with this exotic sandalwood perfume. With notes of cedar and musk, it's a captivating blend that transports you to desert dunes under a starlit sky.",
+    "product_price": 79.99
+  },
+  {
+    "product_id": 12,
+    "product_name": "Casablanca Mosaic Fountain",
+    "product_description": "Elevate your garden or patio with this stunning mosaic fountain, inspired by the intricate designs of Casablanca palaces. Handmade with vibrant tiles, it's a statement piece that adds a touch of Moroccan elegance.",
+    "product_price": 349.99
+  },
+  {
+    "product_id": 13,
+    "product_name": "Japanese Bonsai Starter Kit",
+    "product_description": "A comprehensive kit for beginners to cultivate their very first bonsai tree. Comes with a Juniper tree seedling, pruning shears, training wires, and a detailed care manual.",
+    "product_price": 39.99
+  },
+  {
+    "product_id": 14,
+    "product_name": "Italian Espresso Maker",
+    "product_description": "Craft authentic Italian espresso with this durable stainless steel stovetop maker. Featuring a classic design, it's perfect for a quick morning brew or an afternoon pick-me-up.",
+    "product_price": 54.99
+  },
+  {
+    "product_id": 15,
+    "product_name": "Indian Spice Collection",
+    "product_description": "A curated set of 12 essential Indian spices, including turmeric, cardamom, and garam masala. Ideal for seasoned chefs or those just starting their journey into Indian cuisine.",
+    "product_price": 24.99
+  },
+  {
+    "product_id": 16,
+    "product_name": "French Lavender Essential Oil",
+    "product_description": "Distilled from the finest lavender fields of Provence, this essential oil is perfect for relaxation, aromatherapy, or as a calming addition to your skincare routine.",
+    "product_price": 19.99
+  },
+  {
+    "product_id": 17,
+    "product_name": "Brazilian Hammock",
+    "product_description": "Woven with vibrant colors, this Brazilian hammock is both comfortable and durable, providing the perfect spot for an afternoon siesta or a night under the stars.",
+    "product_price": 89.99
+  },
+  {
+    "product_id": 18,
+    "product_name": "Wireless Earbuds",
+    "product_description": "High-fidelity sound with noise cancellation. Comfortable, long battery life, and quick charging. Comes with a sleek portable charging case.",
+    "product_price": 79.99
+  },
+  {
+    "product_id": 19,
+    "product_name": "Ergonomic Office Chair",
+    "product_description": "Designed for maximum lumbar support. Features breathable mesh, adjustable height, and tilt control for a comfortable working experience.",
+    "product_price": 149.99
+  },
+  {
+    "product_id": 20,
+    "product_name": "USB-C Multiport Hub",
+    "product_description": "Expand your device's capabilities with this hub. Offers multiple USB-A ports, HDMI output, SD card reader, and Ethernet connectivity.",
+    "product_price": 49.99
+  },
+  {
+    "product_id": 21,
+    "product_name": "LED Desk Lamp",
+    "product_description": "Adjustable brightness and color temperature. Features touch controls and a built-in wireless phone charger on the base.",
+    "product_price": 34.99
+  },
+  {
+    "product_id": 22,
+    "product_name": "Insulated Water Bottle",
+    "product_description": "Keep beverages cold for 24 hours or hot for 12. Made from stainless steel with a leak-proof cap. Holds 500ml.",
+    "product_price": 19.99
+  },
+  {
+    "product_id": 23,
+    "product_name": "Portable Power Bank",
+    "product_description": "Compact and lightweight, this 10,000mAh power bank ensures your devices stay charged on the go. Features dual USB outputs and fast-charging capabilities.",
+    "product_price": 29.99
+  },
+  {
+    "product_id": 24,
+    "product_name": "Digital Drawing Tablet",
+    "product_description": "A sleek tablet designed for artists and graphic designers. Features 8192 pressure levels, customizable buttons, and a battery-free stylus.",
+    "product_price": 99.99
+  },
+  {
+    "product_id": 25,
+    "product_name": "Bluetooth Speaker",
+    "product_description": "Deliver rich sound in a compact design. Waterproof, making it perfect for outdoor adventures. Offers up to 8 hours of playtime on a single charge.",
+    "product_price": 59.99
+  },
+  {
+    "product_id": 26,
+    "product_name": "Smart Home Thermostat",
+    "product_description": "Optimize your home's temperature from anywhere with this Wi-Fi-enabled thermostat. Integrates seamlessly with most smart home systems.",
+    "product_price": 149.99
+  },
+  {
+    "product_id": 27,
+    "product_name": "Fitness Tracker Watch",
+    "product_description": "Monitor your heart rate, sleep patterns, and daily activities. Features a color touchscreen, GPS, and waterproof design.",
+    "product_price": 69.99
+  },
+  {
+    "product_id": 28,
+    "product_name": "Robotic Vacuum Cleaner",
+    "product_description": "Automate your home cleaning with this intelligent robot vacuum. Features include obstacle detection, cliff sensors, and app integration for remote scheduling.",
+    "product_price": 249.99
+  },
+  {
+    "product_id": 29,
+    "product_name": "Gaming Headset",
+    "product_description": "Immerse yourself in high-quality audio with this gaming headset. Comes with noise-canceling microphone, comfortable ear cushions, and customizable RGB lighting.",
+    "product_price": 89.99
+  },
+  {
+    "product_id": 30,
+    "product_name": "Stainless Steel Blender",
+    "product_description": "Whip up smoothies, sauces, and more with this high-powered blender. Features multiple speed settings and a durable stainless steel design.",
+    "product_price": 119.99
+  },
+  {
+    "product_id": 31,
+    "product_name": "3D Printer",
+    "product_description": "Unleash your creativity with this desktop 3D printer. User-friendly interface, high printing accuracy, and comes with starter filament.",
+    "product_price": 299.99
+  },
+  {
+    "product_id": 32,
+    "product_name": "Organic Indoor Plant Kit",
+    "product_description": "Grow your own herbs and small plants indoors with this comprehensive kit. Includes organic seeds, biodegradable pots, and nutrient-rich soil.",
+    "product_price": 34.99
+  }
+]

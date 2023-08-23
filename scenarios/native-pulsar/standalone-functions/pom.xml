@@ -56,5 +56,6 @@
         <module>encryption-function</module>
         <module>openai-product-embedding-function</module>
         <module>openai-chat-inquiry-function</module>
+      <module>openai-vectorize-loan-products</module>
     </modules>
 </project>

@@ -1,0 +1,13 @@
+{
+    "namespace": "banking",
+    "type": "record",
+    "name": "loan_products",
+    "fields": [
+        {"name": "loan_id", "type": "string"},
+        {"name": "product_name", "type": "string"},
+        {"name": "interest_rate", "type": "double"},
+        {"name": "term_in_months", "type": "int"},
+        {"name": "max_loan_amount", "type": "double"},
+        {"name": "min_credit_score", "type": "int"}
+    ]
+}

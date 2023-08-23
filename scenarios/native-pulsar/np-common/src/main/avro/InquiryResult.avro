@@ -5,6 +5,6 @@
   "fields": [
     {"name": "product_name", "type": "string"},
     {"name": "product_description", "type": "string"},
-    {"name": "order_date", "type": "string"}
+    {"name": "product_price", "type": "float"}
   ]
 }
