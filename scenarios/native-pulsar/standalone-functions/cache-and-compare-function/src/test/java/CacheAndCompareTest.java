@@ -54,10 +54,34 @@ public class CacheAndCompareTest {
     @Mock
     private CqlSession cqlSessionMock;
 
+    @Mock
+    private TypedMessageBuilder mockContextResponse;
+
+    @Mock
+    private ResultSet resultSetMock;
+
+    private static ObjectMapper objectMapper;
+
+    @BeforeAll
+    static public void setupOnce(){
+        objectMapper = new ObjectMapper();
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+    }
+
     @BeforeEach
     public void setup() throws PulsarClientException {
         MockitoAnnotations.openMocks(this);
         when(contextMock.newOutputMessage(anyString(), any())).thenReturn(mock(TypedMessageBuilder.class));
+
+        mockContextResponse = mock(TypedMessageBuilder.class);
+        when(contextMock.newOutputMessage(any(), any())).thenReturn(mockContextResponse);
+        when(mockContextResponse.value(any())).thenReturn(mockContextResponse);
+        var mockFuture = mock(CompletableFuture.class);
+        when(mockContextResponse.sendAsync()).thenReturn(mockFuture);
+
+        resultSetMock = mock(ResultSet.class);
+        when(cqlSessionMock.execute(anyString())).thenReturn(resultSetMock);
+
     }
 
 //    @Test
@@ -75,30 +99,19 @@ public class CacheAndCompareTest {
         // When sent a sequence of two identical files, the function should emit nothing (null for each)
         String jsonString = "{\"products\":[{\"product_id\":\"p12345\",\"product_name\":\"Car Model A\",\"description\":\"A classic car model\",\"price\":50000.0,\"store_id\":\"s001\"},{\"product_id\":\"p67890\",\"product_name\":\"Car Model B\",\"description\":\"A modern car model\",\"price\":55000.0,\"store_id\":\"s002\"}]}";
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         AutoProductList productList = objectMapper.readValue(jsonString, AutoProductList.class);
 
         var func = new CacheAndCompareFunction();
         func.astraDbSession = cqlSessionMock;
-        var resultSetMock = mock(ResultSet.class);
-
-        when(cqlSessionMock.execute(anyString())).thenReturn(resultSetMock);
 
         // Test case where DB is empty:
         List<Row> results = Arrays.asList();
         when(resultSetMock.all()).thenReturn(results);
 
-        var mockBuilder = mock(TypedMessageBuilder.class);
-
-        when(contextMock.newOutputMessage(any(), any())).thenReturn(mockBuilder);
-        when(mockBuilder.value(any())).thenReturn(mockBuilder);
-        var mockFuture = mock(CompletableFuture.class);
-        when(mockBuilder.sendAsync()).thenReturn(mockFuture);
-        //when(contextMock.newOutputMessage(anyString(), Schema.AVRO(AutoProduct.class))).thenReturn(mock(TypedMessageBuilder.class));
         func.process(productList, contextMock);
+
         verify(contextMock, atLeastOnce()).newOutputMessage(any(), any());
-        verify(mockBuilder, atLeastOnce()).value(productCaptor.capture());
+        verify(mockContextResponse, atLeastOnce()).value(productCaptor.capture());
 
 
         List<AutoProduct> capturedProducts = productCaptor.getAllValues();

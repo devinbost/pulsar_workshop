@@ -1,29 +1,39 @@
 {
-  "namespace": "com.example.pulsarworkshop",
-  "type": "record",
-  "name": "DeviceTSNew",
-  "fields": [
-    {
-      "name": "tag_id",
-      "type": "string"
-    },
-    {
-      "name": "data_quality",
-      "type": "int"
-    },
-    {
-      "name": "event_time",
-      "type": "string",
-      "logicalType": "timestamp-millis",
-      "doc": "The date and time is stored as string in ISO 8601 format"
-    },
-    {
-      "name": "event_value",
-      "type": "double"
-    },
-    {
-       "name": "yyyymm",
-       "type": "int"
-    }
-  ]
+    "type": "record",
+    "name": "AutoProductList",
+    "namespace": "com.example.pulsarworkshop",
+    "fields": [
+        {
+            "name": "products",
+            "type": {
+                "type": "array",
+                "items": {
+                    "type": "record",
+                    "name": "AutoProduct",
+                    "fields": [
+                        {
+                            "name": "product_id",
+                            "type": "string"
+                        },
+                        {
+                            "name": "product_name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "description",
+                            "type": "string"
+                        },
+                        {
+                            "name": "price",
+                            "type": "double"
+                        },
+                        {
+                            "name": "store_id",
+                            "type": "string"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
 }
