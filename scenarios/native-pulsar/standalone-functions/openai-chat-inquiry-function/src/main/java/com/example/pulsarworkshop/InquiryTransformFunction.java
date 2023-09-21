@@ -110,7 +110,6 @@ public class InquiryTransformFunction implements Function<String, Void> {
         var embedding = this.openAiService.createEmbeddings(embeddingRequest).getData().get(0).getEmbedding()
                 .stream().map(Double::floatValue).collect(Collectors.toList());
 
-        // TODO: Run vector search against table in DB
         var embeddingVector = CqlVector.newInstance(embedding);
         var boundStatement = this.preparedSelect.bind(embeddingVector);
         var outputs = this.astraDbSession.execute(boundStatement).all();

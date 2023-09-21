@@ -45,19 +45,40 @@ public class TransformFunction implements Function<GenericObject, Void> {
     }
     @Override
     public Void process(GenericObject input, Context context) throws Exception {
+        logger.info("input.toString() is: " + input.toString());
+        logger.info("input.getNativeObject().toString() is: " + input.getNativeObject().toString());
         var record = extractRecord(input);
+        logger.info("Finished extractRecord");
         var newRecord = processLogic(record, context);
+        logger.info("Finished processLogic");
         context.newOutputMessage(context.getOutputTopic(), schema).value(newRecord).sendAsync();
         return null;
     }
     public DeviceTSNew extractRecord(GenericObject genericObject) {
         KeyValue<GenericRecord, GenericRecord> keyValue = (KeyValue<GenericRecord, GenericRecord>) genericObject.getNativeObject();
+        logger.info("Got keyValue in extractRecord");
         GenericRecord keyGenObject = keyValue.getKey();
+        logger.info("Got keyGenObject in extractRecord");
         GenericRecord valGenObject = keyValue.getValue();
-
+        logger.info("Got valGenObject in extractRecord");
+        if(keyGenObject.getField("tag_id") == null ){
+            logger.error("tag_id was null for the incoming object.");
+        }
         var tag_id = (String) keyGenObject.getField("tag_id");
+
+        if(keyGenObject.getField("data_quality") == null ){
+            logger.warn(String.format("data_quality was null for the incoming object with tag_id=%s", tag_id));
+        }
         var data_quality = (Integer) keyGenObject.getField("data_quality");
+
+        if(keyGenObject.getField("event_time") == null ){
+            logger.error(String.format("event_time was null for the incoming object with tag_id=%s . Unable to derive partition", tag_id));
+        }
         var event_time = Instant.ofEpochMilli((Long)keyGenObject.getField("event_time")).toString();
+
+        if(keyGenObject.getField("event_value") == null ){
+            logger.warn(String.format("event_value was null for the incoming object with tag_id=%s", tag_id));
+        }
         var event_value = (Double) valGenObject.getField("event_value");
 
 

@@ -89,15 +89,25 @@ public class TestFunction {
         var loggerMock = mock(Logger.class);
         when(contextMock.getLogger()).thenReturn(loggerMock);
         func.initialize(contextMock);
-        String inquiryJson = "{\n" +
+
+        /*String inquiryJson = "{\n" +
                 "  \"customer_id\": 12345,\n" +
-                "  \"inquiry_text\": \"What is the status of my order? " +
+                "  \"inquiry_text\": \"I'd like to buy a rug. " +
                     "prior_purchases: [" +
-                        "\\\"Red Moroccan Rug, 9x12, geometrical . . . \\\"," +
-                        "\\\"Red Bokhara Rug, 7 x 10, maroon pattern . . \\\"," +
+                        "\\\"Red Moroccan Rug, geometrical Desert appearance. . . \\\"," +
+                        "\\\"Red Bokhara Rug, maroon pattern . . \\\"," +
                         ". . ." +
                     "]\"\n" +
+                "}";*/
+
+
+        String inquiryJson = "{\n" +
+                "  \"customer_id\": 12345,\n" +
+                "  \"inquiry_text\": \"I'd like to buy a new technology. " +
+                "\"\n" +
                 "}";
+
+
         var newOrder = func.processLogic(inquiryJson, contextMock);
 
     }
