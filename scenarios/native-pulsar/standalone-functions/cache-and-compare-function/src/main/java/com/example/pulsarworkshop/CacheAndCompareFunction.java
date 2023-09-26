@@ -20,14 +20,12 @@ package com.example.pulsarworkshop;
 
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
-import com.datastax.oss.driver.api.core.cql.Row;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.Schema;
@@ -90,7 +88,7 @@ public class CacheAndCompareFunction implements Function<AutoProductList, Void> 
     }
 
     public Cache<String, AutoProduct>
-            cache = new Cache2kBuilder<String, AutoProduct>() {}
+            queue = new Cache2kBuilder<String, AutoProduct>() {}
             .build();
 
     public String computeHash(AutoProduct product) {
@@ -103,13 +101,13 @@ public class CacheAndCompareFunction implements Function<AutoProductList, Void> 
     }
 
     public boolean isProductInCache(AutoProduct product) {
-        return cache.containsKey(product.getProductId().toString());
+        return queue.containsKey(product.getProductId().toString());
     }
 
     public void regenerateCache(List<AutoProduct> productList) {
-        cache.removeAll(); // Clear the cache
+        queue.removeAll(); // Clear the cache
         for (AutoProduct product : productList) {
-            cache.put(product.getProductId().toString(), product);
+            queue.put(product.getProductId().toString(), product);
         }
     }
 
@@ -124,23 +122,24 @@ public class CacheAndCompareFunction implements Function<AutoProductList, Void> 
                 var val = result.value(product);
                 val.sendAsync();
             } else {
-                AutoProduct cachedProduct = cache.get(product.getProductId().toString());
+                AutoProduct cachedProduct = queue.get(product.getProductId().toString());
                 String newHash = computeHash(product);
                 String cacheHash = computeHash(cachedProduct);
                 if (!newHash.equals(cacheHash)) { // Check if existing record matches incoming record
                     // UPDATE logic (if not exact match)
                     context.newOutputMessage(context.getOutputTopic(), schema).value(product).sendAsync();
-                    cache.remove(product.getProductId().toString());
+                    queue.remove(product.getProductId().toString());
                 } else { // Record is exact match.
                     // SKIP record. (Ensure it's not deleted)
-                    cache.remove(product.getProductId().toString());
+                    queue.remove(product.getProductId().toString());
                 }
             }
         }
 
-        for (String productId : cache.asMap().keySet()) {
+        for (String productId : queue.asMap().keySet()) {
             // DELETE logic for any remaining, assumes above operations were synchronous
-            var product = cache.get(productId);
+            var product = queue.get(productId);
+            // TODO: need to set values to null
             context.newOutputMessage(context.getOutputTopic(), schema).value(product).sendAsync();
         }
 
@@ -164,7 +163,7 @@ public class CacheAndCompareFunction implements Function<AutoProductList, Void> 
     public void populateCacheFromCassandra() {
         var resultSet = getProductsFromCassandra();
         resultSet.forEach(product ->
-                cache.put(product.getProductId().toString(), product));
+                queue.put(product.getProductId().toString(), product));
     }
 
     /*

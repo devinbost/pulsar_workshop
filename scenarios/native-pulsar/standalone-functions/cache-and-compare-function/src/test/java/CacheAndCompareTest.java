@@ -25,6 +25,7 @@ import com.example.pulsarworkshop.AutoProductList;
 import com.example.pulsarworkshop.CacheAndCompareFunction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.pulsar.client.api.MessageId;
@@ -84,21 +85,31 @@ public class CacheAndCompareTest {
 
     }
 
-//    @Test
-//    public void test1() throws Exception {
-//        // Make sure it loads data from AstraDB
-//        var func = new CacheAndCompareFunction();
-//        EmbeddedCassandraServerHelper.startEmbeddedCassandra();
-//        var session = EmbeddedCassandraServerHelper.getSession();
-//        func.setAstraDbSession(session);
-//        new CQLDataLoader(session).load(new ClassPathCQLDataSet("people.cql", "people"));
-//
-//    }
     @Test
-    public void test2() throws Exception {
+    public void test_whenDBisEmpty_insertAllNewProducts() throws Exception {
         // When sent a sequence of two identical files, the function should emit nothing (null for each)
-        String jsonString = "{\"products\":[{\"product_id\":\"p12345\",\"product_name\":\"Car Model A\",\"description\":\"A classic car model\",\"price\":50000.0,\"store_id\":\"s001\"},{\"product_id\":\"p67890\",\"product_name\":\"Car Model B\",\"description\":\"A modern car model\",\"price\":55000.0,\"store_id\":\"s002\"}]}";
+        /*
+        {
+            "products": [
+                {
+                    "product_id": "p12345",
+                    "product_name": "Car Model A",
+                    "description": "A classic car model",
+                    "price": 50000.0,
+                    "store_id": "s001"
+                },
+                {
+                    "product_id": "p67890",
+                    "product_name": "Car Model B",
+                    "description": "A modern car model",
+                    "price": 55000.0,
+                    "store_id": "s002"
+                }
+            ]
+        }
 
+         */
+        String jsonString = "{\"products\":[{\"product_id\":\"p12345\",\"product_name\":\"Car Model A\",\"description\":\"A classic car model\",\"price\":50000.0,\"store_id\":\"s001\"},{\"product_id\":\"p67890\",\"product_name\":\"Car Model B\",\"description\":\"A modern car model\",\"price\":55000.0,\"store_id\":\"s002\"}]}";
         AutoProductList productList = objectMapper.readValue(jsonString, AutoProductList.class);
 
         var func = new CacheAndCompareFunction();
@@ -113,12 +124,55 @@ public class CacheAndCompareTest {
         verify(contextMock, atLeastOnce()).newOutputMessage(any(), any());
         verify(mockContextResponse, atLeastOnce()).value(productCaptor.capture());
 
-
         List<AutoProduct> capturedProducts = productCaptor.getAllValues();
         // When DB is empty, then each incoming product should end up on the capturedProducts list:
         Assert.assertTrue(capturedProducts.size() == 2);
         Assert.assertTrue(capturedProducts.get(0).getProductId().toString().equals("p12345")
         || capturedProducts.get(1).getProductId().toString().equals("p12345"));
+        Assert.assertTrue(capturedProducts.get(0).getProductId().toString().equals("p67890")
+                || capturedProducts.get(1).getProductId().toString().equals("p67890"));
+        // Make sure the products aren't the same:
+        Assert.assertTrue(!capturedProducts.get(0).getProductId().equals(capturedProducts.get(1).getProductId()));
+    }
+    @Test
+    public void test_whenDBhasAllExpectedValues_doNothing() throws Exception {
+        // When sent a sequence of two identical files, the function should emit nothing (null for each)
+        String jsonString = "{\"products\":[{\"product_id\":\"p12345\",\"product_name\":\"Car Model A\",\"description\":\"A classic car model\",\"price\":50000.0,\"store_id\":\"s001\"},"
+                + "{\"product_id\":\"p67890\",\"product_name\":\"Car Model B\",\"description\":\"A modern car model\",\"price\":55000.0,\"store_id\":\"s002\"}]}";
+
+        AutoProductList productList = objectMapper.readValue(jsonString, AutoProductList.class);
+
+        var func = new CacheAndCompareFunction();
+        func.astraDbSession = cqlSessionMock;
+
+        // Test case where DB is empty:
+        List<Row> results = new ArrayList<>();
+        var mockRow1= mock(Row.class);
+        when(mockRow1.getString("product_id")).thenReturn("p12345");
+        when(mockRow1.getString("product_name")).thenReturn("Car Model A");
+        when(mockRow1.getString("description")).thenReturn("A classic car model");
+        when(mockRow1.getDouble("price")).thenReturn(50000.0);
+        when(mockRow1.getString("store_id")).thenReturn("s001");
+        var mockRow2 = mock(Row.class);
+        when(mockRow2.getString("product_id")).thenReturn("p67890");
+        when(mockRow2.getString("product_name")).thenReturn("Car Model B");
+        when(mockRow2.getString("description")).thenReturn("A modern car model");
+        when(mockRow2.getDouble("price")).thenReturn(55000.0);
+        when(mockRow2.getString("store_id")).thenReturn("s002");
+        results.add(mockRow1);
+        results.add(mockRow2);
+        when(resultSetMock.all()).thenReturn(results);
+
+        func.process(productList, contextMock);
+
+        verify(contextMock, atLeastOnce()).newOutputMessage(any(), any());
+        verify(mockContextResponse, atLeastOnce()).value(productCaptor.capture());
+
+        List<AutoProduct> capturedProducts = productCaptor.getAllValues();
+        // When DB is empty, then each incoming product should end up on the capturedProducts list:
+        Assert.assertTrue(capturedProducts.size() == 2);
+        Assert.assertTrue(capturedProducts.get(0).getProductId().toString().equals("p12345")
+                || capturedProducts.get(1).getProductId().toString().equals("p12345"));
         Assert.assertTrue(capturedProducts.get(0).getProductId().toString().equals("p67890")
                 || capturedProducts.get(1).getProductId().toString().equals("p67890"));
         // Make sure the products aren't the same:
