@@ -1,4 +1,15 @@
+We will show you how to built a streaming solution with vector search for real-time product recommendations. 
+Here is the flow we will build:
+![image](https://github.com/devinbost/pulsar_workshop/assets/7418031/c4298566-3958-443b-8986-f4b4e8877bd4)
 
+See these functions:
+- openai-chat-inquiry-function
+- openai-product-embedding-function
+
+TO DO: Add more instructions.
+
+
+--- 
 
 To create the Avro schema from the initial C* table definition, that can be done with GPT-4:
 
