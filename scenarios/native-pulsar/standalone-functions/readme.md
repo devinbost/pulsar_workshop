@@ -6,6 +6,16 @@ See these functions:
 - openai-chat-inquiry-function
 - openai-product-embedding-function
 
+  
+For OpenAI examples:
+`CREATE TABLE IF NOT EXISTS openai.order_with_embedding (order_id int, customer_id int, customer_first_name text, customer_last_name text, customer_email text, customer_phone text, customer_address text, product_id int, product_name text, product_description text, product_price double, order_quantity int, order_date text, total_amount double, shipping_address text, embedding VECTOR<float,1536>, PRIMARY KEY ((order_id), customer_id));`
+`CREATE INDEX IF NOT EXISTS on openai.order_with_embedding(customer_id);`
+`CREATE CUSTOM INDEX IF NOT EXISTS product_ann_index ON openai.order_with_embedding(embedding) USING 'StorageAttachedIndex'`
+
+
+CREATE TABLE IF NOT EXISTS openai.order_with_embedding (order_id int, customer_id int,  , PRIMARY KEY ((order_id), customer_id));
+
+
 TO DO: Add more instructions.
 
 
@@ -32,13 +42,4 @@ To create the downstream tables:
 
 Create config.properties file in the resources directory for any function that requires credentials. 
 Be careful to not commit this file to your repo!
-
-
-For OpenAI examples:
-`CREATE TABLE IF NOT EXISTS openai.order_with_embedding (order_id int, customer_id int, customer_first_name text, customer_last_name text, customer_email text, customer_phone text, customer_address text, product_id int, product_name text, product_description text, product_price double, order_quantity int, order_date text, total_amount double, shipping_address text, embedding VECTOR<float,1536>, PRIMARY KEY ((order_id), customer_id));`
-`CREATE INDEX IF NOT EXISTS on openai.order_with_embedding(customer_id);`
-`CREATE CUSTOM INDEX IF NOT EXISTS product_ann_index ON openai.order_with_embedding(embedding) USING 'StorageAttachedIndex'`
-
-
-CREATE TABLE IF NOT EXISTS openai.order_with_embedding (order_id int, customer_id int,  , PRIMARY KEY ((order_id), customer_id));
 
